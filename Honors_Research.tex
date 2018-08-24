@@ -1,17 +1,29 @@
-\documentclass[fleqn,notitlepage,minimal]{article}
-\usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,textcomp,commath,mathtools,hyperref}
+\documentclass[fleqn,minimal]{article}
+\usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,textcomp,commath,mathtools,hyperref,doc}
+\DeclareGraphicsExtensions{ps,eps}
+\usepackage{excludeonly}
 \usepackage[usenames,dvipsnames]{xcolor}
-\definecolor{mypurple}{RGB}{153,0,153}
+\definecolor{myblue}{RGB}{40,0,200}
 
 \hypersetup{
 	colorlinks=true,
-	linkcolor=mypurple,
-	filecolor=mypurple,      
-	urlcolor=mypurple,
-	citecolor=mypurple,
+	linkcolor=myblue,
+	filecolor=myblue,      
+	urlcolor=myblue,
+	citecolor=myblue,
 	pdftitle={An Exploration of the Topological and Logical Properties of Hierarchical Temporal Memory Networks},
 	bookmarks=true,
-	pdfpagemode=FullScreen,
+}
+
+\usepackage{scrextend}
+\usepackage{afterpage}
+\newcommand\blankpage{
+	\pagebreak
+	\ifthispageodd{\null
+		\vfill
+		\vfill
+		\thispagestyle{empty}
+		\clearpage}{}
 }
 
 \renewcommand{\baselinestretch}{1.3}
@@ -33,6 +45,7 @@
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 \newcommand{\rpm}{\raisebox{.2ex}{$\scriptstyle\pm$}}
+\setcounter{tocdepth}{3}
 
 \begin{document}
 	\begin{titlepage}
@@ -58,11 +71,15 @@
 		{\large \today\par}
 	\end{titlepage}
 	
+	\blankpage
 	\tableofcontents
 	
-	\pagebreak
+	\blankpage
+	\listoffigures
 	
-	\section{Artificial Intelligence}
+	\blankpage
+	
+	\section{Introduction}
 	
 	\subsection{What is Intelligence?}
 	
@@ -99,14 +116,18 @@
 	
 	Lastly, we visit ``Emulation'' which is the school of thought that says we are better off copying intelligence than designing our own \cite{Connell}. Neural simulation, neural networks, animal models, human development, sociality, and cortical learning algorithms all fit in this category \cite{Connell}. The danger with this approach is abandoning theory in its sprint towards a functional copy, because if one does not understand the thing they have made, it is hard to see what it can do and where it can be improved. Another excellent point is that it can be very hard to correctly identify what needs to be copied, as Connell and Livingston note, ``artificial feathers and flapping turn out not to be needed to create airplanes'' \cite{Connell}.
 	
+	\blankpage
+	
 	\section{Logic, Fuzzy Logic, and Fuzzy Control Systems}
 	
+	\blankpage
 	\section{Topological Concepts}
 	
 	In order to discuss \textit{An Exploration of the Topological and Epistemic Properties of Hierarchical Temporal Memory Networks}, we will also need to briefly discuss what a topology is. A topology on a set X is a collection $\mathcal{T}$ of subsets of X having the following properties: the null set and X are elements of $\mathcal{T}$, any arbitrary union of elements of $\mathcal{T}$ is in $\mathcal{T}$, and any finite intersection of elements of $\mathcal{T}$ is in $\mathcal{T}$ \cite{Munkres}. When a topology $\mathcal{T}$ is specified on a set X, we call X a topological space \cite{Munkres}. A subset $\mathcal{U}$ of $\mathcal{T}$ is an open set of X and set $\mathcal{C}$ is closed if the compliment, $X-\mathcal{C}$, is an open set of X \cite{Adams}.
 	
 	As arbitrary unions of elements of a topology and any finite intersections of elements of a topology are both also elements of the topology, it is generally more practical to specify a collection that is able to generate the topology than the entire topology itself. This is called a basis. If X is a set and $\mathcal{B}$ be is collection of subsets of X, then $\mathcal{B}$ is a basis of X if the following hold: (1) $\forall \; x \in X \; \exists \; B \in \mathcal{B}$ s.t. $x \in B$ and (2) if $B_{1}$ and $B_{2}$ are in $\mathcal{B}$ and $x \in B_{1} \cap B_{2}$, then $\exists \; B_{3} \in \mathcal{B}$ s.t. $x \in B_{3} \subseteq B_{1} \cap B_{2}$ \cite{Adams}.
 	
+	\blankpage
 	\section{Sparse Distributed Representations}
 	
 	\subsection{Key Concepts}
@@ -169,6 +190,7 @@
 	
 	RDSE http://fergalbyrne.github.io/rdse.html
 	
+	\blankpage
 	\section{Hierarchical Temporal Memory}
 	
 	Hierarchical Temporal Memory is a technology that takes all the concepts we have briefly surveyed and combines them into a machine learning technology firmly rooted in the ``Emulation'' Path to Artificial Intelligence. It aims to capture the structure and algorithms of the neocortex in the hopes of delivering machines the intelligent though that the neocortex is thought to gift us \cite{Whitepaper}. Hierachical Temporal Memory networks (HTMs) are by definition a type of neural network, but are special because they model cells that are stacked in columns, which are organized in layers, in nodes, and in a hierarchy, following the layout of cells in the neocortex \cite{Whitepaper}.
@@ -242,7 +264,7 @@
 	SDR Classifiers are able to decode the information HTMs give about predictions $n$ times steps in the future by maintaining a weight matrix \cite{Dillon}. The matrix's weights are adjusted to ``learn'' after each time step to reflect the correct weighting between the output vector at time $t$ and the probability distribution of the input/output space at time $t-n$ \cite{Dillon}. This enables the matrix to reflect relationships between inputs and outputs $n$ time steps apart. To determine the SDR Classifier's interpretation of an output at time $t+n$, the SDR Classifer takes in the HTM's output vector and uses Softmax to determine the most likely decoding \cite{Dillon}. So for each of the $k$ classes in the output space, the certainty that the output vector is referring to it is $$y_{j} = \dfrac{e^{a_{j}}}{\sum_{i=1}^{k} e^{a_{i}}}$$ where $a_{j}$ is the activation level of the $j^{th}$ element of the output space, calculated by multiplying the output vector by the $j^{th}$ column of the weight matrix element wise \cite{Dillon}. 
 	
 	
-	
+	\blankpage
 	\section{Literature Review}
 	
 	Hierarchical Temporal Memory has sparked a great amount of interest in the artificial intelligence community as everyone scrambles to ask how this biologically-inspired approach will fit into the Machine Learning landscape going forward. How do we mathematically formalize this emulation of the neocortex in order to integrate HTMs into the tools and systems we use today? How does their performance compare to the tools in use today when it comes to typical tasks like signal processing and forecasting? Will HTMs become an industry standard, fade to irrelevance, or somewhere in between? Much work has been done in this field and there is still much to be to done.
@@ -255,6 +277,7 @@
 	
 	An empirical study of Hierarchical Temporal Memory looked at its performance for biometric keystroke analysis, network data analysis, and website visitor analysis and concluded, ``that the predictions made by HTM models are clearly comparable, if not better, than the ones of the state-of-the-art approaches'' \cite{Galetzka}. The study also reaffirmed the conclusion of those using it for algorithmic trading, that HTMs are not very prone to over-fitting because they learn to generalize with more data \cite{Evaluation} \cite{Galetzka}. This study also found that finding the optimal parameters for an HTM is a very computationally intensive process because of the dependence of the parameters on each other making the search exponential in parameters that need to be optimized \cite{Galetzka}.
 	
+	\blankpage
 	\section{Proposed Work}
 	
 	Hierarchical Temporal Memory is a branch of artificial intelligence grounded in Emulation, but I would like to take their strides in the field and see if can be improved using the innate topologies and inexact logic. I would like to implement my own Hierarchical Temporal Memory network using topological concepts to attempt to improve on the existing routines and enable broader logical frameworks to explore the performance and capabilities of such a system. Another possible advantage of using the topological properties is that I may be able to integrate topological or positional logic in order to enhance the system. Fuzzy logic and soft computing are another route I would like to take in improving Hierarchical Temporal Memory. It is my hope that this work will improve on the performance and forecasting ability of Hierarchical Temporal Memory.
@@ -271,61 +294,11 @@
 	
 	The hopeful net result will be a Hierarchical Temporal Memory network that is more flexible, more stable, and more capable. Failing that, this exploration will explore the uses of the innate topological structures in Hierarchical Temporal Memory, help us define the boundaries of what Hierarchical Temporal Memory may and may not be able to achieve, and explore if and how the concepts of fuzzy logic, fuzzy control, and soft computing can improve upon Hierarchical Temporal Memory.
 	
-	\newpage
+	\blankpage
 	
-	\begin{thebibliography}{99}
-		
-		\bibitem{Adams} Adams, C and Robert Franzosa. 2008. \textit{Introduction to Topology: Pure and Applied}. Pearson Prentice Hall, Upper Saddle River, NY.
-		
-		\bibitem{Properties} Ahmad, S. and Jeff Hawkins. 2015. Properties of Sparse Distributed Representations and their Application to Hierarchical Temporal Memory. arXiv:1503.07469. Retrieved from https://arxiv.org/abs/1503.07469v1
-		
-		\bibitem{Evaluation} \r{A}slin, Fredrik. 2010. \textit{Evaluation of Hierarchical Temporal Memory in algorithmic trading}. Institutionen f\"{o}r Datavetenskap.
-		
-		\bibitem{Box} George E. P Box, Gwilym M. Jenkins. \emph{Time Series Analysis: Forecasting and Control, Fifth} (5th ed). John Wiley \& Sons, Inc., Hoboken, N.J., 2016.
-		
-		\bibitem{Buchanan} Buchanan, Bruce G. A (Very) Brief History of Artificial Intelligence. American Association for Artificial Intelligence, Volume 26, 53-60.
-		
-		\bibitem{RDSE} Fergal Byrne. 2014. Random Distributed Scalar Encoder. (July 18, 2014). Retrieved August 27, 2014 from http://fergalbyrne.github.io/rdse.html
-		
-		\bibitem{Connell} Connell, Jonathan and Kenneth Livingston. Four Paths to AI. Frontiers In Artificial Intelligence and Applications, Volume 171, 394-398.
-		
-		\bibitem{Dillon} Dillon, A. 2016. SDR Classifier. Retrieved April 9, 2018 from http://hopding.com/sdr-classifier\#title
-		
-		\bibitem{Soft} Fortuna, L., et. al. 2001. \textit{Soft Computing: new trends and applications}. Springer-Verlag London, London, GB.
-		
-		\bibitem{Galetzka} Galetzka, Michael. 2014. \emph{Intelligent Predictions: an Empirical Study of the Cortical Learning Algorithm.} Master's thesis. University of Applied Sciences Mannheim. Mannheim, Germany. 
-		
-		\bibitem{Towards} George D, Hawkins J. 2009. Towards a Mathematical Theory of Cortical Micro-circuits. PLoS Comput Biol 5(10): e1000532. doi:10.1371/journal.pcbi.1000532 
-		
-		\bibitem{Gugerty} Gugerty, Leo. Newell and Simon's Logic Theorist: Historical Background and Impact on Cognitive Modeling. Proceedings of the Human Factors and Ergonomics Society Annual Meeting. Vol 50, Issue 9, pp. 880-884.  doi:10.1177/154193120605000904
-		
-		\bibitem{HTM School} HTM School. Scalar Encoding (Episode 5). Video. (June 10, 2016). Retrieved August 24, 2018 from  https://www.youtube.com/watch?v=V3Yqtpytif0
-		
-		\bibitem{Whitepaper} Hawkins, Jeff, et al. Hierarchical Temporal Memory including HTM Cortical Learning Algorithms. Numenta, Version 0.2.1, 2011. 
-		
-		\bibitem{Jones} Jones, M. Tim. \emph{Artificial Intelligence: A Systems Approach}. Infinity Science Press, LLC, Hingham, M.A., 2008.
-		
-		\bibitem{Framework} Mnatzaganian, James, Ernest Fokoue, and Dhireesha Kudithipudi. A Mathematical Formalization of Hierarchical Temporal Memory's Spatial Pooler. Frontiers in Robotics and AI, Volume 3, Article 81.
-		
-		\bibitem{Munkres} Munkres, J. 2000. \textit{Topology} (Second Edition). Prentice Hall, Upper Saddle River, NJ.
-		
-		\bibitem{Advanced} Numenta. 2008. Advanced NuPIC Programming. 
-		
-		\bibitem{Principles} Numenta. Principles of Hierarchical Temporal Memory (HTM): Foundations of Machine Intelligence. Video. (28 October 2014). Retrieved February 10, 2018 from https://www.youtube.com/watch?v=6ufPpZDmPKA
-		
-		\bibitem{Bayesian} Pelikan, M. 2005. \textit{Hierarchical Bayesian Optimization Algorithm}. Springer-Verlag Berlin Heidelberg, Germany.
-		
-		\bibitem{Purdy} Purdy, Scott. 2016. Encoding Data for HTM Systems. Computing Research Repository. arXiv: 1602.05925. Retrieved from: http://arxiv.org/abs/1602.05925
-		
-		\bibitem{Importance} Sangalli, A. 1998. \textit{The Importance of Being Fuzzy: and Other Insights from the Border between Math and Computers}. Princeton University Press, Princeton, NJ.
-		
-		\bibitem{Searle} Searle, John (1980), Minds, Brains and Programs, Behavioral and Brain Sciences, 3 (3): 417–457, doi:10.1017/S0140525X00005756, retrieved March 24, 2018
-		
-		\bibitem{Turing} Turing, A. M. Computing Machinery and Intelligence. Mind, Volume LIX, Issue 236, 1 October 1950, Pages 433–460, https://doi.org/10.1093/mind/LIX.236.433
-		
-		\bibitem{Semantic} De Sousa Webber, F. E. \textit{Semantic Folding: Theory and its Application in Semantic Fingerprinting}. Cortical.io, Vienna, 2016.
-		
-		
-	\end{thebibliography}
+	\bibliographystyle{siam}     % Siam and Ieeetr bibliographic styles treat titles of articles in journals or collections correctly
+	\nocite{*}  % List ALL references in your references, not just the ones cited in the text.
+	% This scheme automatically alphabetizes the Bibliography.
+	\bibliography{Bibliography}{}
 	
 \end{document}
