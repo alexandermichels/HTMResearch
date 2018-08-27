@@ -19,13 +19,15 @@ The paper is ongoing!
 
 ## Ideas/Questions:
 
-* Is the perceptron/decoder able to track temporal dependencies? (Is a multi-layer perceptron needed? a RNN? LSTM? a whole new scheme?)
-* Is the system ever predicting past t_{n+1}?
-* General limits of the system as a function of parameters (such as cells/row, etc.)
-* Can I come up with a topology/graph theory based decoding scheme?
-* How can modal/epistemic logic be used in HTMs?
-* Can the non-binary weights be used to convert the system to more effective fuzzy control system? (Start with fuzzy temporal pooler)
-* Similarity to CNNs (abstracting, pooling)
+* What exactly is the output of a layer? (I think its a linear combination of the predicted elements of the input space)
+  * Can I come up with a better decoding scheme? (Graph Theory/Topology?)
+  * What are the output's relations to the system's predictions for t_{n+1}, t_{n+2}, ....
+  * General limits of the system as a function of parameters (system architecture/"topology" such as cells/row, etc.)
+* Similarity to Convolutional Neural Networks/Recurrent Neural Networks (or other existing models)
+  * Cortical Learning Algorithms seem similar to CNNs (especially pooling)
+  * The output (the activated neurons) seems similar to that of a RNN (hidden state)
+* Can the non-binary weights be used in the system in a more effective way (rather than activation) leading to a better system (more accurate, etc.)?
+  * Using fuzzy control to produce a fuzzy temporal pooler
 
 
 ## Sources
