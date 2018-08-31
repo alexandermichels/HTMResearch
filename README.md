@@ -29,6 +29,14 @@ The paper is ongoing!
 * Can the non-binary weights be used in the system in a more effective way (rather than activation) leading to a better system (more accurate, etc.)?
   * Using fuzzy control to produce a fuzzy temporal pooler
 
+## Implementations of Interest
+
+* [C++ HTM](https://www.youtube.com/user/mrferrier)
+* [Clortex](https://github.com/htm-community/clortex)
+* [Comportex](https://github.com/htm-community/comportex)
+* [HTM.java](https://github.com/numenta/htm.java)
+* [NuPIC](https://github.com/numenta/nupic)
+
 
 ## Sources
 
@@ -44,6 +52,7 @@ For a comprehensive list check the **References** section of my Honors Research 
 * [A Mathematical Formalization of Hierarchical Temporal Memory’s Spatial Pooler](src/A_Mathematical_Formalization_of_Hierarchical_Temporal_Memory’s_Spatial_Pooler.pdf)
 * [Principles of Hierarchical Temporal Memory (HTM): Foundations of Machine Intelligence](https://www.youtube.com/watch?v=6ufPpZDmPKA)
 * [Properties of Sparse Distributed Representations and their Application to Hierarchical Temporal Memory](src/Properties_of_Sparse_Distributed_Representations_and_their_Applications_to_Hierarchical_Temporal_Memory.pdf)
+* [Quantum Computation via Sparse Distributed Representation](https://arxiv.org/pdf/1707.05660.pdf)
 * [Random Distributed Scalar Encoder](http://fergalbyrne.github.io/rdse.html)
 * [Semantic Folding: Theory and its Application in Semantic Fingerprinting](src/Semantic_Folding:_Theory_and_its_Application_in_Semantic_Fingerprinting.pdf)
 * [SDR Classifier](http://hopding.com/sdr-classifier#title)
