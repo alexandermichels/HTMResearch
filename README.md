@@ -17,6 +17,13 @@ The Proposal for my Honors Research Thesis was due April 30th, 2018 and it is co
 
 The paper is ongoing!
 
+#### Total Rewrite:
+* Intelligence (Using *On Intelligence*)
+* SDRs, Topology, and Quantum
+* Literature Review
+* My Stuff
+* Fuzzy Logic Appendix
+
 ## Ideas/Questions:
 
 * What exactly is the output of a layer? (I think its a linear combination of the predicted elements of the input space)
@@ -31,7 +38,8 @@ The paper is ongoing!
 
 ## Implementations of Interest
 
-* [C++ HTM](https://www.youtube.com/user/mrferrier)
+* [HTMCLA (C++)](https://github.com/MichaelFerrier/HTMCLA)
+  * [Demo: C++ implementation of Numenta's HTM Cortical Learning Algorithm](https://www.youtube.com/watch?v=IXg_XIm5kqk)
 * [Clortex](https://github.com/htm-community/clortex)
 * [Comportex](https://github.com/htm-community/comportex)
 * [HTM.java](https://github.com/numenta/htm.java)
@@ -45,6 +53,7 @@ For a comprehensive list check the **References** section of my Honors Research 
 * [Advanced NuPIC Programming](src/Advanced_NuPIC_Programming.pdf)
 * [Biological and Machine Intelligence](src/Biological_and_Machine_Intelligence.pdf)
 * [Encoding Data for HTM Systems](src/Encoding_Data_for_HTM_Systems.pdf)
+* [Enhancement of Classifiers in HTM-CLA Using Similarity Evaluation Methods](https://ac.els-cdn.com/S1877050915023881/1-s2.0-S1877050915023881-main.pdf?_tid=54910ff6-ed99-4b86-b212-06e2f17fad8b&acdnat=1535951502_fc5209c3826649f37cead6b7f25ba0a7)
 * [Evaluation of Hierarchical Temporal Memory in algorithmic trading](src//home/alex/Documents/GitHubRepos/HonorsResearch/src/Evaluation_of_Hierarchical_Temporal_Memory_in_algorithmic_trading.pdf)
 * [Hierarchical Temporal Memory including HTM Cortical Learning Algorithms](src/Hierarchical_Temporal_Memory_including_HTM_Cortical_Learning_Algorithms.pdf)
 * [HTM School: Scalar Encoding](https://www.youtube.com/watch?v=V3Yqtpytif0)
@@ -54,6 +63,7 @@ For a comprehensive list check the **References** section of my Honors Research 
 * [Properties of Sparse Distributed Representations and their Application to Hierarchical Temporal Memory](src/Properties_of_Sparse_Distributed_Representations_and_their_Applications_to_Hierarchical_Temporal_Memory.pdf)
 * [Quantum Computation via Sparse Distributed Representation](https://arxiv.org/pdf/1707.05660.pdf)
 * [Random Distributed Scalar Encoder](http://fergalbyrne.github.io/rdse.html)
+* [Real Machine Intelligence with Clortex and NuPIC](https://leanpub.com/realsmartmachines/read)
 * [Semantic Folding: Theory and its Application in Semantic Fingerprinting](src/Semantic_Folding:_Theory_and_its_Application_in_Semantic_Fingerprinting.pdf)
 * [SDR Classifier](http://hopding.com/sdr-classifier#title)
 * [Towards a Mathematical Theory of Cortical Micro-circuits](src/Towards_a_Mathematical_Theory_of_Cortical_Micro-circuits.PDF)
