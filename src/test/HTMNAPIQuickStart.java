@@ -1,6 +1,3 @@
-package test;
-
-
 import org.junit.Test;
 import org.numenta.nupic.Parameters;
 import org.numenta.nupic.Parameters.KEY;
@@ -8,12 +5,14 @@ import org.numenta.nupic.algorithms.Classifier;
 import org.numenta.nupic.algorithms.SDRClassifier;
 import org.numenta.nupic.encoders.Encoder;
 import org.numenta.nupic.util.Tuple;
+
 import org.numenta.nupic.algorithms.Anomaly;
 import org.numenta.nupic.algorithms.CLAClassifier;
 import org.numenta.nupic.algorithms.SpatialPooler;
 import org.numenta.nupic.algorithms.TemporalMemory;
 import org.numenta.nupic.datagen.ResourceLocator;
 import org.numenta.nupic.encoders.MultiEncoder;
+import org.numenta.nupic.examples.napi.hotgym.NetworkDemoHarness;
 import org.numenta.nupic.network.Inference;
 import org.numenta.nupic.network.Layer;
 import org.numenta.nupic.network.Network;
@@ -22,7 +21,6 @@ import org.numenta.nupic.network.sensor.FileSensor;
 import org.numenta.nupic.network.sensor.Sensor;
 import org.numenta.nupic.network.sensor.SensorParams;
 import org.numenta.nupic.network.sensor.SensorParams.Keys;
-import org.numenta.nupic.examples.napi.hotgym.NetworkDemoHarness;
 import org.numenta.nupic.model.Connections;
 
 class HTMNAPIQuickStart {

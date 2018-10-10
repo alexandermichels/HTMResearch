@@ -39,7 +39,8 @@ dependencies {
 sourceSets {
     main {
         java {
-            srcDir 'src'
+            srcDir 'src/main'
+            srcDir 'src/org'
         }
     }
     test {
