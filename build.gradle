@@ -1,0 +1,73 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use 'maven central' for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    mavenCentral()
+
+    maven {
+        url 'http://metaware.us/maven3'
+    }
+}
+
+// COMMENT OUT TO SKIP TESTS WHEN CODE HASN'T CHANGED
+test {
+    testLogging {
+    events "passed", "skipped", "failed", "standardOut", "standardError"
+  }
+  dependsOn 'cleanTest'
+}
+
+
+dependencies {
+    compile group: 'org.numenta', name: 'htm.java', version:'0.6.12'
+    compile 'com.github.signaflo:timeseries:0.4'
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    // Only needed to run tests in a version of IntelliJ IDEA that bundles older versions
+    testRuntime("org.junit.platform:junit-platform-launcher:1.3.1")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    testRuntime("org.junit.vintage:junit-vintage-engine:5.3.1")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
+////////////////////
+//   Fat Jar      //
+////////////////////
+task fatJar(type: Jar) {
+  manifest.from jar.manifest
+  classifier = 'all'
+  from {
+    configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+  }
+  with jar
+}
+
+/////////////////// END Central Repo ////////////////
+
+// create Gradle wrapper with command line `gradle wrapper` in terminal
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
