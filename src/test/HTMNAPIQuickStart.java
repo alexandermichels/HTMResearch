@@ -1,7 +1,7 @@
 package test;
 
-import org.junit.jupiter.api.Test;
 
+import org.junit.Test;
 import org.numenta.nupic.Parameters;
 import org.numenta.nupic.Parameters.KEY;
 import org.numenta.nupic.algorithms.Classifier;
@@ -23,6 +23,7 @@ import org.numenta.nupic.network.sensor.Sensor;
 import org.numenta.nupic.network.sensor.SensorParams;
 import org.numenta.nupic.network.sensor.SensorParams.Keys;
 import org.numenta.nupic.examples.napi.hotgym.NetworkDemoHarness;
+import org.numenta.nupic.model.Connections;
 
 class HTMNAPIQuickStart {
 
