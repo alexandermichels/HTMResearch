@@ -1,4 +1,4 @@
-# Honors Research on Hierarchical Temporal Memory
+# Honors Research on Cortical Learning Algorithms
 
 A repository for files related to my Honors Research Thesis at Westminster College.
 
@@ -12,7 +12,7 @@ A repository for files related to my Honors Research Thesis at Westminster Colle
 
 ## Proposal
 
-The Proposal for my Honors Research Thesis was due April 30th, 2018 and it is complete, feel free to check it out and ask any questions you may have.
+The Proposal for my Honors Research Thesis was due April 30th, 2018 and it is complete, feel free to [check it out](https://github.com/alexandermichels/HonorsResearch) and ask any questions you may have.
 
 ***
 
@@ -36,7 +36,9 @@ We've been playing with a few ideas, but have to find something achievable withi
 
 ## Sources
 
-For a comprehensive list check the **References** section of my Honors Research draft, but here is a good list to get you started:
+A great resource to learn about Cortical Learning Algorithms is of source, Numenta. They strongly advocate for open science and post their [research papers](https://numenta.com/neuroscience-research/research-publications/papers/) as well as [conference posters](https://numenta.com/neuroscience-research/research-publications/posters/) online at their website. Numenta also has a [YouTube channel](https://www.youtube.com/channel/UCLNQzXAfcH8H8cMmG0sfV6g) with lots of helpful resources and for a more gentle introduction, Numenta's Matt Taylor has an excellent [YouTube channel called HTM School](https://www.youtube.com/user/OfficialNumenta).
+
+For a comprehensive list of papers and presentations, check the **References** section of my Honors Research draft, but here is a good list to get you started:
 
 * [Advanced NuPIC Programming](http://cfile23.uf.tistory.com/attach/121B8F374F14E16A179668)
 * [Biological and Machine Intelligence](https://numenta.com/resources/biological-and-machine-intelligence/)
