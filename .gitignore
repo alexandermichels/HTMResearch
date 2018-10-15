@@ -6,21 +6,23 @@ build/
 # Java Class files
 *.class
 
-
-docs/Honors_Research_Proposal.aux
-docs/Honors_Research_Proposal.log
-docs/Honors_Research_Proposal.synctex.gz
-docs/Honors_Research_Proposal.out
-docs/Honors_Research_Proposal.toc
-docs/Honors_Research.aux
-docs/Honors_Research.log
-docs/Honors_Research.synctex.gz
-docs/Honors_Research.out
-docs/Honors_Research.toc
-docs/Honors_Research.bbl
-docs/Honors_Research.blg
-docs/Honors_Research.lof
+# TeX files
+*.aux
+*.log
+*.synctex.gz
+*.out
+*.toc
+*.bbl
+*.blg
+*.lof
 bin/
 
-README.html
+
+# my stuff
+*.html
 docs/src/*
+
+src_py/env/*
+
+# Python
+*.pyc

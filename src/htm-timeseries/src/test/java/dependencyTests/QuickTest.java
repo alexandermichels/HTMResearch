@@ -43,6 +43,8 @@ import org.numenta.nupic.model.Connections;
 import org.numenta.nupic.util.ArrayUtils;
 import org.numenta.nupic.util.FastRandom;
 
+import org.junit.Test;
+
 import gnu.trove.list.array.TIntArrayList;
 /**
  * Quick and dirty example of tying together a network of components.
@@ -70,7 +72,8 @@ public class QuickTest {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    @Test
+    public void main() {
         Parameters params = getParameters();
         System.out.println(params);
 

@@ -25,4 +25,10 @@ public class JavaTimeseriesARIMATests
 		Forecast forecast = model.forecast(12); // To specify the alpha significance level, add it as a second argument.
 		System.out.println(forecast);
 	}
+	
+	@Test
+	public void signaflowARIMAModelParameterTest1()
+	{
+		
+	}
 }
