@@ -1,9 +1,0 @@
-matplotlib
-numpy==1.12.1
-nupic
-pandas>= 0.19
-Patsy>= 0.4.0
-setuptools>=25.2.0
-scipy>= 0.18
-statsmodels
-wheel>=0.29.0
