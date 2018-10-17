@@ -85,7 +85,7 @@ class TimeSeriesStream(RecordStreamIface):
 
     :returns: anchor to current position in the data.
     """
-    self.sequence.get_theta()
+    return self.sequence.get_theta()
 
   def has_next(self):
     """

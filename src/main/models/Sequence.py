@@ -41,7 +41,6 @@ class Sequence():
             #from the end for negatives
             self.theta = self.n + t
 
-
     def time_left(self):
         return self.n-self.theta
 

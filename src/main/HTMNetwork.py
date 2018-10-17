@@ -175,6 +175,7 @@ def runNetwork(network, writer):
     result = (oneStep, oneStepConfidence * 100, fiveStep, fiveStepConfidence * 100)
     print "1-step: {:16} ({:4.4}%)\t 5-step: {:16} ({:4.4}%)".format(*result)
     results.append(result)
+    print _model.getBookmark()
     writer.writerow((_model.getBookmark(), series, oneStep, oneStepConfidence, fiveStep, fiveStepConfidence))
 
 
@@ -212,11 +213,9 @@ if __name__ == "__main__":
   print
 
   DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-  _OUTPUT_PATH = "../ouputs/HTMOutput-{}-{}.csv".format(DATE, time_series_model)
+  _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}.csv".format(DATE, time_series_model)
 
-  outputPath = os.path.join(os.path.dirname(__file__), _OUTPUT_PATH)
-  print outputPath
-  with open(outputPath, "w") as outputFile:
+  with open(_OUTPUT_PATH, "w") as outputFile:
     writer = csv.writer(outputFile)
-    print "Writing output to %s" % outputPath
+    print "Writing output to %s" % _OUTPUT_PATH
     runNetwork(network, writer)

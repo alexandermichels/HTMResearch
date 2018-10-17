@@ -22,7 +22,7 @@ bin/
 *.html
 docs/src/*
 
-src_py/env/*
-
 # Python
 *.pyc
+src/outputs/*
+src/env/
