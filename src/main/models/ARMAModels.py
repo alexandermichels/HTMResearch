@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from pandas import datetime
 from pandas import DataFrame
 from statsmodels.tsa.arima_process import arma_generate_sample

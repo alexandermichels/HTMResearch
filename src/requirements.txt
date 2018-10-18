@@ -6,4 +6,5 @@ Patsy>= 0.4.0
 setuptools>=25.2.0
 scipy>= 0.18
 statsmodels
+tqdm
 wheel>=0.29.0

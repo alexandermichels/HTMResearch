@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from matplotlib import pyplot
 import numpy as np
 
@@ -15,6 +16,9 @@ class Sequence():
     def __iter__(self):
         for i in range(self.n):
             yield self.sequence[i]
+
+    def __len__(self):
+        return self.n
 
     def get(self):
         if (self.theta <= self.n):
@@ -34,8 +38,11 @@ class Sequence():
         pyplot.plot(self.sequence, color='red')
         pyplot.show()
 
+    def rewind(self):
+        self.set_theta(0)
+
     def set_theta(self, t):
-        if theta >= 0:
+        if t >= 0:
             self.theta=t
         else:
             #from the end for negatives

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import csv
 import copy
@@ -21,6 +22,9 @@ class TimeSeriesStream(RecordStreamIface):
     self._fieldCount = len(self._fields)
     if bookmark is not None:
         self.sequence.set_theta(bookmark)
+
+  def __len__(self):
+      return len(self.sequence)
 
   def close(self):
     """ Close the stream
