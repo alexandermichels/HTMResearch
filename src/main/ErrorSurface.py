@@ -9,7 +9,7 @@ import numpy as np
 from os.path import join
 import logging as log
 
-def generateErrorSurface(TimeSeriesStream, range_of_cpmc, iterations=100, method="MSE"):
+def generateErrorSurface(time_series, range_of_cpmc, iterations=100, method="MSE"):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
     for i in range_of_cpmc:
@@ -17,14 +17,13 @@ def generateErrorSurface(TimeSeriesStream, range_of_cpmc, iterations=100, method
         five_errors = np.zeros(iterations, dtype=np.float64)
         second_one_errors = np.zeros(iterations, dtype=np.float64)
         second_five_errors = np.zeros(iterations, dtype=np.float64)
-        for num_iter in range(iterations):
-            log_file = join('../logs/', 'log_{}_{}.log'.format(DATE, i))
-            log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
-            log.getLogger().addHandler(log.StreamHandler())
+        log_file = join('../logs/', 'log_{}_model:{}_{}CPMC.log'.format(DATE, str(time_series), i))
+        log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
+        log.getLogger().addHandler(log.StreamHandler())
 
+        for num_iter in range(iterations):
             log.info("Running HTM.....")
-            result = HTM(TimeSeriesStream, cellsPerMiniColumn=i)
-            DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+            result = HTM(time_series, cellsPerMiniColumn=i)
             _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
             # this is what the rows of results look like
             #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
@@ -60,7 +59,7 @@ def generateErrorSurface(TimeSeriesStream, range_of_cpmc, iterations=100, method
 
             log.info("The average one-step error was {} and the average five-step error was {}".format(one_cum_error/(len(result)-5), five_cum_error/(len(result)-5)))
             log.info("The second-half average one-step error was {} and the second-half average five-step error was {}".format(one_last_half_error/(len(result)/2.0), five_last_half_error/(len(result)/2.0)))
-            TimeSeriesStream.rewind()
+            time_series.rewind()
         log.info("The average one-step error over {} iterations was {} with standard deviation {} and the average five-step error was {} with standard deviation {}".format(np.average(one_errors), np.std(one_errors), np.average(five_errors), np.std(five_errors)))
         log.info("The average second-half one-step error over {} iterations was {} with standard deviation {} and the average second-half five-step error was {} with standard deviation {}".format(np.average(second_one_errors), np.std(second_one_errors), np.average(second_five_errors), np.std(second_five_errors)))
 
