@@ -54,7 +54,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=100, method="MSE
                 writer = csv.writer(outputFile)
                 writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Error", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Error", "Five Step Prediction Confidence"])
                 for j in range(len(result)):
-                    #print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
+                    print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
                     writer.writerow(result[j])
 
             log.info("The average one-step error was {} and the average five-step error was {}".format(one_cum_error/(len(result)-5), five_cum_error/(len(result)-5)))
@@ -65,4 +65,4 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=100, method="MSE
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
-    generateErrorSurface(time_series_model, range(2,12))
+    generateErrorSurface(time_series_model, range(2,12), iterations=1)

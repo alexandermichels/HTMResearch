@@ -45,6 +45,7 @@ For a comprehensive list of papers and presentations, check the **References** s
 * [Encoding Data for HTM Systems](https://arxiv.org/abs/1602.05925)
 * [Enhancement of Classifiers in HTM-CLA Using Similarity Evaluation Methods](https://www.sciencedirect.com/science/article/pii/S1877050915023881)
 * [Evaluation of Hierarchical Temporal Memory in algorithmic trading](http://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A302092&dswid=-7957)
+* [Getting Predictions out of HTM (CLA Classifiers)](https://www.youtube.com/watch?v=QZBtaP_gcn0)
 * [Hierarchical Temporal Memory including HTM Cortical Learning Algorithms](https://numenta.org/resources/HTM_CorticalLearningAlgorithms.pdf)
 * [Have We Missed Half of What the Neocortex Does? A New Predictive Framework Based on Cortical Grid Cells](https://www.slideshare.net/numenta/have-we-missed-half-of-what-the-neocortex-does-a-new-predictive-framework-based-on-cortical-grid-cells)
 * [HTM School: Scalar Encoding](https://www.youtube.com/watch?v=V3Yqtpytif0)
