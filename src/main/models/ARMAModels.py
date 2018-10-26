@@ -10,15 +10,16 @@ from Sequence import Sequence
 
 class ARMATimeSeries(Sequence):
 
-    def __init__(self, p, q, sigma=8, n=20000):
+    def __init__(self, p, q, sigma=1, n=10000):
         self.n = n
         self.p = p
         self.q = q
+        self.sigma = sigma
         self.ar_poly = np.r_[1, np.random.rand(p)]
         print("The AR lag polynomial is: {}".format(self.ar_poly))
         self.ma_poly = np.r_[1, np.random.rand(q)]
         print("The MA lag polynomial is: {}".format(self.ma_poly))
-        self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, n, sigma)
+        self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
 
     def __str__(self):
@@ -34,11 +35,11 @@ class ARMATimeSeries(Sequence):
         return "({},{})-ARMA".format(self.p, self.q)
 
     def new(self):
-        self.ar_poly = np.r_[1, np.random.rand(p)]
+        self.ar_poly = np.r_[1, np.random.rand(self.p)]
         print("The AR lag polynomial is: {}".format(self.ar_poly))
-        self.ma_poly = np.r_[1, np.random.rand(q)]
+        self.ma_poly = np.r_[1, np.random.rand(self.q)]
         print("The MA lag polynomial is: {}".format(self.ma_poly))
-        self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, n, sigma)
+        self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
 
 def main():

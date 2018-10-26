@@ -9,7 +9,7 @@ import numpy as np
 from os.path import join
 import logging as log
 
-def runHTM(i, time_series):
+def runHTM(i, time_series, method):
     log.info("Running HTM.....")
     result = HTM(time_series, cellsPerMiniColumn=i)
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
@@ -24,6 +24,7 @@ def runHTM(i, time_series):
     for j in range(5):
         result[j].insert(3,"N/A")
         result[j].insert(6,"N/A")
+
     for j in range(5,len(result)):
         if method=="MSE":
             one_error = (result[j][2]-result[i-1][1])**2
@@ -49,6 +50,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=10000, method="M
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
     for i in range_of_cpmc:
+        _OUTPUT_FILE = open("../outputs/{}-{}-model-{}-iterations-with-{}-cellsPerMiniColumn".format(DATE,str(time_series),iterations,i), "w+")
         one_errors = np.zeros(iterations, dtype=np.float64)
         five_errors = np.zeros(iterations, dtype=np.float64)
         second_one_errors = np.zeros(iterations, dtype=np.float64)
@@ -58,19 +60,22 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=10000, method="M
         log.getLogger().addHandler(log.StreamHandler())
 
         for num_iter in range(iterations):
-            result = runHTM(i, time_series)
+            result = runHTM(i, time_series, method)
             one_errors[num_iter] = result[0]
             five_errors[num_iter] = result[1]
             second_one_errors[num_iter] = result[2]
             second_five_errors[num_iter] = result[3]
 
-            log.info("The average one-step error was {} and the average five-step error was {}".format(one_cum_error/(len(result)-5), five_cum_error/(len(result)-5)))
-            log.info("The second-half average one-step error was {} and the second-half average five-step error was {}".format(one_last_half_error/(len(result)/2.0), five_last_half_error/(len(result)/2.0)))
+            log.info("The average one-step error for iteration {} was {} and the average five-step error was {}".format(num_iter, one_errors[num_iter], five_errors[num_iter]))
+            log.info("The second-half average one-step error for iteration {} was {} and the second-half average five-step error was {}".format(num_iter, second_one_errors[num_iter], second_five_errors[num_iter]))
+            _OUTPUT_FILE.write("{} {} {}\n".format(num_iter, second_one_errors[num_iter], second_five_errors[num_iter]))
+            _OUTPUT_FILE.flush()
             time_series.new()
+        _OUTPUT_FILE.close()
 
         log.info("The average one-step error over {} iterations was {} with standard deviation {} and the average five-step error was {} with standard deviation {}".format(iterations, np.average(one_errors), np.std(one_errors), np.average(five_errors), np.std(five_errors)))
         log.info("The average second-half one-step error over {} iterations was {} with standard deviation {} and the average second-half five-step error was {} with standard deviation {}".format(iterations, np.average(second_one_errors), np.std(second_one_errors), np.average(second_five_errors), np.std(second_five_errors)))
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
-    generateErrorSurface(time_series_model, range(2,12), iterations=1)
+    generateErrorSurface(time_series_model, range(2,12))
