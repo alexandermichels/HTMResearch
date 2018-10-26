@@ -10,34 +10,42 @@ from Sequence import Sequence
 
 class ARMATimeSeries(Sequence):
 
-  def __init__(self, p, q, sigma=8, n=20000):
-    self.n = n
-    self.p = p
-    self.q = q
-    self.ar_poly = [1, .99, .99]#np.r_[1, np.random.rand(p)]
-    print("The AR lag polynomial is: {}".format(self.ar_poly))
-    self.ma_poly = np.r_[1, np.random.rand(q)]
-    print("The MA lag polynomial is: {}".format(self.ma_poly))
-    self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, n, sigma)
-    self.theta = 0
+    def __init__(self, p, q, sigma=8, n=20000):
+        self.n = n
+        self.p = p
+        self.q = q
+        self.ar_poly = np.r_[1, np.random.rand(p)]
+        print("The AR lag polynomial is: {}".format(self.ar_poly))
+        self.ma_poly = np.r_[1, np.random.rand(q)]
+        print("The MA lag polynomial is: {}".format(self.ma_poly))
+        self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, n, sigma)
+        self.theta = 0
 
-  def __str__(self):
-    """
-    To string
-    """
-    return "({},{})-ARMA".format(self.p, self.q)
+    def __str__(self):
+        """
+        To string
+        """
+        return "({},{})-ARMA".format(self.p, self.q)
 
-  def __repr__(self):
-    """"
-    To string
-    """
-    return "({},{})-ARMA".format(self.p, self.q)
+    def __repr__(self):
+        """"
+        To string
+        """
+        return "({},{})-ARMA".format(self.p, self.q)
+
+    def new(self):
+        self.ar_poly = np.r_[1, np.random.rand(p)]
+        print("The AR lag polynomial is: {}".format(self.ar_poly))
+        self.ma_poly = np.r_[1, np.random.rand(q)]
+        print("The MA lag polynomial is: {}".format(self.ma_poly))
+        self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, n, sigma)
+        self.theta = 0
 
 def main():
-    ts = ARMATimeSeries(2,0)
-    for i in range(10):
-        print("The time series at {} is {}".format(i, ts.get()))
-    ts.plot()
+        ts = ARMATimeSeries(2,0)
+        for i in range(10):
+                print("The time series at {} is {}".format(i, ts.get()))
+        ts.plot()
 
 if __name__ == "__main__":
-    main()
+        main()

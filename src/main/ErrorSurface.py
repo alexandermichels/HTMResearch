@@ -59,9 +59,9 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=100, method="MSE
 
             log.info("The average one-step error was {} and the average five-step error was {}".format(one_cum_error/(len(result)-5), five_cum_error/(len(result)-5)))
             log.info("The second-half average one-step error was {} and the second-half average five-step error was {}".format(one_last_half_error/(len(result)/2.0), five_last_half_error/(len(result)/2.0)))
-            time_series.rewind()
-        log.info("The average one-step error over {} iterations was {} with standard deviation {} and the average five-step error was {} with standard deviation {}".format(np.average(one_errors), np.std(one_errors), np.average(five_errors), np.std(five_errors)))
-        log.info("The average second-half one-step error over {} iterations was {} with standard deviation {} and the average second-half five-step error was {} with standard deviation {}".format(np.average(second_one_errors), np.std(second_one_errors), np.average(second_five_errors), np.std(second_five_errors)))
+            time_series.new()
+        log.info("The average one-step error over {} iterations was {} with standard deviation {} and the average five-step error was {} with standard deviation {}".format(iterations, np.average(one_errors), np.std(one_errors), np.average(five_errors), np.std(five_errors)))
+        log.info("The average second-half one-step error over {} iterations was {} with standard deviation {} and the average second-half five-step error was {} with standard deviation {}".format(iterations, np.average(second_one_errors), np.std(second_one_errors), np.average(second_five_errors), np.std(second_five_errors)))
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
