@@ -46,7 +46,7 @@ def runHTM(i, time_series, method):
 
     return (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0), five_last_half_error/(len(result)/2.0))
 
-def generateErrorSurface(time_series, range_of_cpmc, iterations=10000, method="MSE"):
+def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE"):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
     for i in range_of_cpmc:
@@ -69,7 +69,6 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=10000, method="M
             log.info("The average one-step error for iteration {} was {} and the average five-step error was {}".format(num_iter, one_errors[num_iter], five_errors[num_iter]))
             log.info("The second-half average one-step error for iteration {} was {} and the second-half average five-step error was {}".format(num_iter, second_one_errors[num_iter], second_five_errors[num_iter]))
             _OUTPUT_FILE.write("{} {} {}\n".format(num_iter, second_one_errors[num_iter], second_five_errors[num_iter]))
-            _OUTPUT_FILE.flush()
             time_series.new()
         _OUTPUT_FILE.close()
 
@@ -78,4 +77,4 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=10000, method="M
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
-    generateErrorSurface(time_series_model, range(2,12))
+    generateErrorSurface(time_series_model, range(4,12))

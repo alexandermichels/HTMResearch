@@ -6,7 +6,7 @@ from Sequence import Sequence
 
 class OneTermSimpleSequence(Sequence):
 
-    def __init__(self, order, lag, determinism=1.0, n=10000):
+    def __init__(self, order, lag, determinism=.5, n=10000):
         """
         Creates a sequence object with a lag-ary operation defining transitions from each othe order elements to the other order.
 
@@ -33,6 +33,7 @@ class OneTermSimpleSequence(Sequence):
         while counter < self.lag:
             self.sequence[counter] = randint(1, self.order)
             counter+=1
+        #get rid of the fixed points
         while counter < self.n:
             where_to = int(self.sequence[counter-self.lag]-1)
             print(where_to)

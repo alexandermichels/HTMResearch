@@ -102,7 +102,11 @@ class TimeSeriesStream(RecordStreamIface):
         :param bookmark: (int) where to start
         :returns: True if there are records left after the    bookmark.
         """
-        self.sequence.has_next()
+        theta = self.sequence.get_theta()
+        self.sequence.set_theta(bookmark)
+        _return = self.sequence.has_next()
+        self.sequence.set_theta(theta)
+        return _return
 
     def seekFromEnd(self, numRecords):
         """
