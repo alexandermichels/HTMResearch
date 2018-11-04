@@ -77,4 +77,4 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
-    generateErrorSurface(time_series_model, range(4,12))
+    generateErrorSurface(time_series_model, range(2,12))
