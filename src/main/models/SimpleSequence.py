@@ -6,7 +6,7 @@ from Sequence import Sequence
 
 class OneTermSimpleSequence(Sequence):
 
-    def __init__(self, order, lag, determinism=.5, n=10000):
+    def __init__(self, order, lag, determinism=1, n=10000):
         """
         Creates a sequence object with a lag-ary operation defining transitions from each othe order elements to the other order.
 
@@ -22,11 +22,21 @@ class OneTermSimpleSequence(Sequence):
 
         #make the transition matrix
         self.transition = np.ones(order)
-        for i in range(len(self.transition)):
-            if random() < self.determinism:
-                self.transition[i] = randint(1, self.order)
-            else:
-                self.transition[i] = 0
+        goodMatrix = False
+        while not goodMatrix:
+            #make a matrix
+            for i in range(len(self.transition)):
+                if random() < self.determinism:
+                    self.transition[i] = randint(1, self.order)
+                else:
+                    self.transition[i] = 0
+
+            #check the matrix
+            goodMatrix = True
+            for i in range(len(self.transition)):
+                if self.transition[i] == i +1:
+                    print("Rejected matrix for having one cycle")
+                    goodMatrix = False
 
         #seed the sequence
         counter = 0

@@ -1,5 +1,10 @@
 # htm-timeseries
 
+## Things to work on
+* Rewrite it so that all settings are run on the same time series
+* Moving Average Error (how does this time series act as a function of CPMC? does the MA get better faster for higher CPMC in all cases and how much faster?)
+* Make the I/O better for the program
+
 ## Getting Started
 
 We are using [NuPiC](https://github.com/alexandermichels/nupic) as a dependency which as specific requirements for some core packages like Numpy, so I highly recommend starting by making a [virtual environment with `virtualenv`](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/).
@@ -15,4 +20,3 @@ Then we can install all of our dependencies with:
 ```bash
 pip install -r requirements.txt
 ```
-
