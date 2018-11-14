@@ -154,7 +154,7 @@ def runNetwork(network, writer):
 
     writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Confidence"])
     results = []
-    for i in tqdm(range(len(_model))):
+    for i in range(len(_model)):
         # Run the network for a single iteration
         network.run(1)
 
