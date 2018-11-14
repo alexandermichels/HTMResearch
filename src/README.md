@@ -1,7 +1,7 @@
 # htm-timeseries
 
 ## Things to work on
-* Rewrite it so that all settings are run on the same time series
+* Category encoder and numeric encoder for SimpleSequence
 * Moving Average Error (how does this time series act as a function of CPMC? does the MA get better faster for higher CPMC in all cases and how much faster?)
 * Make the I/O better for the program
 

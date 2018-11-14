@@ -18,6 +18,7 @@ build/
 bin/
 
 
+
 # my stuff
 *.html
 docs/src/*
@@ -25,4 +26,5 @@ docs/src/*
 # Python
 *.pyc
 src/outputs/*
+src/logs/*
 src/env/

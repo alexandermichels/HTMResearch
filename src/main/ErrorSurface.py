@@ -9,10 +9,11 @@ import numpy as np
 from os.path import join
 import logging as log
 
+DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+
 def runHTM(i, time_series, method):
     log.info("Running HTM.....")
     result = HTM(time_series, cellsPerMiniColumn=i)
-    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like
     #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
@@ -41,40 +42,40 @@ def runHTM(i, time_series, method):
         writer = csv.writer(outputFile)
         writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Error", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Error", "Five Step Prediction Confidence"])
         for j in range(len(result)):
-            print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
+            #print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
             writer.writerow(result[j])
 
-    return (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0), five_last_half_error/(len(result)/2.0))
+    return (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5))
 
-def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE"):
-    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+def generateErrorSurface(time_series, range_of_cpmc, iterations=1, method="MSE"):
+    log_file = join('../logs/', 'log_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.log'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc)))
 
-    for i in range_of_cpmc:
-        _OUTPUT_FILE = open("../outputs/{}-{}-model-{}-iterations-with-{}-cellsPerMiniColumn".format(DATE,str(time_series),iterations,i), "w+")
-        one_errors = np.zeros(iterations, dtype=np.float64)
-        five_errors = np.zeros(iterations, dtype=np.float64)
-        second_one_errors = np.zeros(iterations, dtype=np.float64)
-        second_five_errors = np.zeros(iterations, dtype=np.float64)
-        log_file = join('../logs/', 'log_{}_model:{}_{}CPMC.log'.format(DATE, str(time_series), i))
-        log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
-        log.getLogger().addHandler(log.StreamHandler())
+    with open(join("../outputs/", 'csv_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.csv'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc))), "w+") as csv_out:
+        writer = csv.writer(csv_out)
+
+        #write header row:
+        header_row = []
+        for i in range_of_cpmc:
+            header_row.append("{} CPMC One-Step Error".format(i))
+            header_row.append("{} CPMC Five-Step Error".format(i))
+        writer.writerow(header_row)
 
         for num_iter in range(iterations):
-            result = runHTM(i, time_series, method)
-            one_errors[num_iter] = result[0]
-            five_errors[num_iter] = result[1]
-            second_one_errors[num_iter] = result[2]
-            second_five_errors[num_iter] = result[3]
+            log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
+            log.getLogger().addHandler(log.StreamHandler())
 
-            log.info("The average one-step error for iteration {} was {} and the average five-step error was {}".format(num_iter, one_errors[num_iter], five_errors[num_iter]))
-            log.info("The second-half average one-step error for iteration {} was {} and the second-half average five-step error was {}".format(num_iter, second_one_errors[num_iter], second_five_errors[num_iter]))
-            _OUTPUT_FILE.write("{} {} {}\n".format(num_iter, second_one_errors[num_iter], second_five_errors[num_iter]))
+            output_row = []
+            for i in range_of_cpmc:
+                result = runHTM(i, time_series, method)
+                time_series.rewind()
+                output_row.append(result[2])
+                output_row.append(result[3])
+
+                log.info("The average one-step error was {} and the average five-step error was {}".format(result[0], result[1]))
+                log.info("The second-half average one-step error was {} and the second-half average five-step error was {}".format(result[2], result[3]))
+            writer.writerow(output_row)
             time_series.new()
-        _OUTPUT_FILE.close()
-
-        log.info("The average one-step error over {} iterations was {} with standard deviation {} and the average five-step error was {} with standard deviation {}".format(iterations, np.average(one_errors), np.std(one_errors), np.average(five_errors), np.std(five_errors)))
-        log.info("The average second-half one-step error over {} iterations was {} with standard deviation {} and the average second-half five-step error was {} with standard deviation {}".format(iterations, np.average(second_one_errors), np.std(second_one_errors), np.average(second_five_errors), np.std(second_five_errors)))
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
-    generateErrorSurface(time_series_model, range(2,12))
+    generateErrorSurface(time_series_model, range(2,13))

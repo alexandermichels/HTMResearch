@@ -21,6 +21,7 @@ class ARMATimeSeries(Sequence):
         print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
+        self.normalize()
 
     def __str__(self):
         """
@@ -41,6 +42,12 @@ class ARMATimeSeries(Sequence):
         print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
+
+    def normalize(self, val=100.0):
+        _min = min(self.sequence)
+        _max = max(self.sequence)
+        furthest = max([abs(_min), abs(_max)])
+        self.sequence = [x*val/furthest for x in self.sequence]
 
 def main():
         ts = ARMATimeSeries(2,0)
