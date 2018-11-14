@@ -112,7 +112,7 @@ def runHTMPar(i, time_series, method, input_queue):
 
     input_queue.put((i, (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5))))
 
-def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=3, method="MSE"):
+def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="MSE"):
     log_file = join('../logs/', 'log_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.log'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc)))
 
     with open(join("../outputs/", 'csv_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.csv'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc))), "w+") as csv_out:
