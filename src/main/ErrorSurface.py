@@ -50,6 +50,7 @@ def runHTM(i, time_series, method):
     return (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5), i)
 
 def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE"):
+    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     log_file = join('../logs/', 'log_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.log'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc)))
 
     with open(join("../outputs/", 'csv_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.csv'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc))), "w+") as csv_out:
@@ -79,6 +80,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
 def runHTMPar(i, time_series, method, input_queue):
     log.info("Running HTM.....")
     result = HTM(time_series, cellsPerMiniColumn=i)
+    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like
     #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]

@@ -50,7 +50,7 @@ class ARMATimeSeries(Sequence):
         self.sequence = [x*val/furthest for x in self.sequence]
 
 def main():
-        ts = ARMATimeSeries(2,0)
+        ts = ARMATimeSeries(3,0)
         for i in range(10):
                 print("The time series at {} is {}".format(i, ts.get()))
         ts.plot()

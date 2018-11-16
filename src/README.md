@@ -3,7 +3,8 @@
 ## Things to work on
 * Category encoder and numeric encoder for SimpleSequence
 * Moving Average Error (how does this time series act as a function of CPMC? does the MA get better faster for higher CPMC in all cases and how much faster?)
-* Parallelize on range_of_cpmc in generateErrorSurface() to speed up
+* Need to check for roots to make sure the ARIMA models are stationary
+* Parallelize on range_of_cpmc in generateErrorSurface() to speed up **got it! 4-5X faster on Galois**
 * Make the I/O better for the program
 
 ## Getting Started
