@@ -1,10 +1,9 @@
 # htm-timeseries
 
 ## Things to work on
+* Moving Average Error (how does this time series act as a function of CPMC? does the MA get better faster for higher CPMC in all cases and how much faster? how long should I look at training it?)
+* Higher order time series, Need to check for roots to make sure the ARIMA models are stationary
 * Category encoder and numeric encoder for SimpleSequence
-* Moving Average Error (how does this time series act as a function of CPMC? does the MA get better faster for higher CPMC in all cases and how much faster?)
-* Need to check for roots to make sure the ARIMA models are stationary
-* Parallelize on range_of_cpmc in generateErrorSurface() to speed up **got it! 4-5X faster on Galois**
 * Make the I/O better for the program
 
 ## Getting Started

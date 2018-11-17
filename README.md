@@ -18,7 +18,9 @@ The Proposal for my Honors Research Thesis was due April 30th, 2018 and it is co
 
 ## Thesis
 
-We've been playing with a few ideas, but have to find something achievable within our time frame. Right now we are working on trying to categorize the predictive power of Hierarchical Temporal Networks using ARIMA models as a function of some of their parameters (i.e. cells per column, number of layers, etc.). Stay tuned to see what I'm able to get done and what I end up working on!
+We've been playing with a few ideas, but have to find something achievable within our time frame.
+
+Right now we are working on trying to categorize the predictive power of Hierarchical Temporal Networks using ARIMA models as a function of some of their parameters (i.e. cells per column, number of layers, etc.). [Check out the code!](src)
 
 ***
 
@@ -45,11 +47,13 @@ For a comprehensive list of papers and presentations, check the **References** s
 * [Encoding Data for HTM Systems](https://arxiv.org/abs/1602.05925)
 * [Enhancement of Classifiers in HTM-CLA Using Similarity Evaluation Methods](https://www.sciencedirect.com/science/article/pii/S1877050915023881)
 * [Evaluation of Hierarchical Temporal Memory in algorithmic trading](http://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A302092&dswid=-7957)
+* [A Framework for Intelligence and Cortical Function Based on Grid Cells in the Neocortex](https://www.biorxiv.org/content/early/2018/10/13/442418)
 * [Getting Predictions out of HTM (CLA Classifiers)](https://www.youtube.com/watch?v=QZBtaP_gcn0)
 * [Hierarchical Temporal Memory including HTM Cortical Learning Algorithms](https://numenta.org/resources/HTM_CorticalLearningAlgorithms.pdf)
 * [Have We Missed Half of What the Neocortex Does? A New Predictive Framework Based on Cortical Grid Cells](https://www.slideshare.net/numenta/have-we-missed-half-of-what-the-neocortex-does-a-new-predictive-framework-based-on-cortical-grid-cells)
 * [HTM School: Scalar Encoding](https://www.youtube.com/watch?v=V3Yqtpytif0)
 * [Intelligent Predictions: an Empirical Study of the Cortical Learning Algorithm](https://www.semanticscholar.org/paper/Intelligent-Predictions-%3A-an-empirical-study-of-the-Galetzka/585944db4d18d35c01816b663ef4736f8a7061ee)
+* [Locations in the Neocortex: A Theory of Sensorimotor Object Recognition Using Cortical Grid Cells](https://www.biorxiv.org/content/early/2018/10/05/436352)
 * [A Mathematical Formalization of Hierarchical Temporal Memory’s Spatial Pooler](https://arxiv.org/abs/1601.06116)
 * [Principles of Hierarchical Temporal Memory (HTM): Foundations of Machine Intelligence](https://www.youtube.com/watch?v=6ufPpZDmPKA)
 * [Properties of Sparse Distributed Representations and their Application to Hierarchical Temporal Memory](https://arxiv.org/abs/1503.07469)

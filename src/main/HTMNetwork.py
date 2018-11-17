@@ -46,7 +46,7 @@ def createSensorToClassifierLinks(network, sensorRegionName, classifierRegionNam
 
 def createEncoder():
     """Create the encoder instance for our test and return it."""
-    series_rdse = RandomDistributedScalarEncoder(0.01, name="rdse with resolution 0.01")
+    series_rdse = RandomDistributedScalarEncoder(0.5, name="rdse with resolution 0.01")
     encoder = MultiEncoder()
     encoder.addEncoder("series", series_rdse)
     return encoder
