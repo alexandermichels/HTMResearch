@@ -15,8 +15,9 @@ DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
 def runHTM(i, time_series, method):
     log.info("Running HTM.....")
-    network = HTM(time_series, cellsPerMiniColumn=i, verbosity=0)
-    result = runNetwork(network)
+    network = HTM(time_series, 1, cellsPerMiniColumn=i, verbosity=0)
+    result = train(network, "expressive")
+
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like
     #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
@@ -64,12 +65,12 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
             header_row.append("{} CPMC Five-Step Error".format(i))
         writer.writerow(header_row)
 
-        for num_iter in range(iterations):
+        for num_iter in tqdm(range(iterations)):
             log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
             log.getLogger().addHandler(log.StreamHandler())
 
             output_row = []
-            for i in tqdm(range_of_cpmc):
+            for i in range_of_cpmc:
                 result = runHTM(i, time_series, method)
                 time_series.rewind()
                 output_row.append(result[2])
@@ -80,8 +81,9 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
 
 def runHTMPar(i, time_series, method, input_queue):
     log.info("Running HTM.....")
-    network = HTM(time_series, cellsPerMiniColumn=i, verbosity=0)
-    result = runNetwork(network)
+    network = HTM(time_series, 1, cellsPerMiniColumn=i, verbosity=0)
+    result = train(network, "expressive")
+
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like

@@ -131,14 +131,14 @@ def getPredictionResults(network, clRegionName):
     return results
 
 
-def runNetwork(network, writer, learning = True):
+def runNetwork(network,learning = True):
     """Run the network and write output to writer.
 
     :param network: a Network instance to run
     :param writer: a csv.writer instance to write output to
     """
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-    _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}-{}.csv".format(DATE, cellsPerMiniColumn, time_series_model)
+    _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}.csv".format(DATE, time_series_model)
 
 
     sensorRegion = network.regions["sensor"]
@@ -189,7 +189,7 @@ def runNetwork(network, writer, learning = True):
             writer.writerow(result)
         return results
 
-def runNetworkWithMode(network, mode, error_method = "MSE"):
+def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
     '''
     Modes:
     * "train" - Learning, on training set
@@ -257,21 +257,32 @@ def runNetworkWithMode(network, mode, error_method = "MSE"):
         network.regions["spatialPoolerRegion"].setParameter("inferenceMode", 1)
         network.regions["temporalPoolerRegion"].setParameter("inferenceMode", 1)
         network.regions["classifier"].setParameter("inferenceMode", 1)
-        result = 0
+        if eval_method == "val":
+            result = 0
+        elif eval_method == "expressive":
+            result = []
         last_prediction = None
         while _model.in_eval_set():
             network.run(1)
             series = sensorRegion.getOutputData("sourceOut")[0]
             predictionResults = getPredictionResults(network, "classifier")
-            if last_prediction != None:
-                if error_method == "MSE":
+            if eval_method == "val":
+                if last_prediction != None and error_method == "MSE":
                     result+=(series-last_prediction)**2
+            elif eval_method == "expressive":
+                oneStep = predictionResults[1]["predictedValue"]
+                oneStepConfidence = predictionResults[1]["predictionConfidence"]
+                fiveStep = predictionResults[5]["predictedValue"]
+                fiveStepConfidence = predictionResults[5]["predictionConfidence"]
+
+                result.append([_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100])
+                #print "{:6}: 1-step: {:16} ({:4.4}%)\t 5-step: {:16} ({:4.4}%)".format(*result)
             last_prediction=predictionResults[1]["predictedValue"]
         return result
     else:
         print("No valid mode seleted")
 
-def HTM(time_series_model, cellsPerMiniColumn=None, rdse_resolution=1, verbosity=1):
+def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=None, verbosity=1):
     if cellsPerMiniColumn == None:
         network = createNetwork(TimeSeriesStream(time_series_model, rdse_resolution))
     else:
@@ -294,18 +305,17 @@ def HTM(time_series_model, cellsPerMiniColumn=None, rdse_resolution=1, verbosity
 
     return network
 
-def train(network):
+def train(network, eval_method="val"):
     last_error = -1
     curr_error = -1
     counter = 0
     while (curr_error <= last_error and counter <20):
-        runNetworkWithMode(network, "train")
-        curr_error = runNetworkWithMode(network, "test")
-        print("Performance is {}".format(curr_error))
+        runNetworkWithMode(network, "train", "val")
+        curr_error = runNetworkWithMode(network, "test", "val")
         if last_error == -1:
             last_error = curr_error+1
         counter+=1
-    return runNetworkWithMode(network, "eval")
+    return runNetworkWithMode(network, "eval", eval_method)
 
 if __name__ == "__main__":
 

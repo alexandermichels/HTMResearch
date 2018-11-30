@@ -3,7 +3,6 @@
 from __future__ import division
 import random
 import math, sys
-sys.path.append("..")
 from HTMNetwork import *
 from models.ARMAModels import ARMATimeSeries
 
