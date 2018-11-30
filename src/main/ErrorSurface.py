@@ -15,7 +15,8 @@ DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
 def runHTM(i, time_series, method):
     log.info("Running HTM.....")
-    result = HTM(time_series, cellsPerMiniColumn=i)
+    network = HTM(time_series, cellsPerMiniColumn=i, verbosity=0)
+    result = runNetwork(network)
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like
     #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
@@ -79,7 +80,8 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
 
 def runHTMPar(i, time_series, method, input_queue):
     log.info("Running HTM.....")
-    result = HTM(time_series, cellsPerMiniColumn=i)
+    network = HTM(time_series, cellsPerMiniColumn=i, verbosity=0)
+    result = runNetwork(network)
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like

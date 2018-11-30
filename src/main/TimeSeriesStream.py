@@ -204,3 +204,21 @@ class TimeSeriesStream(RecordStreamIface):
     def get_model_type(self):
         """This is all me"""
         return str(self.sequence)
+
+    def in_eval_set(self):
+        return self.sequence.in_eval_set()
+
+    def in_test_set(self):
+        return self.sequence.in_test_set()
+
+    def in_train_set(self):
+        return self.sequence.in_train_set()
+
+    def set_to_eval_theta(self):
+        self.sequence.set_to_eval_theta()
+
+    def set_to_test_theta(self):
+        self.sequence.set_to_test_theta()
+
+    def set_to_train_theta(self):
+        self.sequence.set_to_train_theta()

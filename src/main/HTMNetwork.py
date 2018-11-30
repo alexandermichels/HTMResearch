@@ -44,14 +44,14 @@ def createSensorToClassifierLinks(network, sensorRegionName, classifierRegionNam
     network.link(sensorRegionName, classifierRegionName, "UniformLink", "", srcOutput="actValueOut", destInput="actValueIn")
     network.link(sensorRegionName, classifierRegionName, "UniformLink", "", srcOutput="categoryOut", destInput="categoryIn")
 
-def createEncoder():
+def createEncoder(rdse_resolution):
     """Create the encoder instance for our test and return it."""
-    series_rdse = RandomDistributedScalarEncoder(0.5, name="rdse with resolution 0.01")
+    series_rdse = RandomDistributedScalarEncoder(rdse_resolution, name="rdse with resolution {}".format(rdse_resolution))
     encoder = MultiEncoder()
     encoder.addEncoder("series", series_rdse)
     return encoder
 
-def createNetwork(dataSource, cellsPerMiniColumn=32):
+def createNetwork(dataSource, rdse_resolution, cellsPerMiniColumn=32):
     """Create the Network instance.
 
     The network has a sensor region reading data from `dataSource` and passing
@@ -62,8 +62,12 @@ def createNetwork(dataSource, cellsPerMiniColumn=32):
     :param cellsPerMiniColumn: int, number of cells per mini-column. Default=32
     :returns: a Network instance ready to run
     """
-    with open(_PARAMS_PATH, "r") as f:
-        modelParams = yaml.safe_load(f)["modelParams"]
+    try:
+        with open(_PARAMS_PATH, "r") as f:
+            modelParams = yaml.safe_load(f)["modelParams"]
+    except:
+        with open(os.path.join("..",_PARAMS_PATH), "r") as f:
+            modelParams = yaml.safe_load(f)["modelParams"]
 
     # Create a network that will hold the regions.
     network = Network()
@@ -74,7 +78,7 @@ def createNetwork(dataSource, cellsPerMiniColumn=32):
     # Set the encoder and data source of the sensor region.
     sensorRegion = network.regions["sensor"].getSelf()
     #sensorRegion.encoder = createEncoder(modelParams["sensorParams"]["encoders"])
-    sensorRegion.encoder = createEncoder()
+    sensorRegion.encoder = createEncoder(rdse_resolution)
     sensorRegion.dataSource = dataSource
 
     # Make sure the SP input width matches the sensor region output width.
@@ -127,12 +131,16 @@ def getPredictionResults(network, clRegionName):
     return results
 
 
-def runNetwork(network, writer):
+def runNetwork(network, writer, learning = True):
     """Run the network and write output to writer.
 
     :param network: a Network instance to run
     :param writer: a csv.writer instance to write output to
     """
+    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+    _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}-{}.csv".format(DATE, cellsPerMiniColumn, time_series_model)
+
+
     sensorRegion = network.regions["sensor"]
     spatialPoolerRegion = network.regions["spatialPoolerRegion"]
     temporalPoolerRegion = network.regions["temporalPoolerRegion"]
@@ -140,10 +148,17 @@ def runNetwork(network, writer):
     # Set predicted field
     network.regions["sensor"].setParameter("predictedField", "series")
 
-    # Enable learning for all regions.
-    network.regions["spatialPoolerRegion"].setParameter("learningMode", 1)
-    network.regions["temporalPoolerRegion"].setParameter("learningMode", 1)
-    network.regions["classifier"].setParameter("learningMode", 1)
+    if learning:
+        # Enable learning for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("learningMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("learningMode", 1)
+        network.regions["classifier"].setParameter("learningMode", 1)
+    else:
+        # Enable learning for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["temporalPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["classifier"].setParameter("learningMode", 0)
+
 
     # Enable inference for all regions.
     network.regions["spatialPoolerRegion"].setParameter("inferenceMode", 1)
@@ -152,58 +167,145 @@ def runNetwork(network, writer):
 
     _model = network.regions["sensor"].getSelf().dataSource
 
-    writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Confidence"])
-    results = []
-    for i in range(len(_model)):
-        # Run the network for a single iteration
-        network.run(1)
+    with open(_OUTPUT_PATH, "w") as outputFile:
+        writer = csv.writer(outputFile)
+        print("Writing output to {}".format(_OUTPUT_PATH))
+        writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Confidence"])
+        results = []
+        for i in range(len(_model)):
+            # Run the network for a single iteration
+            network.run(1)
 
-        series = sensorRegion.getOutputData("sourceOut")[0]
-        predictionResults = getPredictionResults(network, "classifier")
-        oneStep = predictionResults[1]["predictedValue"]
-        oneStepConfidence = predictionResults[1]["predictionConfidence"]
-        fiveStep = predictionResults[5]["predictedValue"]
-        fiveStepConfidence = predictionResults[5]["predictionConfidence"]
+            series = sensorRegion.getOutputData("sourceOut")[0]
+            predictionResults = getPredictionResults(network, "classifier")
+            oneStep = predictionResults[1]["predictedValue"]
+            oneStepConfidence = predictionResults[1]["predictionConfidence"]
+            fiveStep = predictionResults[5]["predictedValue"]
+            fiveStepConfidence = predictionResults[5]["predictionConfidence"]
 
-        result = [_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
-        #print "{:6}: 1-step: {:16} ({:4.4}%)\t 5-step: {:16} ({:4.4}%)".format(*result)
-        results.append(result)
-        writer.writerow(result)
-    return results
+            result = [_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
+            #print "{:6}: 1-step: {:16} ({:4.4}%)\t 5-step: {:16} ({:4.4}%)".format(*result)
+            results.append(result)
+            writer.writerow(result)
+        return results
 
-def HTM(time_series_model, cellsPerMiniColumn=None):
-    with open(_PARAMS_PATH, "r") as f:
-        modelParams = yaml.safe_load(f)["modelParams"]
+def runNetworkWithMode(network, mode, error_method = "MSE"):
+    '''
+    Modes:
+    * "train" - Learning, on training set
+    * "test" - No learning, on test set
+    * "eval" - Learning, on eval set
+    '''
+    _model = network.regions["sensor"].getSelf().dataSource
+    sensorRegion = network.regions["sensor"]
+    spatialPoolerRegion = network.regions["spatialPoolerRegion"]
+    temporalPoolerRegion = network.regions["temporalPoolerRegion"]
+    # Set predicted field
+    network.regions["sensor"].setParameter("predictedField", "series")
 
-    if cellsPerMiniColumn == None:
-        network = createNetwork(TimeSeriesStream(time_series_model))
+    if mode == "train":
+        _model.set_to_train_theta()
+        # Enable learning for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("learningMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("learningMode", 1)
+        network.regions["classifier"].setParameter("learningMode", 1)
+        # Enable inference for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["classifier"].setParameter("inferenceMode", 1)
+        result = 0
+        last_prediction = None
+        count = 0
+        while _model.in_train_set() and count < 1000:
+            network.run(1)
+            series = sensorRegion.getOutputData("sourceOut")[0]
+            predictionResults = getPredictionResults(network, "classifier")
+            if last_prediction != None:
+                if error_method == "MSE":
+                    result+=(series-last_prediction)**2
+            last_prediction=predictionResults[1]["predictedValue"]
+            count+=1
+        return result
+    elif mode == "test":
+        _model.set_to_test_theta()
+        # Disable learning for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["temporalPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["classifier"].setParameter("learningMode", 0)
+        # Enable inference for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["classifier"].setParameter("inferenceMode", 1)
+        result = 0
+        last_prediction = None
+        while _model.in_test_set():
+            network.run(1)
+            series = sensorRegion.getOutputData("sourceOut")[0]
+            predictionResults = getPredictionResults(network, "classifier")
+            if last_prediction != None:
+                if error_method == "MSE":
+                    result+=(series-last_prediction)**2
+            last_prediction=predictionResults[1]["predictedValue"]
+        return result
+    elif mode == "eval":
+        _model.set_to_eval_theta()
+        # Disable learning for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["temporalPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["classifier"].setParameter("learningMode", 0)
+        # Enable inference for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["classifier"].setParameter("inferenceMode", 1)
+        result = 0
+        last_prediction = None
+        while _model.in_eval_set():
+            network.run(1)
+            series = sensorRegion.getOutputData("sourceOut")[0]
+            predictionResults = getPredictionResults(network, "classifier")
+            if last_prediction != None:
+                if error_method == "MSE":
+                    result+=(series-last_prediction)**2
+            last_prediction=predictionResults[1]["predictedValue"]
+        return result
     else:
-        network = createNetwork(TimeSeriesStream(time_series_model), cellsPerMiniColumn)
+        print("No valid mode seleted")
+
+def HTM(time_series_model, cellsPerMiniColumn=None, rdse_resolution=1, verbosity=1):
+    if cellsPerMiniColumn == None:
+        network = createNetwork(TimeSeriesStream(time_series_model, rdse_resolution))
+    else:
+        network = createNetwork(TimeSeriesStream(time_series_model),rdse_resolution, cellsPerMiniColumn)
     network.initialize()
 
     spRegion = network.getRegionsByType(SPRegion)[0]
     sp = spRegion.getSelf().getAlgorithmInstance()
-    print "spatial pooler region inputs: {0}".format(spRegion.getInputNames())
-    print "spatial pooler region outputs: {0}".format(spRegion.getOutputNames())
-    print "# spatial pooler columns: {0}".format(sp.getNumColumns())
-    print
+    if verbosity > 1:
+        print("spatial pooler region inputs: {0}".format(spRegion.getInputNames()))
+        print("spatial pooler region outputs: {0}".format(spRegion.getOutputNames()))
+        print("# spatial pooler columns: {0}\n".format(sp.getNumColumns()))
 
     tmRegion = network.getRegionsByType(TMRegion)[0]
     tm = tmRegion.getSelf().getAlgorithmInstance()
-    print "temporal memory region inputs: {0}".format(tmRegion.getInputNames())
-    print "temporal memory region outputs: {0}".format(tmRegion.getOutputNames())
-    print "# temporal memory columns: {0}".format(tm.numberOfCols)
-    print
+    if verbosity > 1:
+        print("temporal memory region inputs: {0}".format(tmRegion.getInputNames()))
+        print("temporal memory region outputs: {0}".format(tmRegion.getOutputNames()))
+        print("# temporal memory columns: {0}".format(tm.numberOfCols))
 
-    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-    _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}-{}.csv".format(DATE, cellsPerMiniColumn, time_series_model)
+    return network
 
-    with open(_OUTPUT_PATH, "w") as outputFile:
-        writer = csv.writer(outputFile)
-        print "Writing output to %s" % _OUTPUT_PATH
-        result = runNetwork(network, writer)
-    return result
-
+def train(network):
+    last_error = -1
+    curr_error = -1
+    counter = 0
+    while (curr_error <= last_error and counter <20):
+        runNetworkWithMode(network, "train")
+        curr_error = runNetworkWithMode(network, "test")
+        print("Performance is {}".format(curr_error))
+        if last_error == -1:
+            last_error = curr_error+1
+        counter+=1
+    return runNetworkWithMode(network, "eval")
 
 if __name__ == "__main__":
 
@@ -214,4 +316,5 @@ if __name__ == "__main__":
     #parser.add_argument('-m', type=str, required=True, dest='method', help='Method to use: stream, relklinker, klinker, predpath, sm')
     #args = parser.parse_args()
     time_series_model = ARMATimeSeries(2,0)
-    HTM(time_series_model, cellsPerMiniColumn=32)
+    network = HTM(time_series_model, cellsPerMiniColumn=2)
+    train(network)

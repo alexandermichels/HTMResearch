@@ -1,5 +1,5 @@
 matplotlib
-numpy==1.12.1
+numpy
 nupic
 pandas>= 0.19
 Patsy>= 0.4.0
