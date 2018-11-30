@@ -12,7 +12,7 @@ from models.ARMAModels import ARMATimeSeries
 def func1(x):
     param_dict = {"cellsPerMiniColumn" : x[0], "rdse_resolution" : x[1]}
     time_series_model = ARMATimeSeries(2,0)
-    network = HTM(time_series_model, param_dict)
+    network = HTM(time_series_model, param_dict["rdse_resolution"], param_dict["cellsPerMiniColumn"])
     return -1*train(network)
 
 #--- MAIN ---------------------------------------------------------------------+

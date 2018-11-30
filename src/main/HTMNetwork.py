@@ -62,6 +62,7 @@ def createNetwork(dataSource, rdse_resolution, cellsPerMiniColumn=32):
     :param cellsPerMiniColumn: int, number of cells per mini-column. Default=32
     :returns: a Network instance ready to run
     """
+    print("{}".format(rdse_resolution))
     try:
         with open(_PARAMS_PATH, "r") as f:
             modelParams = yaml.safe_load(f)["modelParams"]
@@ -284,9 +285,9 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
 
 def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=None, verbosity=1):
     if cellsPerMiniColumn == None:
-        network = createNetwork(TimeSeriesStream(time_series_model, rdse_resolution))
+        network = createNetwork(TimeSeriesStream(time_series_model), rdse_resolution)
     else:
-        network = createNetwork(TimeSeriesStream(time_series_model),rdse_resolution, cellsPerMiniColumn)
+        network = createNetwork(TimeSeriesStream(time_series_model), rdse_resolution, cellsPerMiniColumn)
     network.initialize()
 
     spRegion = network.getRegionsByType(SPRegion)[0]
