@@ -66,8 +66,6 @@ class ARMATimeSeries(Sequence):
         return "({},{})-ARMA".format(self.p, self.q)
 
     def new(self):
-        self.n = int(10*self.n/8)
-
         self.ar_poly = np.r_[1, np.random.rand(self.p)]
         print("The AR lag polynomial is: {}".format(self.ar_poly))
         self.ma_poly = np.r_[1, np.random.rand(self.q)]

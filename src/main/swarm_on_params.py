@@ -10,10 +10,7 @@ from models.ARMAModels import ARMATimeSeries
 
 # function we are attempting to optimize (minimize)
 def func1(x):
-    param_dict = {"cellsPerMiniColumn" : x[0], "rdse_resolution" : x[1]}
-    time_series_model = ARMATimeSeries(2,0)
-    network = HTM(time_series_model, param_dict["rdse_resolution"], param_dict["cellsPerMiniColumn"])
-    return -1*train(network)
+    return (x[0]**2/2 +x[1]**2/4)
 
 #--- MAIN ---------------------------------------------------------------------+
 
@@ -69,21 +66,25 @@ class PSO():
     def __init__(self,costFunc,x0,bounds,num_particles,maxiter):
         global num_dimensions
 
-        num_dimensions=len(x0)
+        num_dimensions=len(bounds)
         err_best_g=-1                   # best error for group
         pos_best_g=[]                   # best position for group
 
         # establish the swarm
         swarm=[]
         for i in range(0,num_particles):
+            x0 = []
+            for j in range(0,num_dimensions):
+                x0.append(random.uniform(min(bounds[j]), max(bounds[j])))
             swarm.append(Particle(x0))
 
         # begin optimization loop
         i=0
         while i < maxiter:
-            #print i,err_best_g
+            print i,err_best_g
             # cycle through particles in swarm and evaluate fitness
             for j in range(0,num_particles):
+                #print(swarm[j].position_i)
                 swarm[j].evaluate(costFunc)
 
                 # determine if current particle is the best (globally)
@@ -97,16 +98,16 @@ class PSO():
                 swarm[j].update_position(bounds)
             i+=1
 
-        # print final results
+        #print final results
         print 'FINAL:'
         print pos_best_g
         print err_best_g
 
 #--- RUN ----------------------------------------------------------------------+
 def main():
-    initial=[5,5]               # initial starting location [x1,x2...]
-    bounds=[(2,32),(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func1,initial,bounds,num_particles=15,maxiter=30)
+    initial=[1,1]               # initial starting location [x1,x2...]
+    bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func1,initial,bounds,num_particles=64,maxiter=16)
 
 #--- END ----------------------------------------------------------------------+
 

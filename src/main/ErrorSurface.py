@@ -4,6 +4,8 @@ import csv
 from HTMNetwork import *
 from TimeSeriesStream import TimeSeriesStream
 from models.ARMAModels import *
+from models.SimpleSequence import *
+
 from time import localtime, sleep
 import numpy as np
 from os.path import join
@@ -32,8 +34,8 @@ def runHTM(i, time_series, method):
 
     for j in range(5,len(result)):
         if method=="MSE":
-            one_error = (result[j][2]-result[i-1][1])**2
-            five_error = (result[j][4]-result[i-5][1])**2
+            one_error = (result[j][2]-result[i-1][1])**2**.5
+            five_error = (result[j][4]-result[i-5][1])**2**.5
             result[j].insert(3,one_error)
             result[j].insert(6,five_error)
             one_cum_error = one_cum_error + one_error
@@ -82,7 +84,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
 def runHTMPar(i, time_series, method, input_queue):
     log.info("Running HTM.....")
     network = HTM(time_series, 1, cellsPerMiniColumn=i, verbosity=0)
-    result = train(network, "expressive")
+    result = train(network, "expressive", method)
 
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
@@ -101,13 +103,24 @@ def runHTMPar(i, time_series, method, input_queue):
         if method=="MSE":
             one_error = (result[j][2]-result[i-1][1])**2
             five_error = (result[j][4]-result[i-5][1])**2
-            result[j].insert(3,one_error)
-            result[j].insert(6,five_error)
-            one_cum_error = one_cum_error + one_error
-            five_cum_error = five_cum_error + five_error
-            if j >= len(result)/2.0:
-                one_last_half_error+=one_error
-                five_last_half_error+=five_error
+        elif method=="Binary":
+            if result[j][2] == result[i-1][1]:
+                one_error = 0
+            else:
+                one_error = 1
+            if result[j][4]==result[i-5][1]:
+                five_error = 0
+            else:
+                five_error = 1
+        #record errors
+        result[j].insert(3,one_error)
+        result[j].insert(6,five_error)
+        one_cum_error += one_error
+        five_cum_error += five_error
+        if j >= len(result)/2.0:
+            one_last_half_error+=one_error
+            five_last_half_error+=five_error
+
 
     with open(_OUTPUT_PATH, "w") as outputFile:
         writer = csv.writer(outputFile)
@@ -157,5 +170,5 @@ def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="
             time_series.new()
 
 if __name__ == "__main__":
-    time_series_model = ARMATimeSeries(2,0)
-    generateErrorSurfacePar(time_series_model, range(2,13))
+    time_series_model = OneTermSimpleSequence(17,10)
+    generateErrorSurfacePar(time_series_model, range(2,17), method="Binary")

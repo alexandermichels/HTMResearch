@@ -62,7 +62,6 @@ def createNetwork(dataSource, rdse_resolution, cellsPerMiniColumn=32):
     :param cellsPerMiniColumn: int, number of cells per mini-column. Default=32
     :returns: a Network instance ready to run
     """
-    print("{}".format(rdse_resolution))
     try:
         with open(_PARAMS_PATH, "r") as f:
             modelParams = yaml.safe_load(f)["modelParams"]
@@ -223,7 +222,9 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if last_prediction != None:
                 if error_method == "MSE":
-                    result+=(series-last_prediction)**2
+                    result+=(series-last_prediction)**2**.5
+                elif error_method == "Binary":
+                    result+= 0 if series==last_prediction else 1
             last_prediction=predictionResults[1]["predictedValue"]
             count+=1
         return result
@@ -245,7 +246,9 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if last_prediction != None:
                 if error_method == "MSE":
-                    result+=(series-last_prediction)**2
+                    result+=(series-last_prediction)**2**.5
+                elif error_method == "Binary":
+                    result+= 0 if series==last_prediction else 1
             last_prediction=predictionResults[1]["predictedValue"]
         return result
     elif mode == "eval":
@@ -269,7 +272,9 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if eval_method == "val":
                 if last_prediction != None and error_method == "MSE":
-                    result+=(series-last_prediction)**2
+                    result+=(series-last_prediction)**2**.5
+                elif last_prediction != None and error_method == "Binary":
+                    result+= 0 if series==last_prediction else 1
             elif eval_method == "expressive":
                 oneStep = predictionResults[1]["predictedValue"]
                 oneStepConfidence = predictionResults[1]["predictionConfidence"]
@@ -281,7 +286,7 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             last_prediction=predictionResults[1]["predictedValue"]
         return result
     else:
-        print("No valid mode seleted")
+        print("No valid mode selected")
 
 def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=None, verbosity=1):
     if cellsPerMiniColumn == None:
@@ -306,17 +311,17 @@ def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=None, verbosity
 
     return network
 
-def train(network, eval_method="val"):
+def train(network, eval_method="val", error_method="MSE"):
     last_error = -1
     curr_error = -1
     counter = 0
     while (curr_error <= last_error and counter <20):
-        runNetworkWithMode(network, "train", "val")
-        curr_error = runNetworkWithMode(network, "test", "val")
+        runNetworkWithMode(network, "train", "val", error_method)
+        curr_error = runNetworkWithMode(network, "test", "val", error_method)
         if last_error == -1:
             last_error = curr_error+1
         counter+=1
-    return runNetworkWithMode(network, "eval", eval_method)
+    return runNetworkWithMode(network, "eval", eval_method, error_method)
 
 if __name__ == "__main__":
 
