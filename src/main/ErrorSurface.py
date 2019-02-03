@@ -7,6 +7,7 @@ from models.ARMAModels import *
 from models.SimpleSequence import *
 
 from time import localtime, sleep
+import itertools
 import numpy as np
 from os.path import join
 from tqdm import tqdm
@@ -34,8 +35,8 @@ def runHTM(i, time_series, method):
 
     for j in range(5,len(result)):
         if method=="MSE":
-            one_error = (result[j][2]-result[i-1][1])**2**.5
-            five_error = (result[j][4]-result[i-5][1])**2**.5
+            one_error = (result[j][2]-result[j-1][1])**2**.5
+            five_error = (result[j][4]-result[j-5][1])**2**.5
             result[j].insert(3,one_error)
             result[j].insert(6,five_error)
             one_cum_error = one_cum_error + one_error
@@ -81,7 +82,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
             writer.writerow(output_row)
             time_series.new()
 
-def runHTMPar(i, time_series, method, input_queue):
+def runHTMPar(i, time_series, method):
     log.info("Running HTM.....")
     network = HTM(time_series, 1, cellsPerMiniColumn=i, verbosity=0)
     result = train(network, "expressive", method)
@@ -101,14 +102,14 @@ def runHTMPar(i, time_series, method, input_queue):
 
     for j in range(5,len(result)):
         if method=="MSE":
-            one_error = (result[j][2]-result[i-1][1])**2
-            five_error = (result[j][4]-result[i-5][1])**2
+            one_error = (result[j][2]-result[j-1][1])**2
+            five_error = (result[j][4]-result[j-5][1])**2
         elif method=="Binary":
-            if result[j][2] == result[i-1][1]:
+            if result[j][2] == result[j-1][1]:
                 one_error = 0
             else:
                 one_error = 1
-            if result[j][4]==result[i-5][1]:
+            if result[j][4]==result[j-5][1]:
                 five_error = 0
             else:
                 five_error = 1
@@ -129,7 +130,10 @@ def runHTMPar(i, time_series, method, input_queue):
             #print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
             writer.writerow(result[j])
 
-    input_queue.put((i, (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5))))
+    return (i, (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5)))
+
+def runHTMParUnpacker(args):
+    return runHTMPar(*args)
 
 def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="MSE"):
     log_file = join('../logs/', 'log_{}-{}-model-{}-iterations-with-({}-{})-cellsPerMiniColumn.log'.format(DATE,str(time_series),iterations,min(range_of_cpmc),max(range_of_cpmc)))
@@ -148,15 +152,18 @@ def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="
             log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
             log.getLogger().addHandler(log.StreamHandler())
 
-            input_queue = mp.Queue()
-            processes = [mp.Process(target=runHTMPar, args=(i, time_series, method, input_queue)) for i in range_of_cpmc]
+            p = mp.Pool(processes = (max(range_of_cpmc)-min(range_of_cpmc)))
+            results = p.map(runHTMParUnpacker, itertools.izip(range_of_cpmc, itertools.repeat(time_series), itertools.repeat(method)))
 
-            for p in processes:
-                p.start()
-            for p in processes:
-                p.join()
+            #input_queue = mp.Queue()
+            #processes = [mp.Process(target=runHTMPar, args=(i, time_series, method, input_queue)) for i in range_of_cpmc]
 
-            results = [input_queue.get() for p in processes]
+            #for p in processes:
+            #    p.start()
+            #for p in processes:
+            #    p.join()
+
+            #results = [input_queue.get() for p in processes]
             results.sort()
             for r in results:
                 log.info("For {} CPMC the one-step error was {} and the five-step error was {}".format(r[0], r[1][2], r[1][3]))
@@ -170,5 +177,5 @@ def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="
             time_series.new()
 
 if __name__ == "__main__":
-    time_series_model = OneTermSimpleSequence(17,10)
-    generateErrorSurfacePar(time_series_model, range(2,17), method="Binary")
+    time_series_model = VeryBasicSequence()
+    generateErrorSurfacePar(time_series_model, range(3,8), method="Binary")
