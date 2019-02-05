@@ -18,16 +18,15 @@ DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
 def runHTM(i, time_series, method):
     log.info("Running HTM.....")
-    network = HTM(time_series, 1, cellsPerMiniColumn=i, verbosity=0)
-    result = train(network, "expressive")
+    network = HTM(time_series, .1, cellsPerMiniColumn=i, verbosity=0)
+    result = train(network, "expressive", method)
 
+    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     _OUTPUT_PATH = "../outputs/HTMErrors-{}-{}-{}.csv".format(DATE, i, time_series_model)
     # this is what the rows of results look like
     #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
     one_cum_error = 0
-    one_last_half_error = 0
     five_cum_error = 0
-    five_last_half_error = 0
 
     for j in range(5):
         result[j].insert(3,"N/A")
@@ -35,15 +34,22 @@ def runHTM(i, time_series, method):
 
     for j in range(5,len(result)):
         if method=="MSE":
-            one_error = (result[j][2]-result[j-1][1])**2**.5
-            five_error = (result[j][4]-result[j-5][1])**2**.5
-            result[j].insert(3,one_error)
-            result[j].insert(6,five_error)
-            one_cum_error = one_cum_error + one_error
-            five_cum_error = five_cum_error + five_error
-            if j >= len(result)/2.0:
-                one_last_half_error+=one_error
-                five_last_half_error+=five_error
+            one_error = (result[j-1][2]-result[j-1][1])**2
+            five_error = (result[j-5][4]-result[j][1])**2
+        elif method=="Binary":
+            if result[j-1][2] == result[j][1]:
+                one_error = 0
+            else:
+                one_error = 1
+            if result[j-5][5] == result[j][1]:
+                five_error = 0
+            else:
+                five_error = 1
+        #record errors
+        result[j].insert(3,one_error)
+        result[j].insert(6,five_error)
+        one_cum_error += one_error
+        five_cum_error += five_error
 
     with open(_OUTPUT_PATH, "w") as outputFile:
         writer = csv.writer(outputFile)
@@ -52,7 +58,7 @@ def runHTM(i, time_series, method):
             #print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
             writer.writerow(result[j])
 
-    return (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5), i)
+    return (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), i)
 
 def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE"):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
@@ -84,7 +90,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
 
 def runHTMPar(i, time_series, method):
     log.info("Running HTM.....")
-    network = HTM(time_series, 1, cellsPerMiniColumn=i, verbosity=0)
+    network = HTM(time_series, .1, cellsPerMiniColumn=i, verbosity=0)
     result = train(network, "expressive", method)
 
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
@@ -92,9 +98,7 @@ def runHTMPar(i, time_series, method):
     # this is what the rows of results look like
     #[_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
     one_cum_error = 0
-    one_last_half_error = 0
     five_cum_error = 0
-    five_last_half_error = 0
 
     for j in range(5):
         result[j].insert(3,"N/A")
@@ -102,14 +106,14 @@ def runHTMPar(i, time_series, method):
 
     for j in range(5,len(result)):
         if method=="MSE":
-            one_error = (result[j][2]-result[j-1][1])**2
-            five_error = (result[j][4]-result[j-5][1])**2
+            one_error = (result[j-1][2]-result[j-1][1])**2
+            five_error = (result[j-5][4]-result[j][1])**2
         elif method=="Binary":
-            if result[j][2] == result[j-1][1]:
+            if result[j-1][2] == result[j][1]:
                 one_error = 0
             else:
                 one_error = 1
-            if result[j][4]==result[j-5][1]:
+            if result[j-5][5] == result[j][1]:
                 five_error = 0
             else:
                 five_error = 1
@@ -118,19 +122,16 @@ def runHTMPar(i, time_series, method):
         result[j].insert(6,five_error)
         one_cum_error += one_error
         five_cum_error += five_error
-        if j >= len(result)/2.0:
-            one_last_half_error+=one_error
-            five_last_half_error+=five_error
 
 
     with open(_OUTPUT_PATH, "w") as outputFile:
-        writer = csv.writer(outputFile)
-        writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Error", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Error", "Five Step Prediction Confidence"])
+        _writer = csv.writer(outputFile)
+        _writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Error", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Error", "Five Step Prediction Confidence"])
         for j in range(len(result)):
             #print "{0:6}: 1-step: {2:16} (Error {3:4.4}, Conf: {4:4.4}%)\t 5-step: {5:16} (Error {6:4.4}, Conf: {7:4.4}%)".format(*result[j])
-            writer.writerow(result[j])
+            _writer.writerow(result[j])
 
-    return (i, (one_cum_error/(len(result)-5), five_cum_error/(len(result)-5), one_last_half_error/(len(result)/2.0-5), five_last_half_error/(len(result)/2.0-5)))
+    return (i, (one_cum_error/float(len(result)-5), five_cum_error/float(len(result)-5)))
 
 def runHTMParUnpacker(args):
     return runHTMPar(*args)
@@ -152,7 +153,7 @@ def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="
             log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
             log.getLogger().addHandler(log.StreamHandler())
 
-            p = mp.Pool(processes = (max(range_of_cpmc)-min(range_of_cpmc)))
+            p = mp.Pool(processes = mp.cpu_count()-1)
             results = p.map(runHTMParUnpacker, itertools.izip(range_of_cpmc, itertools.repeat(time_series), itertools.repeat(method)))
 
             #input_queue = mp.Queue()
@@ -166,13 +167,13 @@ def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="
             #results = [input_queue.get() for p in processes]
             results.sort()
             for r in results:
-                log.info("For {} CPMC the one-step error was {} and the five-step error was {}".format(r[0], r[1][2], r[1][3]))
+                log.info("For {} CPMC the one-step error was {} and the five-step error was {}".format(r[0], r[1][0], r[1][1]))
             results = [r[1] for r in results]
 
             output_row = []
             for r in results:
-                output_row.append(r[2])
-                output_row.append(r[3])
+                output_row.append(r[0])
+                output_row.append(r[1])
             writer.writerow(output_row)
             time_series.new()
 

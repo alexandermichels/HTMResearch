@@ -192,6 +192,7 @@ def runNetwork(network,learning = True):
 def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
     '''
     Modes:
+    * "strain" - Learning on spatial pool, on training set
     * "train" - Learning, on training set
     * "test" - No learning, on test set
     * "eval" - Learning, on eval set
@@ -203,7 +204,35 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
     # Set predicted field
     network.regions["sensor"].setParameter("predictedField", "series")
 
-    if mode == "train":
+    if mode == "strain":
+        _model.set_to_train_theta()
+        # Enable learning for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("learningMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("learningMode", 0)
+        network.regions["classifier"].setParameter("learningMode", 0)
+        # Enable inference for all regions.
+        network.regions["spatialPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["temporalPoolerRegion"].setParameter("inferenceMode", 1)
+        network.regions["classifier"].setParameter("inferenceMode", 1)
+        result = 0
+        last_prediction = None
+        count = 0
+        while _model.in_train_set() and count < 1000:
+            network.run(1)
+            series = sensorRegion.getOutputData("sourceOut")[0]
+            predictionResults = getPredictionResults(network, "classifier")
+            if last_prediction != None:
+                if error_method == "MSE":
+                    result+=(series-last_prediction)**2**.5
+                elif error_method == "Binary":
+                    if series==last_prediction:
+                        result+= 0
+                    else:
+                        result+= 1
+            last_prediction=predictionResults[1]["predictedValue"]
+            count+=1
+        return result
+    elif mode == "train":
         _model.set_to_train_theta()
         # Enable learning for all regions.
         network.regions["spatialPoolerRegion"].setParameter("learningMode", 1)
@@ -315,6 +344,8 @@ def train(network, eval_method="val", error_method="MSE"):
     last_error = -1
     curr_error = -1
     counter = 0
+    for i in range(5):
+        runNetworkWithMode(network, "strain", "val", error_method)
     while (curr_error <= last_error and counter <20):
         runNetworkWithMode(network, "train", "val", error_method)
         curr_error = runNetworkWithMode(network, "test", "val", error_method)
