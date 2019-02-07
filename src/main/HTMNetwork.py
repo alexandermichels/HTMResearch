@@ -344,7 +344,7 @@ def train(network, eval_method="val", error_method="MSE"):
     last_error = -1
     curr_error = -1
     counter = 0
-    for i in range(5):
+    for i in range(25):
         runNetworkWithMode(network, "strain", "val", error_method)
     while (curr_error <= last_error and counter <20):
         runNetworkWithMode(network, "train", "val", error_method)

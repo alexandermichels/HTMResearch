@@ -7,7 +7,7 @@ from Sequence import Sequence
 
 class VeryBasicSequence(Sequence):
 
-    def __init__(self,determinism=1, n=10000):
+    def __init__(self,determinism=1, n=100000):
         """
         Creates a very basic sequence which is just the following two sequences repeated:
 
@@ -21,7 +21,7 @@ class VeryBasicSequence(Sequence):
         counter = 0
         # make the very basic sequence
         while counter+1 < self.n:
-            if int(self.n/4)%2  == 0:
+            if int(counter/4)%2  == 0:
                 self.sequence[counter] = 1
                 self.sequence[counter+1] = 2
                 self.sequence[counter+2] = 2
@@ -119,7 +119,7 @@ class VeryBasicSequence(Sequence):
 
 class OneTermSimpleSequence(Sequence):
 
-    def __init__(self, order, lag, determinism=1, n=10000):
+    def __init__(self, order, lag, determinism=1, n=100000):
         """
         Creates a sequence object with a lag-ary operation defining transitions from each othe order elements to the other order.
 

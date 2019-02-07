@@ -18,7 +18,7 @@ DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
 def runHTM(i, time_series, method):
     log.info("Running HTM.....")
-    network = HTM(time_series, .1, cellsPerMiniColumn=i, verbosity=0)
+    network = HTM(time_series, .2, cellsPerMiniColumn=i, verbosity=0)
     result = train(network, "expressive", method)
 
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
@@ -89,7 +89,6 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
             time_series.new()
 
 def runHTMPar(i, time_series, method):
-    log.info("Running HTM.....")
     network = HTM(time_series, .1, cellsPerMiniColumn=i, verbosity=0)
     result = train(network, "expressive", method)
 
@@ -149,11 +148,12 @@ def generateErrorSurfacePar(time_series, range_of_cpmc, iterations=200, method="
             header_row.append("{} CPMC Five-Step Error".format(i))
         writer.writerow(header_row)
 
-        for num_iter in tqdm(range(iterations)):
-            log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
-            log.getLogger().addHandler(log.StreamHandler())
+        p = mp.Pool(processes = mp.cpu_count()-1)
+        log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = log_file, level=log.DEBUG)
+        log.getLogger().addHandler(log.StreamHandler())
 
-            p = mp.Pool(processes = mp.cpu_count()-1)
+        for num_iter in tqdm(range(iterations)):
+
             results = p.map(runHTMParUnpacker, itertools.izip(range_of_cpmc, itertools.repeat(time_series), itertools.repeat(method)))
 
             #input_queue = mp.Queue()
