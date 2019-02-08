@@ -18,7 +18,7 @@ DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
 
 def runHTM(i, time_series, method):
     log.info("Running HTM.....")
-    network = HTM(time_series, .2, cellsPerMiniColumn=i, verbosity=0)
+    network = HTM(time_series, .1, cellsPerMiniColumn=i, verbosity=0)
     result = train(network, "expressive", method)
 
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
@@ -89,7 +89,7 @@ def generateErrorSurface(time_series, range_of_cpmc, iterations=200, method="MSE
             time_series.new()
 
 def runHTMPar(i, time_series, method):
-    network = HTM(time_series, .1, cellsPerMiniColumn=i, verbosity=0)
+    network = HTM(time_series, .05, cellsPerMiniColumn=i, verbosity=0)
     result = train(network, "expressive", method)
 
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))

@@ -10,12 +10,6 @@ A repository for files related to my Honors Research Thesis at Westminster Colle
   </figure>
 </center>
 
-## Proposal
-
-The Proposal for my Honors Research Thesis was due April 30th, 2018 and it is complete, feel free to [check it out](https://github.com/alexandermichels/HonorsResearch) and ask any questions you may have.
-
-***
-
 ## Thesis
 
 We've been playing with a few ideas, but have to find something achievable within our time frame.

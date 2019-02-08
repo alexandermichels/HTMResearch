@@ -11,8 +11,7 @@ class VeryBasicSequence(Sequence):
         """
         Creates a very basic sequence which is just the following two sequences repeated:
 
-        1223
-        5224
+        1212
         """
         self.theta = 0
         self.n = int((n+3)/4)*4 # makes n the smallest multiple of four bigger than the required number
@@ -21,17 +20,9 @@ class VeryBasicSequence(Sequence):
         counter = 0
         # make the very basic sequence
         while counter+1 < self.n:
-            if int(counter/4)%2  == 0:
-                self.sequence[counter] = 1
-                self.sequence[counter+1] = 2
-                self.sequence[counter+2] = 2
-                self.sequence[counter+3]= 3
-            else:
-                self.sequence[counter] = 5
-                self.sequence[counter+1] = 2
-                self.sequence[counter+2] = 2
-                self.sequence[counter+3]= 4
-            counter+=4
+            self.sequence[counter] = 1
+            self.sequence[counter+1] = 2
+            counter+=2
 
         if randint(0,1) == 0:
             if randint(0,1) == 0:
@@ -77,17 +68,9 @@ class VeryBasicSequence(Sequence):
         counter = 0
         # make the very basic sequence
         while counter+1 < self.n:
-            if int(self.n/4)%2  == 0:
-                self.sequence[counter] = 1
-                self.sequence[counter+1] = 2
-                self.sequence[counter+2] = 2
-                self.sequence[counter+3]= 3
-            else:
-                self.sequence[counter] = 5
-                self.sequence[counter+1] = 2
-                self.sequence[counter+2] = 2
-                self.sequence[counter+3]= 4
-            counter+=4
+            self.sequence[counter] = 1
+            self.sequence[counter+1] = 2
+            counter+=2
 
         if randint(0,1) == 0:
             if randint(0,1) == 0:
