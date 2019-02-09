@@ -164,7 +164,6 @@ def runNetwork(network,learning = True):
     network.regions["classifier"].setParameter("inferenceMode", 1)
 
     _model = network.regions["sensor"].getSelf().dataSource
-    print(_model)
 
     with open(_OUTPUT_PATH, "w") as outputFile:
         writer = csv.writer(outputFile)

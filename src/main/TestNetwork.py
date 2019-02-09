@@ -44,8 +44,8 @@ class HTM():
 if __name__ == "__main__":
     l = [1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3,1,2,2,3]
     for i in range(10):
-        h = HTM(rdse_resolution=(i+1)*.1)
-        str = "{}:   ".format((i+1)*.1)
+        h = HTM(rdse_resolution=(i+1)*.01)
+        str = "{}:   ".format((i+1)*.01)
         for j in range(len(l)-1):
             str+="{}, ".format(h.overlap(l[j],l[j+1]))
         print("{}\n".format(str[:-2]))
