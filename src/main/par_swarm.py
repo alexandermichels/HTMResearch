@@ -16,10 +16,28 @@ import itertools
 
 # function we are attempting to optimize (minimize)
 def func1(x):
-    #time_series = VeryBasicSequence()
-    #network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    #return train(network, error_method="Binary")
     return (x[0]**2/2 +x[1]**2/4)
+
+def func2(x):
+    time_series = VeryBasicSequence(pattern=1)
+    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    return train(network, error_method="Binary")
+
+def func3(x):
+    time_series = VeryBasicSequence(pattern=2)
+    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    return train(network, error_method="Binary")
+
+def func4(x):
+    time_series = VeryBasicSequence(pattern=3)
+    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    return train(network, error_method="Binary")
+
+def func5(x):
+    time_series = VeryBasicSequence(pattern=4)
+    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    return train(network, error_method="Binary")
+
 
 #--- MAIN ---------------------------------------------------------------------+
 
@@ -161,10 +179,14 @@ class PSO():
 
 #--- RUN ----------------------------------------------------------------------+
 def main():
-    bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func1,bounds,num_particles=64,maxiter=16)
-    #bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    #PSO(func1,bounds,num_particles=2,maxiter=6)
+    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func2,bounds,num_particles=16,maxiter=16)
+    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func3,bounds,num_particles=16,maxiter=16)
+    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func4,bounds,num_particles=16,maxiter=16)
+    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func5,bounds,num_particles=16,maxiter=16)
 
 #--- END ----------------------------------------------------------------------+
 

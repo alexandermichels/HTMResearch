@@ -21,18 +21,35 @@ class VeryBasicSequence(Sequence):
         counter = 0
         # make the very basic sequence
         if self.pattern == 1:
-            while counter+1 < self.n:
+            if counter % 2 == 0:
                 self.sequence[counter] = 1
-                self.sequence[counter+1] = 2
-                counter+=2
+            else:
+                self.sequence[counter] = 2
+            counter+=1
         elif self.pattern == 2:
             while counter < self.n:
-                if counter % 2 == 0:
+                if counter % 4 == 0:
                     self.sequence[counter] = 1
                 elif counter % 4 == 1:
                     self.sequence[counter] = 2
+                elif counter % 4 == 3:
+                    self.sequence == 2
                 else:
                     self.sequence[counter] = 3
+                counter+=1
+        elif self.pattern == 3:
+            if counter % 2 == 0:
+                self.sequence[counter] = 1
+            else:
+                self.sequence[counter] = 3
+            counter+=1
+        if self.pattern == 4:
+            while counter < self.n:
+                if counter % 2 == 0:
+                    self.sequence[counter] = 78
+                else:
+                    self.sequence[counter] = 79
+                counter+=1
 
 
         if randint(0,1) == 0:
@@ -78,19 +95,26 @@ class VeryBasicSequence(Sequence):
     def new(self):
         counter = 0
         # make the very basic sequence
-        if pattern == 1:
+        if self.pattern == 1:
             while counter+1 < self.n:
                 self.sequence[counter] = 1
                 self.sequence[counter+1] = 2
                 counter+=2
-        elif pattern == 2:
+        elif self.pattern == 2:
             while counter < self.n:
-                if counter % 2 == 0:
+                if counter % 4 == 0:
                     self.sequence[counter] = 1
                 elif counter % 4 == 1:
                     self.sequence[counter] = 2
+                elif counter % 4 == 3:
+                    self.sequence == 2
                 else:
                     self.sequence[counter] = 3
+        elif self.pattern == 3:
+            if counter % 2 == 0:
+                self.sequence[counter] = 1
+            else:
+                self.sequence[counter] = 3
 
         if randint(0,1) == 0:
             if randint(0,1) == 0:

@@ -162,7 +162,7 @@ modelParams:
     verbosity: 0
     regionName: SDRClassifierRegion
     alpha: 0.1
-    steps: '1,5'
+    steps: '1,2,3,4,5'
     maxCategoryCount: 1000
     implementation: cpp
 
