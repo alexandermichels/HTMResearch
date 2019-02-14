@@ -4,19 +4,22 @@ from __future__ import division
 import logging as log
 import random
 import math, sys
+import copy
 from os.path import join
 from HTMNetwork import *
 from models.ARMAModels import ARMATimeSeries
 from models.SimpleSequence import VeryBasicSequence
 
+import multiprocessing as mp
+import itertools
 #--- COST FUNCTION ------------------------------------------------------------+
 
 # function we are attempting to optimize (minimize)
 def func1(x):
-    time_series = VeryBasicSequence()
-    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    return train(network, error_method="Binary")
-    #return (x[0]**2/2 +x[1]**2/4)
+    #time_series = VeryBasicSequence()
+    #network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    #return train(network, error_method="Binary")
+    return (x[0]**2/2 +x[1]**2/4)
 
 #--- MAIN ---------------------------------------------------------------------+
 
@@ -31,6 +34,13 @@ class Particle:
         for i in range(0,num_dimensions):
             self.velocity_i.append(random.uniform(-1,1))
             self.position_i.append(x0[i])
+
+    def copy_from(self, particle):
+        self.position_i=copy.deepcopy(particle.position_i)
+        self.velocity_i=copy.deepcopy(particle.velocity_i)
+        self.pos_best_i=copy.deepcopy(particle.pos_best_i)
+        self.err_best_i=-particle.err_best_i
+        self.err_i=-particle.err_I
 
     # evaluate current fitness
     def evaluate(self,costFunc):
@@ -68,6 +78,13 @@ class Particle:
             if self.position_i[i] < bounds[i][0]:
                 self.position_i[i]=bounds[i][0]
 
+def eval_pos_unpacker(args):
+    return evaluate_position(*args)
+
+def evaluate_position(swarm, j, costFunc):
+    swarm[j].evaluate(costFunc)
+    return (j, swarm[j])
+
 class PSO():
     def __init__(self,costFunc,bounds,num_particles,maxiter):
         global num_dimensions
@@ -97,13 +114,17 @@ class PSO():
             header_row.append("Particle {}'s Error".format(j))
         writer.writerow(header_row)
 
+        p = mp.Pool(processes = mp.cpu_count()-1)
         while i < maxiter:
             print i,err_best_g
+
+            results = p.map(eval_pos_unpacker, itertools.izip(itertools.repeat(swarm),range(num_particles), itertools.repeat(costFunc)))
+            results.sort()
+            results = [r[1] for r in results]
+            swarm = copy.deepcopy(results)
+
             # cycle through particles in swarm and evaluate fitness
             for j in range(0,num_particles):
-                #print(swarm[j].position_i)
-                swarm[j].evaluate(costFunc)
-
                 # determine if current particle is the best (globally)
                 if swarm[j].err_i < err_best_g or err_best_g == -1:
                     pos_best_g=list(swarm[j].position_i)
@@ -140,10 +161,10 @@ class PSO():
 
 #--- RUN ----------------------------------------------------------------------+
 def main():
-    #bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    #PSO(func1,bounds,num_particles=64,maxiter=16)
-    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func1,bounds,num_particles=16,maxiter=16)
+    bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func1,bounds,num_particles=64,maxiter=16)
+    #bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    #PSO(func1,bounds,num_particles=2,maxiter=6)
 
 #--- END ----------------------------------------------------------------------+
 

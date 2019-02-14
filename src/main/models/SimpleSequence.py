@@ -7,7 +7,7 @@ from Sequence import Sequence
 
 class VeryBasicSequence(Sequence):
 
-    def __init__(self,determinism=1, n=100000):
+    def __init__(self, pattern=2, n=100000):
         """
         Creates a very basic sequence which is just the following two sequences repeated:
 
@@ -16,13 +16,24 @@ class VeryBasicSequence(Sequence):
         self.theta = 0
         self.n = int((n+3)/4)*4 # makes n the smallest multiple of four bigger than the required number
         self.sequence = np.ones(n)
+        self.pattern = pattern
 
         counter = 0
         # make the very basic sequence
-        while counter+1 < self.n:
-            self.sequence[counter] = 1
-            self.sequence[counter+1] = 2
-            counter+=2
+        if self.pattern == 1:
+            while counter+1 < self.n:
+                self.sequence[counter] = 1
+                self.sequence[counter+1] = 2
+                counter+=2
+        elif self.pattern == 2:
+            while counter < self.n:
+                if counter % 2 == 0:
+                    self.sequence[counter] = 1
+                elif counter % 4 == 1:
+                    self.sequence[counter] = 2
+                else:
+                    self.sequence[counter] = 3
+
 
         if randint(0,1) == 0:
             if randint(0,1) == 0:
@@ -67,10 +78,19 @@ class VeryBasicSequence(Sequence):
     def new(self):
         counter = 0
         # make the very basic sequence
-        while counter+1 < self.n:
-            self.sequence[counter] = 1
-            self.sequence[counter+1] = 2
-            counter+=2
+        if pattern == 1:
+            while counter+1 < self.n:
+                self.sequence[counter] = 1
+                self.sequence[counter+1] = 2
+                counter+=2
+        elif pattern == 2:
+            while counter < self.n:
+                if counter % 2 == 0:
+                    self.sequence[counter] = 1
+                elif counter % 4 == 1:
+                    self.sequence[counter] = 2
+                else:
+                    self.sequence[counter] = 3
 
         if randint(0,1) == 0:
             if randint(0,1) == 0:
