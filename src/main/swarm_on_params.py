@@ -13,10 +13,10 @@ from models.SimpleSequence import VeryBasicSequence
 
 # function we are attempting to optimize (minimize)
 def func1(x):
-    #time_series = VeryBasicSequence()
-    #network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    #return train(network, error_method="Binary")
-    return (x[0]**2/2 +x[1]**2/4)
+    time_series = VeryBasicSequence()
+    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    return train(network, error_method="Binary")
+    #return (x[0]**2/2 +x[1]**2/4)
 
 #--- MAIN ---------------------------------------------------------------------+
 
@@ -140,10 +140,10 @@ class PSO():
 
 #--- RUN ----------------------------------------------------------------------+
 def main():
-    bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func1,bounds,num_particles=64,maxiter=16)
-    #bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    #PSO(func1,bounds,num_particles=4,maxiter=32)
+    #bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    #PSO(func1,bounds,num_particles=64,maxiter=16)
+    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func1,bounds,num_particles=4,maxiter=32)
 
 #--- END ----------------------------------------------------------------------+
 
