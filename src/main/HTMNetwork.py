@@ -19,6 +19,7 @@ from TimeSeriesStream import TimeSeriesStream
 from time import localtime, strftime
 import argparse
 from tqdm import tqdm
+from math import sqrt
 
 _PARAMS_PATH = "model.yaml"
 
@@ -221,7 +222,8 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if last_prediction != None:
                 if error_method == "MSE":
-                    result+=(series-last_prediction)**2**.5
+
+                    result+=sqrt((series-last_prediction)**2)
                 elif error_method == "Binary":
                     if series==last_prediction:
                         result+= 0
@@ -249,9 +251,12 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if last_prediction != None:
                 if error_method == "MSE":
-                    result+=(series-last_prediction)**2**.5
+                    result+=sqrt((series-last_prediction)**2)
                 elif error_method == "Binary":
-                    result+= 0 if series==last_prediction else 1
+                    if series==last_prediction:
+                        result+= 0
+                    else:
+                        result+=1
             last_prediction=predictionResults[1]["predictedValue"]
             count+=1
         return result
@@ -273,9 +278,12 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if last_prediction != None:
                 if error_method == "MSE":
-                    result+=(series-last_prediction)**2**.5
+                    result+=sqrt((series-last_prediction)**2)
                 elif error_method == "Binary":
-                    result+= 0 if series==last_prediction else 1
+                    if series==last_prediction:
+                        result+= 0
+                    else:
+                        result+=1
             last_prediction=predictionResults[1]["predictedValue"]
         return result
     elif mode == "eval":
@@ -299,9 +307,12 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
             predictionResults = getPredictionResults(network, "classifier")
             if eval_method == "val":
                 if last_prediction != None and error_method == "MSE":
-                    result+=(series-last_prediction)**2**.5
+                    result+=sqrt((series-last_prediction)**2)
                 elif last_prediction != None and error_method == "Binary":
-                    result+= 0 if series==last_prediction else 1
+                    if series==last_prediction:
+                        result+= 0
+                    else:
+                        result+=1
             elif eval_method == "expressive":
                 oneStep = predictionResults[1]["predictedValue"]
                 oneStepConfidence = predictionResults[1]["predictionConfidence"]

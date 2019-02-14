@@ -5,12 +5,16 @@ import random
 import math, sys
 from HTMNetwork import *
 from models.ARMAModels import ARMATimeSeries
+from models.SimpleSequence import VeryBasicSequence
 
 #--- COST FUNCTION ------------------------------------------------------------+
 
 # function we are attempting to optimize (minimize)
 def func1(x):
-    return (x[0]**2/2 +x[1]**2/4)
+    time_series = VeryBasicSequence()
+    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
+    return train(network, error_method="Binary")
+    #return (x[0]**6/3 +x[1]**-4/4)
 
 #--- MAIN ---------------------------------------------------------------------+
 
@@ -63,7 +67,7 @@ class Particle:
                 self.position_i[i]=bounds[i][0]
 
 class PSO():
-    def __init__(self,costFunc,x0,bounds,num_particles,maxiter):
+    def __init__(self,costFunc,bounds,num_particles,maxiter):
         global num_dimensions
 
         num_dimensions=len(bounds)
@@ -105,9 +109,10 @@ class PSO():
 
 #--- RUN ----------------------------------------------------------------------+
 def main():
-    initial=[1,1]               # initial starting location [x1,x2...]
-    bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func1,initial,bounds,num_particles=64,maxiter=16)
+    #bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    #PSO(func1,bounds,num_particles=64,maxiter=16)
+    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func1,bounds,num_particles=4,maxiter=32)
 
 #--- END ----------------------------------------------------------------------+
 
