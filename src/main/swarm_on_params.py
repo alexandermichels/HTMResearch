@@ -138,6 +138,7 @@ class PSO():
                     output_row.append(swarm[j].position_i[k])
                 output_row.append(swarm[j].err_i)
             writer.writerow(output_row)
+            csv_out.flush()
             i+=1
 
         #print final results
@@ -157,15 +158,15 @@ class PSO():
 
 #--- RUN ----------------------------------------------------------------------+
 def main():
-    #bounds=[(-5,5),(-5,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    #PSO(func1,bounds,num_particles=64,maxiter=16)
-    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(-100,100), (-100,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func1,bounds,num_particles=16,maxiter=16)
+    bounds=[(0.000000001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func2,bounds,num_particles=16,maxiter=16)
-    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.000000001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func3,bounds,num_particles=16,maxiter=16)
-    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.000000001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func4,bounds,num_particles=16,maxiter=16)
-    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.000000001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func5,bounds,num_particles=16,maxiter=16)
 
 

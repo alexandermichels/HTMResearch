@@ -180,6 +180,7 @@ class PSO():
                     output_row.append(swarm[j].position_i[k])
                 output_row.append(swarm[j].err_i)
             writer.writerow(output_row)
+            csv_out.flush()
             i+=1
 
         #print final results
