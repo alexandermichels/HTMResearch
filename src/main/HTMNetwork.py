@@ -324,11 +324,8 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
     else:
         print("No valid mode selected")
 
-def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=None, verbosity=1):
-    if cellsPerMiniColumn == None:
-        network = createNetwork(TimeSeriesStream(time_series_model), rdse_resolution)
-    else:
-        network = createNetwork(TimeSeriesStream(time_series_model), rdse_resolution, cellsPerMiniColumn)
+def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=32, verbosity=1):
+    network = createNetwork(TimeSeriesStream(time_series_model), rdse_resolution, cellsPerMiniColumn)
     network.initialize()
 
     spRegion = network.getRegionsByType(SPRegion)[0]

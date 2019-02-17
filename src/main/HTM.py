@@ -54,6 +54,9 @@ class RDSEEncoder():
     def get_encoder(self):
         return self.encoder
 
+    def get_resolution(self):
+        return self.resolution
+
     def m_encode(self, inputData):
         self.last_m_encode = self.encoder.encode(inputData)
         return self.last_m_encode
@@ -87,11 +90,14 @@ class HTM():
         :param rdse_resolution: float, resolution of Random Distributed Scalar Encoder
         :param cellsPerMiniColumn: int, number of cells per mini-column. Default=32
         """
-        DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-        self.log_file = join('../logs/', 'HTM-{}-({}CPMC-{}RDSEres)-datasource-{}.log'.format(DATE,cellsPerMiniColumn,rdse_resolution,str(dataSource)))
-        log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
-        log.getLogger().addHandler(log.StreamHandler())
-        self.setVerbosity(verbosity)
+        if verbosity > 0:
+            DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+            self.log_file = join('../logs/', 'HTM-{}-({}CPMC-{}RDSEres)-datasource-{}.log'.format(DATE,cellsPerMiniColumn,rdse_resolution,str(dataSource)))
+            log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
+            log.getLogger().addHandler(log.StreamHandler())
+            self.setVerbosity(verbosity)
+        else:
+            self.log_file = None
 
         self.modelParams = {}
         log.debug("...loading params from {}...".format(_PARAMS_PATH))
@@ -186,12 +192,19 @@ class HTM():
         * 2 == VERBOSE
         * 1 == WARNING
         """
-        if level == 1:
-            log.getLogger().setLevel(log.WARNING)
-        elif level == 2:
-            log.getLogger().setLevel(log.VERBOSE)
-        elif level == 3:
+        if self.log_file == None: # if there's no log file, make one
+            DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+            self.log_file = join('../logs/', 'HTM-{}-({}CPMC-{}RDSEres)-datasource-{}.log'.format(DATE,self.modelParams["tmParams"]["cellsPerColumn"],self.encoder.get_resolution(),str(self.sensorRegion.dataSource)))
+            log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
+            log.getLogger().addHandler(log.StreamHandler())
+
+        if level >= 3:
             log.getLogger().setLevel(log.DEBUG)
+        elif level >= 2:
+            log.getLogger().setLevel(log.VERBOSE)
+        elif level >= 1:
+            log.getLogger().setLevel(log.WARNING)
+
 
     def runWithMode(self, mode, eval_method="val", error_method="mse"):
         '''
@@ -306,20 +319,23 @@ class HTM():
         :param  sibt - spatial (pooler) iterations before temporal (pooler)
         """
         for i in range(sibt):
+            log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
             # train on spatial pooler
             log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", "val", error_method), error_method))
-        log.info("Exited spatial pooler only training loop")
+        log.info("\nExited spatial pooler only training loop")
         last_error = 0 # set to infinity error so you keep training the first time
         curr_error = -1
         counter = 0
         log.info("Entering full training loop")
         while (fcompare(curr_error, last_error) == -1 and counter < max_cycles):
+            log.debug("\n++++++++++ Cycle {} of the full training loop +++++++++\n".format(counter))
             last_error=curr_error
             curr_error = 0
             for i in range(int(iter_per_cycle)):
-                log.debug("Error for full training iteration {}, cycle {} was {} with {} error method".format(counter,i,self.runWithMode("train", "val", error_method), error_method))
+                log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
+                log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", "val", error_method), error_method))
                 curr_error+=self.runWithMode("test", "val", error_method)
-            log.debug("Iteration {} - last: {}    curr: {}".format(counter, last_error, curr_error))
+            log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
             counter+=1
             if last_error == -1:
                 last_error = float("inf")
@@ -378,8 +394,9 @@ class HTM():
 
 if __name__ == "__main__":
     time_series_model = ARMATimeSeries(2,0)
-    network = HTM(TimeSeriesStream(time_series_model), .5)
+    network = HTM(TimeSeriesStream(time_series_model), .5, verbosity=0)
     print(network)
+    network.setVerbosity(4)
     print(network.train())
     """l = VeryBasicSequence()
     for i in range(10):

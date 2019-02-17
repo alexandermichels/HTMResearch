@@ -6,7 +6,7 @@ import random
 import math, sys
 import copy
 from os.path import join
-from HTMNetwork import *
+from HTM import *
 from models.ARMAModels import ARMATimeSeries
 from models.SimpleSequence import VeryBasicSequence
 
@@ -20,23 +20,43 @@ def func1(x):
 
 def func2(x):
     time_series = VeryBasicSequence(pattern=1)
-    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    return train(network, error_method="Binary")
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary")
 
 def func3(x):
     time_series = VeryBasicSequence(pattern=2)
-    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    return train(network, error_method="Binary")
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary")
 
 def func4(x):
     time_series = VeryBasicSequence(pattern=3)
-    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    return train(network, error_method="Binary")
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary")
 
 def func5(x):
     time_series = VeryBasicSequence(pattern=4)
-    network = HTM(time_series, x[0], cellsPerMiniColumn=8, verbosity=0)
-    return train(network, error_method="Binary")
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary")
+
+def func22(x):
+    time_series = VeryBasicSequence(pattern=1)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+
+def func23(x):
+    time_series = VeryBasicSequence(pattern=2)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+
+def func24(x):
+    time_series = VeryBasicSequence(pattern=3)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+
+def func25(x):
+    time_series = VeryBasicSequence(pattern=4)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 
 #--- MAIN ---------------------------------------------------------------------+
@@ -104,7 +124,7 @@ def evaluate_position(swarm, j, costFunc):
     return (j, swarm[j])
 
 class PSO():
-    def __init__(self,costFunc,bounds,num_particles,maxiter):
+    def __init__(self,costFunc,bounds,num_particles,maxiter,processes=mp.cpu_count()-1):
         global num_dimensions
 
         num_dimensions=len(bounds)
@@ -132,9 +152,9 @@ class PSO():
             header_row.append("Particle {}'s Error".format(j))
         writer.writerow(header_row)
 
-        p = mp.Pool(processes = mp.cpu_count()-1)
+        p = mp.Pool(processes = processes)
         while i < maxiter:
-            print i,err_best_g
+            print i,err_best_g, pos_best_g
 
             results = p.map(eval_pos_unpacker, itertools.izip(itertools.repeat(swarm),range(num_particles), itertools.repeat(costFunc)))
             results.sort()
@@ -178,15 +198,28 @@ class PSO():
         print err_best_g
 
 #--- RUN ----------------------------------------------------------------------+
+def swarm1():
+    bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func2,bounds,num_particles=7,maxiter=16, processes=7)
+    bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func3,bounds,num_particles=7,maxiter=16, processes=7)
+    bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func4,bounds,num_particles=7,maxiter=16, processes=7)
+    bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func5,bounds,num_particles=7,maxiter=16, processes=7)
+
+def swarm2():
+    bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func22,bounds,num_particles=16,maxiter=24, processes=16)
+    bounds=[(0.00001,2), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func23,bounds,num_particles=16,maxiter=24, processes=16)
+    bounds=[(0.00001,2), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func24,bounds,num_particles=16,maxiter=24, processes=16)
+    bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func25,bounds,num_particles=16,maxiter=24, processes=16)
+
 def main():
-    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func2,bounds,num_particles=16,maxiter=16)
-    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func3,bounds,num_particles=16,maxiter=16)
-    bounds=[(0,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func4,bounds,num_particles=16,maxiter=16)
-    bounds=[(0,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func5,bounds,num_particles=16,maxiter=16)
+    swarm1()
 
 #--- END ----------------------------------------------------------------------+
 

@@ -29,6 +29,12 @@ class TimeSeriesStream(RecordStreamIface):
     def __len__(self):
             return len(self.sequence)
 
+    def __str__(self):
+        return str(self.sequence)
+
+    def __repr__(self):
+        return str(self.sequence)
+
     def close(self):
         """ Close the stream
         """

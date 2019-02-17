@@ -115,7 +115,7 @@ class PSO():
         writer.writerow(header_row)
 
         while i < maxiter:
-            print i,err_best_g
+            print i,err_best_g, pos_best_g
             # cycle through particles in swarm and evaluate fitness
             for j in range(0,num_particles):
                 #print(swarm[j].position_i)
