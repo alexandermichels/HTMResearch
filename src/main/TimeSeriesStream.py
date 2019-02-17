@@ -4,6 +4,9 @@ import csv
 import copy
 import json
 
+from numbers import Real
+from itertools import repeat
+
 from nupic.data.field_meta import FieldMetaInfo, FieldMetaType, FieldMetaSpecial
 from nupic.data import SENTINEL_VALUE_FOR_MISSING_DATA
 from nupic.data.record_stream import RecordStreamIface
@@ -25,6 +28,12 @@ class TimeSeriesStream(RecordStreamIface):
 
     def __len__(self):
             return len(self.sequence)
+
+    def __str__(self):
+        return str(self.sequence)
+
+    def __repr__(self):
+        return str(self.sequence)
 
     def close(self):
         """ Close the stream
@@ -48,7 +57,7 @@ class TimeSeriesStream(RecordStreamIface):
         assert self.sequence is not None
         if not self.sequence.has_next():
                 raise StopIteration
-        return [ self.sequence.get() ]
+        return  [ self.sequence.get() ]
 
 
     def getNextRecordIdx(self):

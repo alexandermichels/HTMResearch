@@ -80,6 +80,11 @@ class VeryBasicSequence(Sequence):
             self._train_set_end = int(8*self.n/10)
         self._place_in_train_set = self._train_set
 
+        self.sequence = np.array(self.sequence)
+
+    def __getitem__(self, i):
+        return self.sequence[i]
+
     def __str__(self):
         """
         To string
