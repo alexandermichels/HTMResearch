@@ -198,8 +198,6 @@ def runNetworkWithMode(network, mode, eval_method="val", error_method = "MSE"):
     '''
     _model = network.regions["sensor"].getSelf().dataSource
     sensorRegion = network.regions["sensor"]
-    spatialPoolerRegion = network.regions["spatialPoolerRegion"]
-    temporalPoolerRegion = network.regions["temporalPoolerRegion"]
     # Set predicted field
     network.regions["sensor"].setParameter("predictedField", "series")
 
@@ -350,16 +348,16 @@ def HTM(time_series_model, rdse_resolution=1, cellsPerMiniColumn=None, verbosity
     return network
 
 def train(network, eval_method="val", error_method="MSE"):
-    last_error = -1
-    curr_error = -1
+    last_error = float("inf") # set to infinity error so you keep training the first time
+    curr_error = float("inf")
     counter = 0
     for i in range(25):
         runNetworkWithMode(network, "strain", "val", error_method)
     while (curr_error <= last_error and counter <20):
+        last_error=curr_error
+        curr_error = 0
         runNetworkWithMode(network, "train", "val", error_method)
         curr_error = runNetworkWithMode(network, "test", "val", error_method)
-        if last_error == -1:
-            last_error = curr_error+1
         counter+=1
     return runNetworkWithMode(network, "eval", eval_method, error_method)
 
@@ -373,4 +371,4 @@ if __name__ == "__main__":
     #args = parser.parse_args()
     time_series_model = ARMATimeSeries(2,0)
     network = HTM(time_series_model, cellsPerMiniColumn=2)
-    train(network)
+    print(train(network))

@@ -53,6 +53,8 @@ class ARMATimeSeries(Sequence):
             self._train_set_end = int(8*self.n/10)
         self._place_in_train_set = self._train_set
 
+        self.sequence = np.array(self.sequence)
+
     def __str__(self):
         """
         To string
@@ -107,6 +109,8 @@ class ARMATimeSeries(Sequence):
                 self._test_set_end = self.n
             self._train_set = 0
             self._train_set_end = int(8*self.n/10)
+
+        self.sequence = np.array(self.sequence)
 
     def normalize(self, val=100.0):
         _min = min(self.sequence)
