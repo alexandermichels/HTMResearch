@@ -1,11 +1,29 @@
-\documentclass[fleqn,notitlepage,minimal]{article}
-\usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,commath,textcomp}
+\documentclass[oneside,12pt,openany]{book}
+\usepackage[toc,page]{appendix}
+\usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,textcomp,commath,mathtools,hyperref,pgfplots,epigraph,enumitem,pdfpages}
 
-\renewcommand{\baselinestretch}{1.3}
-\setlength{\textwidth}{6.5in} \setlength{\textheight}{9in}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=blue,      
+	urlcolor=blue,
+	citecolor=blue,
+	bookmarks=true,
+}
 
-\setlength{\oddsidemargin}{0mm} \setlength{\evensidemargin}{0mm}
-\setlength{\topmargin}{-0.5in}
+\usepackage{scrextend}
+\usepackage{afterpage}
+\newcommand\blankpage{
+	\vfill
+	\pagebreak
+	\ifthispageodd{\null
+		\vfill
+		\vfill
+		\clearpage}{}
+}
+
+\renewcommand{\baselinestretch}{1.5}
+\setlength{\textwidth}{6in}
 
 \newtheorem{defn}{Definition}
 \newtheorem{thm}{Theorem}
@@ -48,9 +66,9 @@
 	
 	\newpage
 	
-	\section{Artificial Intelligence}
+	\chapter{Artificial Intelligence}
 	
-	\subsection{What is Intelligence?}
+	\section{What is Intelligence?}
 	
 	Although we are continually bombarded with sensationalist news stories proclaiming the dawn and dangers of ``artificial intelligence,'' it is important to first define what it means to say a machine is intelligent. This is much the same way Turing began his preponderance of artificial intelligence in his 1950 \textit{Computing Machinery and Intelligence} \cite{Turing}. Turing came up with an eloquent boundary for determining the point at which we call a machine `intelligent.' His proposal, which he called ``The Imitation Game,'' but is now referred to as ``The Turing Test,'' is to have an interrogator question a human and an artificial intelligence, randomly labeled X and Y, in the hopes of distinguishing between the two \cite{Turing}. We reach ``intelligence'' when an interrogator cannot reliably distinguish between the two \cite{Turing}.
 	
@@ -60,7 +78,7 @@
 	
 	John Searle's 1980 paper ``Minds, Brains, and Programs'' introduced the world to The Chinese room argument \cite{Searle}. It supposes that artificial intelligence research is successful and produces an artificial intelligence that is capable of behaving as if it understands Chinese, then asks does the machines literally understand Chinese or it simulating the ability to understand Chinese \cite{Searle}? Although this may seem like a pedantic distinction at first glance, the difference is truly important. The hypothesis that we can only ever simulate the ability to think is known as the weak AI hypothesis whereas the hypothesis that we can literally produce a machine capable of thought is the strong AI hypothesis \cite{Jones}. Another useful term in use today is Artificial General Intelligence, which is an intelligence capable of performing any intellectual task that a human can \cite{Buchanan}.
 	
-	\subsection{The History of Artificial Intelligence}
+	\section{The History of Artificial Intelligence}
 	
 	
 	One would think that artificial intelligence would have its roots in the last century or two, but mankind has dreamed of and proposed machines with human-like intelligence for thousands years, dating back to at least Homer \cite{Buchanan}. From our imagination and literature, artificial intelligence was brought into the realm of the academic by philosophers and mathematicians such as Ren\'e Descartes' ``mechanical man'' and Gottfried Wilhelm Leibniz's mechanical reasoning devices \cite{Buchanan}. Pascal and Leibniz both designed calculating machines capable of automated arithmetic, but proposing a calculator is far from what we think of as  \cite{Buchanan}.
@@ -73,7 +91,7 @@
 	
 	Research into artificial intelligence reemerged in the mid to late eighties, but this time with a more practical focus rather than searching for Searle's strong AI \cite{Jones}. Algorithms developed and used for artificial intelligence found their way into camera auto-focus, anti-lock brakes, search engines, and medical diagnoses \cite{Jones}. Another marked difference is the plethora of approaches such as agent systems and biologically inspired systems. Today research into artificial intelligence has largely remained in this practical realm, using neural networks, data mining, fuzzy logic and other tools to solve real-world problems while slowly marching towards an Artificial General Intelligence.
 	
-	\subsection{Approaches to Artificial Intelligence}
+	\section{Approaches to Artificial Intelligence}
 	
 	Artificial intelligence, because of how broadly the word can be defined and how many fields contribute the its progress, can be hard to wrap one's head around. However, Connell and Livingston have proposed four categories for artificial intelligence approaches which are useful for understanding the state of artificial intelligence research and the varied potential paths to Artificial General Intelligence \cite{Connell}.
 	
@@ -85,7 +103,7 @@
 	
 	Lastly, we visit ``Emulation'' which is the school of thought that says we are better off copying intelligence than designing our own \cite{Connell}. Neural simulation, neural networks, animal models, human development, sociality, and cortical learning algorithms all fit in this category \cite{Connell}. The danger with this approach is abandoning theory in its sprint towards a functional copy, because if one does not understand the thing they have made, it is hard to see what it can do and where it can be improved. Another excellent point is that it can be very hard to correctly identify what needs to be copied, as Connell and Livingston note, ``artificial feathers and flapping turn out not to be needed to create airplanes'' \cite{Connell}.
 	
-	\section{Sparse Distributed Representations}
+	\chapter{Sparse Distributed Representations}
 	
 	Consider the binary representation of the integer 16 versus that of the integer 15. The two numbers are quite similar: they are only 1 apart, so they are as close as two integers can be. Yet their binary representations are [100000] and [011111] respectively. They have no shared ``on'' bits so despite their similarity, their binary representations reflect none at all. In fact, despite being as close as two integers can be (a Euclidean distance of 1), their binary representations have a Hamming distance, the number places in which two codewords differ, of 5, the maximum Hamming distance of two codewords of length 5 \cite{Adams}. 
 	
@@ -101,13 +119,13 @@
 	
 	Given a set of sparse distributed representations with the same dimension, $X =\{\overrightarrow{x_{1}}, \overrightarrow{x_{2}}, ...,\overrightarrow{x_{n}}\}$, we can union the vectors using the bitwise OR operation over the $i^{th}$ position of the vectors in the set to produce the $i^{th}$ position of $union(X)$ \cite{Properties}. For example, given [0100] and [0010] the union would be [0110]. We say an SDR $\overrightarrow{y}$ is an element of the union of a set of SDRs, $\overrightarrow{X}$, if and only if $match_{\theta}(\overrightarrow{X},\ \overrightarrow{y})$ \cite{Properties}.
 	
-	\section{Hierarchical Temporal Memory}
+	\chapter{Hierarchical Temporal Memory}
 	
 	Hierarchical Temporal Memory is a technology that takes all the concepts we have briefly surveyed and combines them into a machine learning technology firmly rooted in the ``Emulation'' Path to Artificial Intelligence. It aims to capture the structure and algorithms of the neocortex in the hopes of delivering machines the intelligent though that the neocortex is thought to gift us \cite{Whitepaper}. Hierachical Temporal Memory networks (HTMs) are by definition a type of neural network, but are special because they model cells that are stacked in columns, which are organized in layers, in nodes, and in a hierarchy, following the layout of cells in the neocortex \cite{Whitepaper}.
 	
 	Hierarchical Temporal Memory follows what is known as a cortical learning algorithm \cite{Principles}. The cortical learning algorithm can be broken down into a few top level steps: initialization and encoding, the Spatial Pooler, the Temporal Pooler, and decoding the information. Of course, in a system with more than one level of regions, there is a hierarchy of regions with children regions feeding into parent regions to interpret multiple time series together which further complicates the network \cite{Dillon}. Bringing all of these complex pieces together yields Hierarchical Temporal Memory, but it is important to start by looking at what makes everything work: the cells.
 	
-	\subsection{Cells}
+	\section{Cells}
 	
 	The cell in a Hierarchical Temporal Memory network is the most basic building block from which the structure is formed. To understand how the system works, it is vital to first comprehend the internal structures and functions of the HTM's cells. They are comprised of three main components: synapses, the proximal dendrite, and the distal dendrites \cite{Whitepaper}.
 	
@@ -124,13 +142,13 @@
 	
 	Cells also have a list of distal dendrite segments \cite{Whitepaper}. Each distal dendrite segment contains a list of potential synapses to other cells in the node. Segments learn by updating based on forming connections to cells that were active due to feed-forward input in the previous time step in order to predict its own cell's activation \cite{Whitepaper}. When a cell has a segment which has a number of active synapses above a threshold, the cell is considered to be in a predictive state \cite{Principles}.
 	
-	\subsection{Initialization and Encoding}
+	\section{Initialization and Encoding}
 	
 	Hierarchical Temporal Memory needs a way to move from the set of possible inputs, the input set, to the sparse distributed representations. This is accomplished by an encoding function which is specified from the input set to some $n$-dimensional sparse distributed representation. A region's input space and output space are the same; an HTM takes in a time series over the space and predicts an element or set of elements of the input space it believes to come next \cite{Purdy}. Each region has an input space which could be a single input set or the Cartesian product of multiple input sets. As an example, \{0,1,2,3,4\} could be an input set and if a parent region receives input from child region which has \{0,1\} as its input space and another child region with \{red, green, blue\} as its input space, then the parent region's input space would be \{(0, red), (1, red), (0, green), (1, green), (0, blue), (1, blue)\}. An encoding function from an input space to $n$-dimensional sparse distributed representations is not guaranteed to be surjective or injective. We would not expect surjectivity, but could get it through nearest neighbor decoding, but injectivity is something that one would think would be preserved. However, because parent regions are allowed to take a slice of the output vector (not the ``on'' bits, just an arbitrary portion) when being fed to from multiple child regions, we cannot guarantee the property.
 	
 	Before anything is sent through an HTM, each column is initialized with a list of initial potential synapses \cite{Whitepaper}. First we select a set of random inputs from the input set, then each input is represented by a synapse and given a random initial permanence value around the synapse validity threshold which are assigned such that each column has a bias towards the center of the input space \cite{Whitepaper}. Before we begin to send input to the system we also need an encoder which is a surjective function from the input space to our sparse distributed representations so that the HTM can interpret our time series.
 	
-	\subsection{Spatial Pooler}
+	\section{Spatial Pooler}
 	
 	The Spatial Pooler is named so because the idea is to lump or pool together concepts that are semantically similar. It gives HTMs the ability to generalize and abstract. It accomplishes this through a couple of interesting steps that allow the system to preserve crucial information about the input in a sparse distributed representation but still generalize away some of the information in a algorithmic way. The fact that it is able to accomplish this through at all, let alone through the series of steps it takes is frankly incredible.
 	
@@ -141,7 +159,7 @@
 	Lastly, the algorithm performs its learning stage \cite{Whitepaper}. This consists of updating the permanence values of potential synapses in the proximal dendrite of each active column, updating the boost of each column, and updating the inhibition radius \cite{Whitepaper}. For each potential synapse in the proximal dendrite of each active column, the permanence is incremented by a parameter if the synapse is active and decremented by the parameter if not, but always bounded between [0,1] \cite{Whitepaper}. Then the algorithm calculates a minimum desired firing rate for each cell to adjust the cell's boost accordingly and the cell's synapse permanences can be increased by a scalar if the cell is not having large enough overlap using a sliding average \cite{Whitepaper}. The learning phase finishes by adjusting the inhibition radius in order to ensure that the representations the system will produce will be of the desired sparseness \cite{Whitepaper}.
 	
 	
-	\subsection{Temporal Pooler}
+	\section{Temporal Pooler}
 	
 	\begin{figure}[h!]
 		\centering
@@ -156,11 +174,11 @@
 	
 	Secondly, the system needs to calculate the predictive state for each cell \cite{Whitepaper}. For each segment on the distal dendrite of each cell, if the segment is considered active, because enough of its synapses are active, the cell is put into a predictive state \cite{Principles}. The cell also has active synapses added to that that segment and another segment that has the best match to the activity in the previous time step in order to learn \cite{Whitepaper}. These changes are not immediately implemented however, they are queued up and when the next set of feed-forward input comes, if the cell is selected as a learning cell (its prediction was correct) it is positively reinforced, else if the cell stops predicting it is negatively reinforced \cite{Whitepaper}.
 	
-	\subsection{Hierarchy}
+	\section{Hierarchy}
 	
 	The hierarchy of Hierarchical Temporal Memory comes from the ability to stack HTM regions in a tree like structure so that outputs of multiple HTM regions can be fed into a single parent region. So instead of interpreting the set of cells in a predictive state (that regions interpretation of its input) directly, we pass that information to another region with its own independent initialization. The parent region can also possibly receive another region's output or another raw input to contextualize the data. This ingenious structure comes from Jeff Hawkin's 2004 book ``On Intelligence,'' where he proposed that larger objects are composed of smaller objects (sentences of words, words of letters, etc.) and this structure allows lower regions to identify and predict the individual components and then higher regions to connect these components into more complex ideas \cite{Evaluation}.
 	
-	\subsection{Decoding}
+	\section{Decoding}
 	
 	Once the system completes its processing of a time step's input, the system outputs a sparse distributed representation which may have gone through multiple layers and it is important to be able to decode the system's prediction in order for the system to be useful. Hierarchical Temporal Memory currently uses something called an SDR Classifier to decode the predictions of an HTM \cite{Dillon}. At its essence, an SDR Classifier is a single layer, feed forward, neural network \cite{Dillon}.
 
@@ -175,7 +193,7 @@
 	
 	
 	
-	\section{Literature Review}
+	\chapter{Literature Review}
 	
 	Hierarchical Temporal Memory has sparked a great amount of interest in the artificial intelligence community as everyone scrambles to ask how this biologically-inspired approach will fit into the Machine Learning landscape going forward. How do we mathematically formalize this emulation of the neocortex in order to integrate HTMs into the tools and systems we use today? How does their performance compare to the tools in use today when it comes to typical tasks like signal processing and forecasting? Will HTMs become an industry standard, fade to irrelevance, or somewhere in between? Much work has been done in this field and there is still much to be to done.
 	
@@ -204,7 +222,7 @@
 	The hopeful net result will be a Hierarchical Temporal Memory network that is more flexible, more stable, and more capable. Failing that, this exploration will explore the uses of the innate topological structures in Hierarchical Temporal Memory, help us define the boundaries of what Hierarchical Temporal Memory may and may not be able to achieve, and explore if and how the concepts of fuzzy logic, fuzzy control, and soft computing can improve upon Hierarchical Temporal Memory.
 	
 	\newpage
-	
+	\addcontentsline{toc}{chapter}{References}
 	\begin{thebibliography}{99}
 				
 		\bibitem{Adams} Adams, C and Robert Franzosa. 2008. \textit{Introduction to Topology: Pure and Applied}. Pearson Prentice Hall, Upper Saddle River, NY.

@@ -29,6 +29,12 @@ Right now we are working on trying to categorize the predictive power of Hierarc
 
 ***
 
+## Particle Swarm Optimization
+
+[Read up on swarming](http://www.swarmintelligence.org/index.php)
+
+![Swarming GIF](images/ParticleSwarmArrowsAnimation.gif)
+
 
 ## Sources
 
