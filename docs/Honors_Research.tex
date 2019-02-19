@@ -66,10 +66,13 @@
 		% Bottom of the page
 		{\large \today\par}
 	\end{titlepage}
+	\renewcommand{\baselinestretch}{.7}
 	\setcounter{tocdepth}{1}
 	\tableofcontents
 	\vfill
 	\pagebreak
+	
+	\renewcommand{\baselinestretch}{1.5}
 	
 	\addcontentsline{toc}{chapter}{Acknowledements}
 	\chaptermark{ACKNOWLEDGEMENTS}
@@ -109,13 +112,46 @@
 	\mainmatter
 	\chapter{Introduction}
 	
-	\textcolor{red}{People have dreamed of AI for thousands of years}
+	Although we are continually bombarded with sensationalist news stories proclaiming the dawn and dangers of ``artificial intelligence,'' it is important to first define what it means to say a machine is intelligent. This is much the same way Turing began his preponderance of artificial intelligence in his 1950 \textit{Computing Machinery and Intelligence} \cite{Turing}. Turing came up with an eloquent boundary for determining the point at which we call a machine `intelligent.' His proposal, which he called ``The Imitation Game,'' but is now referred to as ``The Turing Test,'' is to have an interrogator question a human and an artificial intelligence, randomly labeled X and Y, in the hopes of distinguishing between the two \cite{Turing}. We reach ``intelligence'' when an interrogator cannot reliably distinguish between the two \cite{Turing}.
 	
-	\textcolor{red}{Logic and heuristics}
+	As mathematicians, we could also take our favorite route of defining something: we look at a collection of things that we would agree to be ``intelligent'' and abstract the shared properties we consider to be desirable until we have a set of properties that must be met for a system to be considered intelligent. From this approach, we could say that a system \textbf{S} is intelligent if and only if it is able to ``use language, form abstractions and concepts, solves kinds of problems now reserved for humans, and improve themselves'' \cite{Jones}. This is the definition from the Dartmouth AI Summer Research Project, but such a definition is obviously hard to evaluate and it would be much more difficult to form a consensus on what set of properties define intelligence than it is to get a set of properties to define other abstract mathematical concepts such as an integral domain.
+	
+	It quickly becomes apparent that we also need more states than just the two Boolean ``intelligent''/``not intelligent'' ones to talk about intelligence in a constructive manner. Without this everything on the spectrum from a for loop with an if-else to the robots in Isaac Asimov's \textit{I, Robot}  are under the same label of ``not intelligent'' yet we know that the `intelligence' exhibited in those cases are not at all comparable. We need a spectrum with many states of intelligence to constructively talk about the intelligence of a system.
+	
+	John Searle's 1980 paper ``Minds, Brains, and Programs'' introduced the world to The Chinese room argument \cite{Searle}. It supposes that artificial intelligence research is successful and produces an artificial intelligence that is capable of behaving as if it understands Chinese, then asks does the machine literally understand Chinese or it simulating the ability to understand Chinese \cite{Searle}? Although this may seem like a pedantic distinction at first glance, the difference is truly important. The hypothesis that we can only ever simulate the ability to think is known as the weak AI hypothesis whereas the hypothesis that we can produce a machine capable of thought is the strong AI hypothesis \cite{Jones}. These both stand in contrast to Artificial General Intelligence, which is an intelligence capable of performing any intellectual task that a human can \cite{Buchanan}.
+	
+	\section{The History of Artificial Intelligence}
+	
+	
+	One would think that artificial intelligence would have its roots in the last century or two, but mankind has dreamed of and proposed machines with human-like intelligence for thousands years, dating back to at least Homer \cite{Buchanan}. From our imagination and literature, artificial intelligence was brought into the realm of the academic by philosophers and mathematicians such as Ren\'e Descartes' ``mechanical man'' and Gottfried Wilhelm Leibniz's mechanical reasoning devices \cite{Buchanan}. Pascal and Leibniz both designed calculating machines capable of automated arithmetic, but proposing a calculator is far from what we think of as artificial intelligence today  \cite{Buchanan}.
+	
+	It was the rise of electronics from Turing, IBM, Bell Laboratories, and countless others in the mid-twentieth century started to change the question from a philosophical one to a practical one \cite{Buchanan}. Artificial intelligence is a testament to the kind of interdisciplinary problem solving encouraged by the liberal arts, with contributions coming from the fields such as engineering, biology, psychology, game theory, communication theory, logic, philosophy, and linguistics \cite{Buchanan}. Eventually, with advancements in computational power, operating systems, and language design, researchers were able to demonstrate impressive  computational problem solving such as Arthur Samuel's 1952 checker-playing program written in assembly language and one of the first examples of evolutionary computation \cite{Buchanan}. 
+	
+	Newell, Shaw, and Simon's ``Logic Theorist'' program became the first artificial intelligence written for a computer in 1956 \cite{Gugerty}. Through the use of heuristic algorithms, Logic Theorist was able to prove theorems and solve complex problems astonishingly well \cite{Gugerty}. These early attempts at artificial intelligence were largely doing two things: searching and finding ways to represent and manipulate knowledge. Claude Shannon pointed this out in his 1950 ``Programming a Computer for Playing Chess'' in which he produced what is now called the Shannon number, $10^{120}$, which is a lower bound of the game tree complexity of Chess \cite{Jones}.
+	
+	Artificial intelligence became formally recognized as a field of study and got its name from the 1956 Dartmouth Artificial Intelligence Conference \cite{Buchanan}. Another product of the conference was a step forward in artificial intelligence's ability to represent and manipulate knowledge with John McCarthy's development of the first AI programming language, LISP \cite{Jones}. The strides towards strong AI came crashing down with the publication of the 1969 paper ``Perceptrons'' which showed that single layer perceptrons were not able to properly handle linearly inseparable problems, leading to a steep decline in neural network research and ``AI Winter'' \cite{Jones}.
+	
+	Research into artificial intelligence reemerged in the mid to late eighties, but this time with a more practical focus rather than searching for Searle's strong AI \cite{Jones}. Algorithms developed and used for artificial intelligence found their way into camera auto-focus, anti-lock brakes, search engines, and medical diagnoses \cite{Jones}. Another marked difference is the plethora of approaches such as agent systems and biologically inspired systems. Today research into artificial intelligence has largely remained in this practical realm, using neural networks, data mining, fuzzy logic and other tools to solve real-world problems while slowly marching towards an Artificial General Intelligence.
+	
+	\section{Approaches to Intelligence}
+	
+	Artificial intelligence, because of how broadly the word can be defined and how many fields contribute the its progress, can be hard to wrap one's head around. However, Connell and Livingston have proposed four categories for artificial intelligence approaches which are useful for understanding the state of artificial intelligence research and the varied potential paths to Artificial General Intelligence \cite{Connell}.
+	
+	Their first category is labeled ``Silver Bullets'' and describes approaches in which much of what is needed is already believed to be present, but we are missing a crucial piece that will supposedly resolve our problems and deliver us a system with intelligence \cite{Connell}. Examples include `Fancy Logic' (second-order, non-monotonic, epistemic, deontic, modal, etc), Fuzzy Logic, Deep Language, Embodiment, and Quantum Computing \cite{Connell}. Disciples of this school of thought are chasing their particular ``Silver Bullet,'' working to formalize and perfect what they believe to be the missing link.
+	
+	They next describe the ``Core Values'' section which puts emphasis on the central organizational scheme over other computational details, believing that this macro-level structure has greater influence than the exact algorithms used \cite{Connell}. Situatedness, Emotionality, Self-Awareness, and Hierarchy \& Recursion are a few of these ideologies. There are strong arguments for this category, especially Hierarchy \& Recursions argument that an intelligence needs to be able to abstract recursively \cite{Connell}.
+	
+	Connell and Livingston's third category, ``Emergence,'' looks at artificial intelligence approaches which believe they already have the essentials, but we haven't implemented the essentials on a large enough scale to get our intelligence yet \cite{Connell}. For example, one might hold the position that intelligence is simply the ability to generate and search decision trees and we haven't realized an Artificial General Intelligence yet because our hardware doesn't allow us to do this effectively enough yet. Approaches in this category include Axiomatization, Commonsense, Learning, Evolution, and Integration \cite{Connell}.
+	
+	Lastly, we visit ``Emulation'' which is the school of thought that says we are better off copying intelligence than designing our own \cite{Connell}. Neural simulation, neural networks, animal models, human development, sociality, and cortical learning algorithms all fit in this category \cite{Connell}. The danger with this approach is abandoning theory in its sprint towards a functional copy, because if one does not understand the thing they have made, it is hard to see what it can do and where it can be improved. Another excellent point is that it can be very hard to correctly identify what needs to be copied, as Connell and Livingston note, ``artificial feathers and flapping turn out not to be needed to create airplanes'' \cite{Connell}.
+	
+	\section{Biologically Inspired Computing}
+	
+	\textcolor{red}{Talk about genetic algorithms and neural networks}
 	
 	\textcolor{red}{Computational neuroscience approach}
 	
-	\textcolor{red}{Briefly discuss Numenta and CLAs}
+	\textcolor{red}{Briefly discuss \textit{On Intelligence}, Numenta and CLAs}
 	
 	\chapter{Time Series}
 	
@@ -137,11 +173,11 @@
 		\label{TimeSeriesExamples}
 			
 	\end{figure}
-\footnotetext{Seattle precipitation image courtesy of \href{http://www.seattleweatherblog.com/rain-stats/}{Seattle Weather Blog}}
+\footnotetext{Seattle precipitation image courtesy of Seattle Weather Blog: \href{http://www.seattleweatherblog.com/rain-stats/}{\texttt{http://www.seattleweatherblog.com/rain-stats/}} }
 	
 	\textcolor{red}{Talk about ARIMA models}
 	
-	\chapter{Hierarchical Temporal Memory}
+	\chapter{Cortical Learning Algorithms}
 	
 	\section{The Neocortex}
 	
@@ -154,9 +190,10 @@
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=8cm]{images/ColumnOfNeocortex.png}
-		\caption{Column of the Neocortex}
+		\caption{Column of the Neocortex}{Column of the Neocortex\footnotemark}
 		\label{CorticalColumn}
 	\end{figure}
+	\footnotetext{Image courtesy of Wikipedia: \href{https://en.wikipedia.org/wiki/Neocortex}{\texttt{https://en.wikipedia.org/wiki/Neocortex}}}
 	
 	\section{Sparse Distributed Representations}
 	
@@ -174,25 +211,31 @@
 	
 	Given a set of sparse distributed representations with the same dimension, $X =\{\overrightarrow{x_{1}}, \overrightarrow{x_{2}}, ...,\overrightarrow{x_{n}}\}$, we can union the vectors using the bitwise OR operation over the $i^{th}$ position of the vectors in the set to produce the $i^{th}$ position of $union(X)$ \cite{Properties}. For example, given [0100] and [0010] the union would be [0110]. We say an SDR $\overrightarrow{y}$ is an element of the union of a set of SDRs, $\overrightarrow{X}$, if and only if $match_{\theta}(\overrightarrow{X},\ \overrightarrow{y})$ \cite{Properties}.
 	
-	\section{Cortical Learning Algorithms}
+	\section{Hierarchical Temporal Memory}
 	
-	\textcolor{red}{Sequence memory - SDRs and transitions}
+	\textcolor{red}{Overview - Sequence memory - SDRs and transitions}
 	
 	\textcolor{red}{Variable order sequence memory - cells per minicolumn}
-	
 	
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=\linewidth]{images/HTMCell.jpg}
 		\caption{Hierarchical Temporal Memory Cell}
-		\label{fig 1}
+		\label{fig:HTMCell}
 	\end{figure}
+	
+	\subsection{Encoder}
+	
+	\subsection{Spatial Pooler}
+	
+	\subsection{Temporal Pooler}
+
 
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=\linewidth]{images/Poolers.jpg}
 		\caption{Spatial and Temporal Poolers}
-		\label{fig 2}
+		\label{fig:Poolers}
 	\end{figure}
 
 	\subsection{Classifier}
@@ -201,7 +244,7 @@
 	
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[width=\linewidth]{images/SDRClassifier.jpg}
+		\includegraphics[width=.6\linewidth]{images/SDRClassifier.jpg}
 		\caption{SDR Classifier}
 		\label{fig 3}
 	\end{figure}
@@ -210,11 +253,15 @@
 	
 	\chapter{Literature Review}
 	
-	\textcolor{red}{Does anyone know if its able to do this?}
+	\section{Sequence Memory for Anomaly Detection and Prediction}
 	
-	\textcolor{red}{It has been used in applications, look there}
+	\textcolor{red}{Numenta's work}
 	
 	\textcolor{red}{partners such as http://numenta.com/htm-for-stocks/ grokstream.com cortical.io}
+	
+	\textcolor{red}{Masters theses on prediction}
+	
+	\section{Spatial Data, Sensors, and Motor Response}
 	
 	\chapter{Experiment Design}
 	
@@ -253,7 +300,26 @@
 	
 	\section{Particle Swarm Optimization}
 	
-	Introduced in by Russell Eberhart and James Kennedy in their 1995 paper, \textit{A New Optimizer Using Particle Swarm Theory}, Particle Swarm Optimization has changed the way the world optimizes continuous nonlinear functions. Usually abbreviated to PSO or \textit{swarming}, it draws inspiration from bird flocks and schools of fish \cite{Eberhart}. The concept is quite simple: it simulates particles on parameter space and at each time-step each particle evaluates fitness as a function of its location in parameter space, then moves towards some linear combination of its personal best and the overall best score among the particles.
+	Introduced in by Russell Eberhart and James Kennedy in their 1995 paper, \textit{A New Optimizer Using Particle Swarm Theory}, Particle Swarm Optimization has changed the way the world optimizes continuous nonlinear functions~\cite{PSOReview}. Swarming is fast and effective for optimization over complex multidimensional search spaces and lends itself well to parallelization due to its multi-agent approach, making it an excellent choice for optimizing parameters in neural networks and is implemented by Numenta for finding optimal parameters.
+	
+	Usually abbreviated to PSO or \textit{swarming}, it draws inspiration from bird flocks and schools of fish~\cite{Eberhart}. The concept is quite simple: it simulates particles on parameter space and at each time-step every particle evaluates fitness as a function of its location in parameter space, then moves towards some linear combination of its personal best and the overall best score among the particles using weights representing a cognitive constant or individuality (denoted $c$) and a social constant (denoted $s$).
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=.7\linewidth]{images/PSOVisual.png}
+		\caption{Visualization of the PSO Algorithm}
+		\label{fig:PSOVisual}
+	\end{figure}
+	
+	The algorithm begins by initializing all particles with a random coordinate in the parameter space and a random velocity. Then at each time step, it calculates its fitness based on the function being optimized and the parameters associated with its position in parameter space. If this fitness is the best the particle has achieved, it is recorded as its personal best, denoted \texttt{pbest} and the particle with the best fitness is chosen as global best, denoted \texttt{gbest}. We then update the velocity and particle position of each particle in our swarm using the equations described in Equation~\eqref{eqn:psoupdate} where $v_{t}$ is the velocity of a particle at time step $t$, $p_{t}$ is the position of a particle at time step $t$, and $\beta_{1}, \beta_{2}$ are uniformly distributed random variables with $\max(\beta)$ being a parameter of the algorithm~\cite{PSOReview}.
+	
+	\begin{align}
+	\label{eqn:psoupdate}
+	\begin{split}
+	v_{t+1} &= v_{t}+c\times \beta_{1} \times (\text{pbest}-p_{t})+s\times \beta_{2} \times (\text{gbest}-p_{t}), \\
+	p_{t+1} &= p_{t} + v_{t+1} .
+	\end{split}
+	\end{align}
 	
 	\textcolor{red}{Wrote wrapper and swarming utility}
 	
