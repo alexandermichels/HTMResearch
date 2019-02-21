@@ -277,6 +277,8 @@ class HTM():
         if mode == "strain":
             self.turnLearningOff("t")
             self.turnLearningOn("cs")
+        else:
+            self.turnLearningOn()
 
         if eval_method == "val":
             log.debug("val evaluation method selected in `runWithMode`")
@@ -356,7 +358,7 @@ class HTM():
                 last_prediction=self.getClassifierResults()[1]["predictedValue"]
         return result
 
-    def train(self, eval_method="val", error_method="mse", sibt=1, iter_per_cycle=1, max_cycles=10):
+    def train(self, eval_method="val", error_method="mse", sibt=3, iter_per_cycle=2, max_cycles=10):
         """
         Trains the HTM on `dataSource`
 
