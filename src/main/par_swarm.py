@@ -91,7 +91,7 @@ class Particle:
 
     # update new particle velocity
     def update_velocity(self,pos_best_g):
-        w=0.5       # constant inertia weight (how much to weigh the previous velocity)
+        w=0.5       # constant inertia weight (how much to weight the previous velocity)
         c1=1        # cognative constant
         c2=2        # social constant
 
