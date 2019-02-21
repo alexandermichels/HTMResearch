@@ -393,11 +393,10 @@ class HTM():
 
 
 if __name__ == "__main__":
-    time_series_model = ARMATimeSeries(2,0)
-    network = HTM(TimeSeriesStream(time_series_model), .5, verbosity=0)
+    time_series_model = VeryBasicSequence(pattern=2)
+    network = HTM(TimeSeriesStream(time_series_model), .1, verbosity=4)
     print(network)
-    network.setVerbosity(4)
-    print(network.train())
+    print(network.train(error_method="binary"))
     """l = VeryBasicSequence()
     for i in range(10):
         h = RDSEEncoder(resolution=(i+1)*.01)

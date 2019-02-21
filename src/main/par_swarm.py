@@ -20,42 +20,42 @@ def func1(x):
 
 def func2(x):
     time_series = VeryBasicSequence(pattern=1)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary")
 
 def func3(x):
     time_series = VeryBasicSequence(pattern=2)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary")
 
 def func4(x):
     time_series = VeryBasicSequence(pattern=3)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary")
 
 def func5(x):
     time_series = VeryBasicSequence(pattern=4)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary")
 
 def func22(x):
     time_series = VeryBasicSequence(pattern=1)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 def func23(x):
     time_series = VeryBasicSequence(pattern=2)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 def func24(x):
     time_series = VeryBasicSequence(pattern=3)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 def func25(x):
     time_series = VeryBasicSequence(pattern=4)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=32, verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 
@@ -201,13 +201,13 @@ class PSO():
 #--- RUN ----------------------------------------------------------------------+
 def swarm1():
     bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func2,bounds,num_particles=7,maxiter=16, processes=7)
+    PSO(func2,bounds,num_particles=6,maxiter=16, processes=6)
     bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func3,bounds,num_particles=7,maxiter=16, processes=7)
+    PSO(func3,bounds,num_particles=6,maxiter=16, processes=6)
     bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func4,bounds,num_particles=7,maxiter=16, processes=7)
+    PSO(func4,bounds,num_particles=6,maxiter=16, processes=6)
     bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func5,bounds,num_particles=7,maxiter=16, processes=7)
+    PSO(func5,bounds,num_particles=6,maxiter=16, processes=6)
 
 def swarm2():
     bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
