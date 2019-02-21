@@ -117,6 +117,7 @@ class HTM():
         self.encoder = RDSEEncoder(rdse_resolution)
         self.sensorRegion.encoder = self.encoder.get_encoder()
         self.sensorRegion.dataSource = dataSource
+        self.network.regions["sensor"].setParameter("predictedField", "series")
         # Make sure the SP input width matches the sensor region output width.
         self.modelParams["spParams"]["inputWidth"] = self.sensorRegion.encoder.getWidth()
         self.modelParams["tmParams"]["cellsPerColumn"] = cellsPerMiniColumn
@@ -131,9 +132,11 @@ class HTM():
         self.linkSensorToSpatialPooler()
         self.linkSpatialPoolerToTemporalPooler()
         self.linkTemporalPoolerToClassifier()
+        self.linkResets()
         # possibly do reset links here (says they are optional
         self.network.initialize()
         self.turnInferenceOn()
+        self.turnLearningOn()
 
     def __str__(self):
         spRegion = self.network.getRegionsByType(SPRegion)[0]
@@ -167,6 +170,11 @@ class HTM():
             results[steps[i]]["predictionConfidence"] = predictionConfidence
         return results
 
+    def linkResets(self):
+        """createResetLink(network, "sensor", "spatialPoolerRegion")
+        createResetLink(network, "sensor", "temporalPoolerRegion")"""
+        self.network.link("sensor", "spatialPoolerRegion", "UniformLink", "", srcOutput="resetOut", destInput="resetIn")
+        self.network.link("sensor", "temporalPoolerRegion", "UniformLink", "", srcOutput="resetOut", destInput="resetIn")
 
     def linkSensorToClassifier(self):
         """Create required links from a sensor region to a classifier region."""
@@ -205,6 +213,49 @@ class HTM():
         elif level >= 1:
             log.getLogger().setLevel(log.WARNING)
 
+    def runNetwork(self, learning = True):
+        DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+        _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}.csv".format(DATE, time_series_model)
+
+        sensorRegion = self.network.regions["sensor"]
+        spatialPoolerRegion = self.network.regions["spatialPoolerRegion"]
+        temporalPoolerRegion = self.network.regions["temporalPoolerRegion"]
+
+        # Set predicted field
+        self.network.regions["sensor"].setParameter("predictedField", "series")
+
+        if learning:
+            # Enable learning for all regions.
+            self.turnLearningOn()
+        else:
+            # Enable learning for all regions.
+            self.turnLearningOff()
+        self.turnInferenceOn()
+
+        _model = self.network.regions["sensor"].getSelf().dataSource
+
+        with open(_OUTPUT_PATH, "w") as outputFile:
+            writer = csv.writer(outputFile)
+            log.info("Writing output to {}".format(_OUTPUT_PATH))
+            writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Confidence"])
+            results = []
+            for i in range(len(_model)):
+                # Run the network for a single iteration
+                self.network.run(1)
+
+                series = sensorRegion.getOutputData("sourceOut")[0]
+                predictionResults = self.getClassifierResults()
+                oneStep = predictionResults[1]["predictedValue"]
+                oneStepConfidence = predictionResults[1]["predictionConfidence"]
+                fiveStep = predictionResults[5]["predictedValue"]
+                fiveStepConfidence = predictionResults[5]["predictionConfidence"]
+
+                result = [_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
+                #print "{:6}: 1-step: {:16} ({:4.4}%)\t 5-step: {:16} ({:4.4}%)".format(*result)
+                results.append(result)
+                writer.writerow(result)
+            return results
+
 
     def runWithMode(self, mode, eval_method="val", error_method="mse"):
         '''
@@ -223,12 +274,12 @@ class HTM():
         _model = sensorRegion.getSelf().dataSource
         self.turnInferenceOn()
 
-        if mode == "eval" or mode == "train":
+        if mode == "test" or mode == "train":
             self.turnLearningOn()
         elif mode == "strain":
-            self.turnLearningOff("ct")
-            self.turnLearningOn("s")
-        elif mode == "test":
+            self.turnLearningOff("t")
+            self.turnLearningOn("cs")
+        elif mode == "eval":
             self.turnLearningOff()
 
         if eval_method == "val":
@@ -244,7 +295,6 @@ class HTM():
             while _model.in_train_set():
                 self.network.run(1)
                 series = sensorRegion.getOutputData("sourceOut")[0]
-                predictions = self.getClassifierResults()
                 if eval_method == "val":
                     if last_prediction == None:
                         pass
@@ -261,7 +311,7 @@ class HTM():
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
-                last_prediction=predictions[1]["predictedValue"]
+                last_prediction=self.getClassifierResults()[1]["predictedValue"]
         elif mode == "test":
             _model.set_to_test_theta()
             while _model.in_test_set():
@@ -284,7 +334,7 @@ class HTM():
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
-                last_prediction=predictions[1]["predictedValue"]
+                last_prediction=self.getClassifierResults()[1]["predictedValue"]
         elif mode == "eval":
             _model.set_to_eval_theta()
             while _model.in_eval_set():
@@ -307,7 +357,7 @@ class HTM():
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
-                last_prediction=predictions[1]["predictedValue"]
+                last_prediction=self.getClassifierResults()[1]["predictedValue"]
         return result
 
     def train(self, eval_method="val", error_method="mse", sibt=1, iter_per_cycle=1, max_cycles=10):
@@ -393,10 +443,11 @@ class HTM():
 
 
 if __name__ == "__main__":
-    time_series_model = VeryBasicSequence(pattern=2)
+    time_series_model = VeryBasicSequence(pattern=4)
     network = HTM(TimeSeriesStream(time_series_model), .1, verbosity=4)
     print(network)
-    print(network.train(error_method="binary"))
+    #print(network.train(error_method="binary"))
+    network.runNetwork()
     """l = VeryBasicSequence()
     for i in range(10):
         h = RDSEEncoder(resolution=(i+1)*.01)

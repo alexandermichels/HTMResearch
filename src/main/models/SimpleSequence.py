@@ -7,7 +7,7 @@ from Sequence import Sequence
 
 class VeryBasicSequence(Sequence):
 
-    def __init__(self, pattern=2, n=100000):
+    def __init__(self, pattern=2, n=10000):
         """
         Creates a very basic sequence which is just the following two sequences repeated:
 
