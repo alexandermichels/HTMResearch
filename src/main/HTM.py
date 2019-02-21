@@ -274,13 +274,9 @@ class HTM():
         _model = sensorRegion.getSelf().dataSource
         self.turnInferenceOn()
 
-        if mode == "test" or mode == "train":
-            self.turnLearningOn()
-        elif mode == "strain":
+        if mode == "strain":
             self.turnLearningOff("t")
             self.turnLearningOn("cs")
-        elif mode == "eval":
-            self.turnLearningOff()
 
         if eval_method == "val":
             log.debug("val evaluation method selected in `runWithMode`")
