@@ -30,12 +30,10 @@ class VeryBasicSequence(Sequence):
             while counter < self.n:
                 if counter % 4 == 0:
                     self.sequence[counter] = 1
-                elif counter % 4 == 1:
-                    self.sequence[counter] = 2
-                elif counter % 4 == 3:
-                    self.sequence == 2
-                else:
+                elif counter % 4 == 2:
                     self.sequence[counter] = 3
+                else:
+                    self.sequence[counter] = 2
                 counter+=1
         elif self.pattern == 3:
             if counter % 2 == 0:

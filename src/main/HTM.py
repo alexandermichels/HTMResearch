@@ -252,7 +252,7 @@ class HTM():
                         result+=sqrt((series-last_prediction)**2)
                     elif error_method == "binary":
                         if series==last_prediction:
-                            result+= 0
+                            result+=0
                         else:
                             result+=1
                 elif error_method == "expr":
@@ -310,7 +310,7 @@ class HTM():
                 last_prediction=predictions[1]["predictedValue"]
         return result
 
-    def train(self, eval_method="val", error_method="mse", sibt=5, iter_per_cycle=2, max_cycles=10):
+    def train(self, eval_method="val", error_method="mse", sibt=1, iter_per_cycle=1, max_cycles=10):
         """
         Trains the HTM on `dataSource`
 
