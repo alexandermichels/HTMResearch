@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 """ Standard Packages"""
-import argparse, csv, copy, json, numpy, os, yaml
+import argparse, csv, copy, json, numpy, os, sys, yaml
 from pkg_resources import resource_filename
 import logging as log
 from os.path import join
 import numpy as np
+numpy.set_printoptions(threshold=sys.maxsize)
 from time import localtime, strftime
 from tqdm import tqdm
 from math import sqrt
@@ -116,7 +117,7 @@ class HTM():
         #sensorRegion.encoder = createEncoder(modelParams["sensorParams"]["encoders"])
         self.encoder = RDSEEncoder(rdse_resolution)
         self.sensorRegion.encoder = self.encoder.get_encoder()
-        self.sensorRegion.dataSource = dataSource
+        self.sensorRegion.dataSource = TimeSeriesStream(dataSource)
         self.network.regions["sensor"].setParameter("predictedField", "series")
         # Make sure the SP input width matches the sensor region output width.
         self.modelParams["spParams"]["inputWidth"] = self.sensorRegion.encoder.getWidth()
@@ -445,7 +446,11 @@ if __name__ == "__main__":
     network = HTM(TimeSeriesStream(time_series_model), .1, verbosity=4)
     print(network)
     #print(network.train(error_method="binary"))
-    network.runNetwork()
+    #network.runNetwork()
+    print(network.network.regions["spatialPoolerRegion"].__dict__)
+    print(network.network.regions["spatialPoolerRegion"].getInputNames())
+    print(network.network.regions["spatialPoolerRegion"].getInputData("bottomUpIn"))
+    print(network.network.regions["spatialPoolerRegion"].getOutputNames())
     """l = VeryBasicSequence()
     for i in range(10):
         h = RDSEEncoder(resolution=(i+1)*.01)

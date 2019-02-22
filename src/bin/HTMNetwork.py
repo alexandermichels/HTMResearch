@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Deprecated"""
 import copy
 import csv
 import json

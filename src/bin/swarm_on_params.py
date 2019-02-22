@@ -1,5 +1,5 @@
 #--- IMPORT DEPENDENCIES ------------------------------------------------------+
-
+"""Deprecated"""
 from __future__ import division
 import logging as log
 import random

@@ -1,17 +1,16 @@
 #--- IMPORT DEPENDENCIES ------------------------------------------------------+
-
+""" Standard Packages"""
 from __future__ import division
+import argparse, csv, copy, itertools, json, math, random, sys
 import logging as log
-import random
-import math, sys
-import copy
 from os.path import join
+import logging as log
+import multiprocessing as mp
+
+"""My Stuff"""
 from HTM import *
 from models.ARMAModels import ARMATimeSeries
 from models.SimpleSequence import VeryBasicSequence
-
-import multiprocessing as mp
-import itertools
 #--- COST FUNCTION ------------------------------------------------------------+
 
 # function we are attempting to optimize (minimize)
@@ -20,43 +19,41 @@ def func1(x):
 
 def func2(x):
     time_series = VeryBasicSequence(pattern=1)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
-    return network.train(error_method="binary")
+    return HTM(time_series, x[0], verbosity=0).train(error_method="binary")
 
 def func3(x):
     time_series = VeryBasicSequence(pattern=2)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(time_series, x[0], verbosity=0)
     return network.train(error_method="binary")
 
 def func4(x):
     time_series = VeryBasicSequence(pattern=3)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(time_series, x[0], verbosity=0)
     return network.train(error_method="binary")
 
 def func5(x):
     time_series = VeryBasicSequence(pattern=4)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(time_series, x[0], verbosity=0)
     return network.train(error_method="binary")
 
 def func22(x):
     time_series = VeryBasicSequence(pattern=1)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(time_series, x[0], verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 def func23(x):
     time_series = VeryBasicSequence(pattern=2)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(time_series, x[0], verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 def func24(x):
     time_series = VeryBasicSequence(pattern=3)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
+    network = HTM(time_series, x[0], verbosity=0)
     return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 def func25(x):
     time_series = VeryBasicSequence(pattern=4)
-    network = HTM(TimeSeriesStream(time_series), x[0], cellsPerMiniColumn=8, verbosity=0)
-    return network.train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(time_series, x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
 
 #--- MAIN ---------------------------------------------------------------------+
@@ -125,9 +122,15 @@ def evaluate_position(swarm, j, costFunc):
 
 class PSO():
     def __init__(self,costFunc,bounds,num_particles,maxiter,processes=mp.cpu_count()-1):
-        global num_dimensions
+        DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+        self.log_file = join('../logs/', 'swarmp-on_{}-({}particles-{}maxiter-{}processes)-{}.log'.format(costFunc.__name__,num_particles,maxiter,processes,DATE))
+        log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
 
+        log.debug("...initializing swarm....\n    costFunc: {}\n    num_particles: {}\n    processes: {}\n".format(costFunc.__name__,num_particles,maxiter,processes))
+
+        global num_dimensions
         num_dimensions=len(bounds)
+        log.debug("    \n    num_dimensions: {}".format(num_dimensions))
         err_best_g=-1                   # best error for group
         pos_best_g=[]                   # best position for group
 
@@ -138,10 +141,12 @@ class PSO():
             for j in range(0,num_dimensions):
                 x0.append(random.uniform(min(bounds[j]), max(bounds[j])))
             swarm.append(Particle(x0))
+        log.debug("...swarm intialized:")
+        for i in range(0,num_particles):
+            log.debug("Particle {}: {}".format(i,swarm[i].position_i))
 
         # begin optimization loop
         i=0
-        DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
         csv_out = open(join("../outputs/", 'swarm_on_params-{}.csv'.format(DATE)), "w+")
         writer = csv.writer(csv_out)
         header_row = ["Iteration"]
@@ -155,12 +160,18 @@ class PSO():
         p = mp.Pool(processes = processes)
         while i < maxiter:
             print i,err_best_g, pos_best_g
-
-            results = p.map(eval_pos_unpacker, itertools.izip(itertools.repeat(swarm),range(num_particles), itertools.repeat(costFunc)))
+            log.debug("\n+++++ Beginning Iteration {} +++++".format(i))
+            log.debug("    i: {}\n    err_best: {}\n    pos_best {}".format(i, err_best_g, pos_best_g))
+            log.debug("...entering pool mapping...")
+            results = p.map(eval_pos_unpacker, itertools.izip(itertools.repeat(swarm), range(num_particles), itertools.repeat(costFunc)))
+            log.debug("...pool mapping exited...")
             results.sort()
+            log.debug("...pool results sorted...")
             results = [r[1] for r in results]
             swarm = copy.deepcopy(results)
+            log.debug("...copying results back to main thread's copy...")
 
+            log.debug("...evaluating fitness...")
             # cycle through particles in swarm and evaluate fitness
             for j in range(0,num_particles):
                 # determine if current particle is the best (globally)
@@ -168,6 +179,9 @@ class PSO():
                     pos_best_g=list(swarm[j].position_i)
                     err_best_g=float(swarm[j].err_i)
 
+            log.debug("New best error: {}\nNew best position: {}".format(err_best_g, pos_best_g))
+
+            log.debug("...updating particle position and velocity...")
             # cycle through swarm and update velocities and position
             for j in range(0,num_particles):
                 swarm[j].update_velocity(pos_best_g)
@@ -197,9 +211,20 @@ class PSO():
         print 'FINAL:'
         print pos_best_g
         print err_best_g
+        log.debug("Final:\n    Position: {}\n    Error: {}".format(pos_best_g,err_best_g))
+        log.debug("...closing handlers")
+        logger = log.getLogger()
+        handlers = logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            logger.removeHandler(handler)
 
 #--- RUN ----------------------------------------------------------------------+
-def swarm1():
+def swarm_test():
+    bounds=[(-100,100),(-100,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func1,bounds,num_particles=6,maxiter=12, processes=6)
+
+def swarmv1():
     bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func2,bounds,num_particles=6,maxiter=12, processes=6)
     bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -209,7 +234,7 @@ def swarm1():
     bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func5,bounds,num_particles=6,maxiter=12, processes=6)
 
-def swarm2():
+def swarmv2():
     bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func22,bounds,num_particles=16,maxiter=24, processes=16)
     bounds=[(0.00001,2), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -219,8 +244,32 @@ def swarm2():
     bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(func25,bounds,num_particles=16,maxiter=24, processes=16)
 
+def swarmsan():
+    bounds=[(0.00001,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(func2,bounds,num_particles=4,maxiter=4, processes=4)
+
 def main():
-    swarm1()
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument('-m', type=str, required=True,
+            dest='mode', help='Which functions to swarm on. {test, v1, v2}')
+    args = parser.parse_args()
+    if args.mode == "test":
+        print("Testing....")
+        swarm_test()
+    elif args.mode == "v1":
+        print("Version 1 selected")
+        swarmv1()
+    elif args.mode == "v2":
+        print("Version 2 selected")
+        swarmv2()
+    elif args.mode == "san":
+        print("Sanity check selected")
+        swarmsan()
+
+
 
 #--- END ----------------------------------------------------------------------+
 
