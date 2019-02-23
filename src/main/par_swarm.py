@@ -157,7 +157,7 @@ class PSO():
 
         # begin optimization loop
         i=0
-        csv_out = open(join('../outputs/', 'swarmp-on_{}-({}particles-{}maxiter-{}processes)-{}.log'.format(costFunc.__name__,num_particles,maxiter,processes,DATE)), "w+")
+        csv_out = open(join('../outputs/', 'swarmp-on_{}-({}particles-{}maxiter-{}processes)-{}.csv'.format(costFunc.__name__,num_particles,maxiter,processes,DATE)), "w+")
         writer = csv.writer(csv_out)
         header_row = ["Iteration"]
         for j in range(0,num_particles):
