@@ -26,7 +26,7 @@ from TimeSeriesStream import TimeSeriesStream
 
 _PARAMS_PATH = "model.yaml"
 
-def fcompare(arg1, arg2, TOL=.01):
+def fcompare(arg1, arg2, TOL=.001):
     """
     A helper function to compare epsilon comparisons for floating point numbers
 
@@ -311,6 +311,7 @@ class HTM():
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
                 last_prediction=self.getClassifierResults()[1]["predictedValue"]
+                #print(series, last_prediction)
         elif mode == "test":
             _model.set_to_test_theta()
             while _model.in_test_set():
@@ -333,6 +334,7 @@ class HTM():
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
+                #print(series, last_prediction)
                 last_prediction=self.getClassifierResults()[1]["predictedValue"]
         elif mode == "eval":
             _model.set_to_eval_theta()
@@ -359,7 +361,7 @@ class HTM():
                 last_prediction=self.getClassifierResults()[1]["predictedValue"]
         return result
 
-    def train(self, eval_method="val", error_method="mse", sibt=3, iter_per_cycle=2, max_cycles=10):
+    def train(self, eval_method="val", error_method="mse", sibt=3, iter_per_cycle=2, max_cycles=10, log=False):
         """
         Trains the HTM on `dataSource`
 
@@ -367,24 +369,29 @@ class HTM():
         :param  error_method - the metric for calculating error ("mse" mean squared error or "binary")
         :param  sibt - spatial (pooler) iterations before temporal (pooler)
         """
-        for i in range(sibt):
-            log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
-            # train on spatial pooler
-            log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", "val", error_method), error_method))
-        log.info("\nExited spatial pooler only training loop")
+        if log:
+            for i in range(sibt):
+                log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
+                # train on spatial pooler
+                log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", "val", error_method), error_method))
+            log.info("\nExited spatial pooler only training loop")
         last_error = 0 # set to infinity error so you keep training the first time
         curr_error = -1
         counter = 0
-        log.info("Entering full training loop")
+        if log:
+            log.info("Entering full training loop")
         while (fcompare(curr_error, last_error) == -1 and counter < max_cycles):
-            log.debug("\n++++++++++ Cycle {} of the full training loop +++++++++\n".format(counter))
+            if log:
+                log.debug("\n++++++++++ Cycle {} of the full training loop +++++++++\n".format(counter))
             last_error=curr_error
             curr_error = 0
             for i in range(int(iter_per_cycle)):
-                log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
-                log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", "val", error_method), error_method))
+                if log:
+                    log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
+                    log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", "val", error_method), error_method))
                 curr_error+=self.runWithMode("test", "val", error_method)
-            log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
+            if log:
+                log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
             counter+=1
             if last_error == -1:
                 last_error = float("inf")
@@ -442,15 +449,15 @@ class HTM():
 
 
 if __name__ == "__main__":
-    time_series_model = VeryBasicSequence(pattern=4)
-    network = HTM(TimeSeriesStream(time_series_model), .1, verbosity=4)
+    time_series_model = VeryBasicSequence(pattern=1, n=1000)
+    network = HTM(time_series_model, 60, verbosity=4)
     print(network)
-    #print(network.train(error_method="binary"))
+    print(network.train(error_method="binary"))
     #network.runNetwork()
-    print(network.network.regions["spatialPoolerRegion"].__dict__)
+    '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())
     print(network.network.regions["spatialPoolerRegion"].getInputData("bottomUpIn"))
-    print(network.network.regions["spatialPoolerRegion"].getOutputNames())
+    print(network.network.regions["spatialPoolerRegion"].getOutputNames())'''
     """l = VeryBasicSequence()
     for i in range(10):
         h = RDSEEncoder(resolution=(i+1)*.01)

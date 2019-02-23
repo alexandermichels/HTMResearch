@@ -7,7 +7,7 @@ from Sequence import Sequence
 
 class VeryBasicSequence(Sequence):
 
-    def __init__(self, pattern=2, n=100000):
+    def __init__(self, pattern=2, n=10000):
         """
         Creates a very basic sequence which is just the following two sequences repeated:
 
@@ -21,11 +21,12 @@ class VeryBasicSequence(Sequence):
         counter = 0
         # make the very basic sequence
         if self.pattern == 1:
-            if counter % 2 == 0:
-                self.sequence[counter] = 1
-            else:
-                self.sequence[counter] = 2
-            counter+=1
+            while counter < self.n:
+                if counter % 2 == 0:
+                    self.sequence[counter] = 1
+                else:
+                    self.sequence[counter] = 2
+                counter+=1
         elif self.pattern == 2:
             while counter < self.n:
                 if counter % 4 == 0:
@@ -36,18 +37,31 @@ class VeryBasicSequence(Sequence):
                     self.sequence[counter] = 2
                 counter+=1
         elif self.pattern == 3:
-            if counter % 2 == 0:
-                self.sequence[counter] = 1
-            else:
-                self.sequence[counter] = 3
+            while counter < self.n:
+                if counter % 2 == 0:
+                    self.sequence[counter] = 1
+                else:
+                    self.sequence[counter] = 3
             counter+=1
-        if self.pattern == 4:
+        elif self.pattern == 4:
             while counter < self.n:
                 if counter % 2 == 0:
                     self.sequence[counter] = 78
                 else:
                     self.sequence[counter] = 79
                 counter+=1
+        elif self.pattern == 5:
+            while counter < self.n:
+                if counter % 8 == 0:
+                    self.sequence[counter] = 1
+                elif counter % 8 == 3:
+                    self.sequence[counter] = 3
+                elif counter % 8 == 4:
+                    self.sequence[counter] = 5
+                elif counter % 8 == 7:
+                    self.sequence[counter] = 4
+                else:
+                    self.sequence[counter] = 2
 
 
         if randint(0,1) == 0:
@@ -87,7 +101,18 @@ class VeryBasicSequence(Sequence):
         """
         To string
         """
-        return "VeryBasicSequence12235224"
+        if self.pattern == 1:
+            patt = "1212"
+        elif self.pattern == 2:
+            patt = "1232"
+        elif self.pattern == 3:
+            patt = "1313"
+        elif self.pattern == 4:
+            patt = "78-79"
+        elif self.pattern == 5:
+            patt = "12235224"
+
+        return "VeryBasicSequence{}".format(patt)
 
     def __repr__(self):
         """"

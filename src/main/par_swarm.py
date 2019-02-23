@@ -55,6 +55,9 @@ def func25(x):
     time_series = VeryBasicSequence(pattern=4)
     return HTM(time_series, x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
 
+def sanfunc(x):
+    return HTM(VeryBasicSequence(pattern=4, n=1000), x[0], verbosity=0).train(error_method="binary")
+
 
 #--- MAIN ---------------------------------------------------------------------+
 
@@ -245,8 +248,8 @@ def swarmv2():
     PSO(func25,bounds,num_particles=16,maxiter=24, processes=16)
 
 def swarmsan():
-    bounds=[(0.00001,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(func2,bounds,num_particles=4,maxiter=4, processes=4)
+    bounds=[(0.00001,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(sanfunc,bounds,num_particles=7,maxiter=8, processes=7)
 
 def main():
     parser = argparse.ArgumentParser(
