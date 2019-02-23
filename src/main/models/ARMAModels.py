@@ -11,10 +11,11 @@ from Sequence import Sequence
 
 class ARMATimeSeries(Sequence):
 
-    def __init__(self, p, q, sigma=1, n=10000):
+    def __init__(self, p, q, sigma=1, n=10000, normalize=True):
         self.n = n
         self.p = p
         self.q = q
+        self.normalize=normalize
         np.random.seed(int(time.time()))
         self.sigma = sigma
         self.ar_poly = np.r_[1, np.random.rand(p)]
@@ -23,7 +24,8 @@ class ARMATimeSeries(Sequence):
         print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
-        self.normalize()
+        if self.normalize:
+            self.normalize()
 
         if randint(0,1) == 0:
             if randint(0,1) == 0:
@@ -74,7 +76,8 @@ class ARMATimeSeries(Sequence):
         print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
-        self.normalize()
+        if self.normalize:
+            self.normalize()
 
         self._train_set = -1
         self._train_set_end = -1
@@ -119,7 +122,7 @@ class ARMATimeSeries(Sequence):
         self.sequence = [x*val/furthest for x in self.sequence]
 
 def main():
-        ts = ARMATimeSeries(3,0)
+        ts = ARMATimeSeries(1,0, sigma=5, normalize=False)
         for i in range(10):
                 print("The time series at {} is {}".format(i, ts.get()))
         ts.plot()
