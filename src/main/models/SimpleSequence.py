@@ -42,7 +42,7 @@ class VeryBasicSequence(Sequence):
                     self.sequence[counter] = 1
                 else:
                     self.sequence[counter] = 3
-            counter+=1
+                counter+=1
         elif self.pattern == 4:
             while counter < self.n:
                 if counter % 2 == 0:
@@ -62,6 +62,7 @@ class VeryBasicSequence(Sequence):
                     self.sequence[counter] = 4
                 else:
                     self.sequence[counter] = 2
+                counter+=1
 
 
         if randint(0,1) == 0:
@@ -333,10 +334,10 @@ class OneTermSimpleSequence(Sequence):
 
 def main():
     #ts = OneTermSimpleSequence(7,3)
-    ts = VeryBasicSequence()
+    ts = VeryBasicSequence(pattern=3)
     for i in range(100):
         print("The time series at {} is {}".format(i, ts.get()))
-    #ts.plot()
+    ts.plot()
 
 if __name__ == "__main__":
     main()

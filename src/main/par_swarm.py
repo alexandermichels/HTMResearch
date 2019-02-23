@@ -213,16 +213,16 @@ class PSO():
 
         #print final results
         writer.writerow(["FINAL:"])
-        result_descr = []
+        result_descr = ["Best Error", ""]
         if descr == None:
             for k in range(0,num_dimensions):
                 result_descr.append("x[{}] Best Position".format(k))
         else:
             for k in range(0,num_dimensions):
-                header_row.append("Particle {}'s {}".format(j,descr[k]))
-        result_descr.append("Best Error")
+                result_descr.append("{} Best Position".format(descr[k]))
         writer.writerow(result_descr)
-        writer.writerow(pos_best_g + [err_best_g])
+        result = [ err_best_g, ""] + pos_best_g
+        writer.writerow(result)
         csv_out.flush()
         csv_out.close()
 
