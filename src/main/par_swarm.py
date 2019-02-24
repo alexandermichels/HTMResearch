@@ -95,6 +95,7 @@ class Particle:
         self.pos_best_i=[]          # best position individual
         self.err_best_i=-1          # best error individual
         self.err_i=-1               # error individual
+        self.step = 0
 
         for i in range(0,num_dimensions):
             self.velocity_i.append(random.uniform(-1,1))
@@ -118,8 +119,10 @@ class Particle:
 
     # update new particle velocity
     def update_velocity(self,pos_best_g):
-        w=0.5       # constant inertia weight (how much to weight the previous velocity)
-        c1=1        # cognative constant
+        w=0.5 # constant inertia weight (how much to weight the previous velocity)
+        if self.step < 12:
+            w=0.9+((self.step*-.5)/12) # start it out higher and linearly lower it
+        c1=2        # cognitive constant
         c2=2        # social constant
 
         for i in range(0,num_dimensions):
@@ -142,6 +145,7 @@ class Particle:
             # adjust minimum position if neseccary
             if self.position_i[i] < bounds[i][0]:
                 self.position_i[i]=bounds[i][0]
+        self.step+=1
 
 def eval_pos_unpacker(args):
     return evaluate_position(*args)
@@ -267,7 +271,7 @@ class PSO():
 #--- RUN ----------------------------------------------------------------------+
 def swarm_test():
     bounds=[(-100,100),(-100,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(testfunc,bounds,num_particles=6,maxiter=12, processes=6, descr=["x-coordinate", "y-coordinate"])
+    PSO(testfunc,bounds,num_particles=6, maxiter=24, processes=6, descr=["x-coordinate", "y-coordinate"])
 
 def swarmv1():
     bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -315,7 +319,7 @@ def arswarmv2():
 def swarmsan():
 
     bounds=[(0.00001,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(sanfunc,bounds,num_particles=7,maxiter=8, processes=7, descr=["RDSE Resolution"])
+    PSO(sanfunc,bounds,num_particles=7,maxiter=16, processes=7, descr=["RDSE Resolution"])
 
 def main():
     parser = argparse.ArgumentParser(
