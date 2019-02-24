@@ -189,6 +189,7 @@ class PSO():
                 for k in range(0,num_dimensions):
                     header_row.append("Particle {}'s {}".format(j,descr[k]))
             header_row.append("Particle {}'s Error".format(j))
+        header_row.append("Average Error")
         writer.writerow(header_row)
 
         pool = mp.Pool(processes = processes)
@@ -223,11 +224,14 @@ class PSO():
                 swarm[j].update_position(bounds)
 
             output_row = ["{}".format(i)]
+            avg_err = 0
             for j in range(0,num_particles):
                 output_row.append(j)
                 for k in range(0,num_dimensions):
                     output_row.append(swarm[j].position_i[k])
+                avg_err+=swarm[j].err_i
                 output_row.append(swarm[j].err_i)
+            output_row.append(avg_err/num_particles)
             writer.writerow(output_row)
             csv_out.flush()
             i+=1
