@@ -19,9 +19,9 @@ class ARMATimeSeries(Sequence):
         np.random.seed(int(time.time()))
         self.sigma = sigma
         self.ar_poly = np.r_[1, np.random.rand(p)]
-        print("The AR lag polynomial is: {}".format(self.ar_poly))
+        #print("The AR lag polynomial is: {}".format(self.ar_poly))
         self.ma_poly = np.r_[1, np.random.rand(q)]
-        print("The MA lag polynomial is: {}".format(self.ma_poly))
+        #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
         if self.normalize:

@@ -80,7 +80,10 @@ class RDSEEncoder():
 
 class HTM():
 
-    def __init__(self, dataSource, rdse_resolution, cellsPerMiniColumn=32, verbosity=3):
+    global param_dict
+    param_dict = { "tmParams" : { "cellsPerColumn": 4 } }
+
+    def __init__(self, dataSource, rdse_resolution, params=None, verbosity=3):
         """Create the Network instance.
 
         The network has a sensor region reading data from `dataSource` and passing
@@ -93,7 +96,7 @@ class HTM():
         """
         if verbosity > 0:
             DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-            self.log_file = join('../logs/', 'HTM-{}-({}CPMC-{}RDSEres)-datasource-{}.log'.format(DATE,cellsPerMiniColumn,rdse_resolution,str(dataSource)))
+            self.log_file = join('../logs/', 'HTM-{}-({}RDSEres)-datasource-{}.log'.format(DATE,rdse_resolution,str(dataSource)))
             log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
             log.getLogger().addHandler(log.StreamHandler())
             self.setVerbosity(verbosity)
@@ -119,9 +122,17 @@ class HTM():
         self.sensorRegion.encoder = self.encoder.get_encoder()
         self.sensorRegion.dataSource = TimeSeriesStream(dataSource)
         self.network.regions["sensor"].setParameter("predictedField", "series")
+
+        # Adjust params
         # Make sure the SP input width matches the sensor region output width.
         self.modelParams["spParams"]["inputWidth"] = self.sensorRegion.encoder.getWidth()
-        self.modelParams["tmParams"]["cellsPerColumn"] = cellsPerMiniColumn
+        if not params == None:
+            for key, value in params.iteritems():
+                if key == "clParams" or key == "spParams" or key == "tmParams":
+                    for vkey, vvalue in value.iteritems():
+                        #print(key, vkey, vvalue)
+                        self.modelParams[key][vkey] = vvalue
+        log.debug(json.dumps(self.modelParams, sort_keys=True, indent=4))
         # Add SP and TM regions.
         self.network.addRegion("spatialPoolerRegion", "py.SPRegion", json.dumps(self.modelParams["spParams"]))
         self.network.addRegion("temporalPoolerRegion", "py.TMRegion", json.dumps(self.modelParams["tmParams"]))
@@ -452,7 +463,7 @@ if __name__ == "__main__":
     time_series_model = VeryBasicSequence(pattern=1, n=1000)
     network = HTM(time_series_model, 60, verbosity=4)
     print(network)
-    print(network.train(error_method="binary"))
+    #print(network.train(error_method="binary"))
     #network.runNetwork()
     '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())
