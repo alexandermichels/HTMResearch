@@ -33,54 +33,54 @@ def vbsfunc5v1(x):
     return HTM(VeryBasicSequence(pattern=5), x[0], verbosity=0).train(error_method="binary")
 
 def vbsfunc1v2(x):
-    return HTM(VeryBasicSequence(pattern=1), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(VeryBasicSequence(pattern=1), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def vbsfunc2v2(x):
-    return HTM(VeryBasicSequence(pattern=2), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(VeryBasicSequence(pattern=2), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def vbsfunc3v2(x):
-    return HTM(VeryBasicSequence(pattern=3), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(VeryBasicSequence(pattern=3), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def vbsfunc4v2(x):
-    return HTM(VeryBasicSequence(pattern=4), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(VeryBasicSequence(pattern=4), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def vbsfunc5v2(x):
-    return HTM(VeryBasicSequence(pattern=5), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(VeryBasicSequence(pattern=5), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc1(x):
-    return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc2(x):
-    return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc3(x):
-    return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc4(x):
-    return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc5(x):
-    return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc1v2(x):
     param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])} }
-    return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc2v2(x):
     param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])} }
-    return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc3v2(x):
     param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]) } }
-    return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc4v2(x):
     param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]) } }
-    return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc5v2(x):
     param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]) } }
-    return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]), max_cycles=int(x[3]))
+    return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=4, n=1000), x[0], verbosity=0).train(error_method="binary")
@@ -119,9 +119,9 @@ class Particle:
 
     # update new particle velocity
     def update_velocity(self,pos_best_g):
-        w=0.5 # constant inertia weight (how much to weight the previous velocity)
+        w=0.4 # constant inertia weight (how much to weight the previous velocity)
         if self.step < 12:
-            w=0.9+((self.step*-.5)/12) # start it out higher and linearly lower it
+            w=1.1+((self.step*-.7)/24) # start it out higher and linearly lower it
         c1=2        # cognitive constant
         c2=2        # social constant
 
@@ -185,7 +185,6 @@ class PSO():
         writer = csv.writer(csv_out)
         header_row = ["Iteration"]
         for j in range(0,num_particles):
-            header_row.append("Particle {}".format(j))
             if descr == None:
                 for k in range(0,num_dimensions):
                     header_row.append("Particle {}'s x[{}] Position".format(j,k))
@@ -230,7 +229,6 @@ class PSO():
             output_row = ["{}".format(i)]
             avg_err = 0
             for j in range(0,num_particles):
-                output_row.append(j)
                 for k in range(0,num_dimensions):
                     output_row.append(swarm[j].position_i[k])
                 avg_err+=swarm[j].err_i
@@ -274,42 +272,42 @@ def swarm_test():
     PSO(testfunc,bounds,num_particles=6, maxiter=24, processes=6, descr=["x-coordinate", "y-coordinate"])
 
 def swarmv1():
-    bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(vbsfunc1v1,bounds,num_particles=6,maxiter=12, processes=6, descr=["RDSE Resolution"])
-    bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(vbsfunc2v1,bounds,num_particles=6,maxiter=12, processes=6, descr=["RDSE Resolution"])
-    bounds=[(0.00001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(vbsfunc3v1,bounds,num_particles=6,maxiter=12, processes=6, descr=["RDSE Resolution"])
-    bounds=[(0.00001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(vbsfunc4v1,bounds,num_particles=6,maxiter=12, processes=6, descr=["RDSE Resolution"])
-    bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(vbsfunc5v1,bounds,num_particles=6,maxiter=12, processes=6, descr=["RDSE Resolution"])
+    bounds=[(0.00000001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(vbsfunc1v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
+    bounds=[(0.00000001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(vbsfunc2v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
+    bounds=[(0.00000001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(vbsfunc3v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
+    bounds=[(0.00000001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(vbsfunc4v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
+    bounds=[(0.00000001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(vbsfunc5v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
 def swarmv2():
-    descr=["RDSE Resolution", "SIBT", "IterPerCycle", "Max Cycles"]
-    bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
+    bounds=[(0.0000001,1), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc1v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    bounds=[(0.00001,2), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.0000001,2), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc2v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    bounds=[(0.00001,2), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.00000001,2), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc3v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.00000001,1), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc4v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    bounds=[(0.00001,4), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    bounds=[(0.00000001,4), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc452,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
 
 def arswarmv1():
-    descr=["RDSE Resolution", "SIBT", "IterPerCycle", "Max Cycles"]
-    bounds=[(0.00001,1), (0,50), (1,5), (5,20)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(arfunc1,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    PSO(arfunc2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    PSO(arfunc3,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    PSO(arfunc4,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
-    PSO(arfunc5,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
+    descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
+    bounds=[(0.00000001,1), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(arfunc1,bounds,num_particles=12,maxiter=36, processes=12, descr=descr)
+    PSO(arfunc2,bounds,num_particles=12,maxiter=36, processes=12, descr=descr)
+    PSO(arfunc3,bounds,num_particles=12,maxiter=36, processes=12, descr=descr)
+    PSO(arfunc4,bounds,num_particles=12,maxiter=36, processes=12, descr=descr)
+    PSO(arfunc5,bounds,num_particles=12,maxiter=36, processes=12, descr=descr)
 
 def arswarmv2():
-    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "Max Cycles", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold"]
-    bounds=[(0.00000001,1), (0,50), (1,5), (5,50), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40)]
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold"]
+    bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40)]
     PSO(arfunc1v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
     PSO(arfunc2v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
     PSO(arfunc3v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
@@ -318,8 +316,8 @@ def arswarmv2():
 
 def swarmsan():
 
-    bounds=[(0.00001,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(sanfunc,bounds,num_particles=7,maxiter=16, processes=7, descr=["RDSE Resolution"])
+    bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(sanfunc,bounds,num_particles=4,maxiter=16, processes=4, descr=["RDSE Resolution"])
 
 def main():
     parser = argparse.ArgumentParser(

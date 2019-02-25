@@ -370,9 +370,15 @@ class HTM():
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
                 last_prediction=self.getClassifierResults()[1]["predictedValue"]
+
+            # normalize result over length of evaluation set
+            if eval_method=="val":
+                print(self.sensorRegion.dataSource.len_eval_set())
+                result/=(self.sensorRegion.dataSource.len_eval_set()-1)
+
         return result
 
-    def train(self, eval_method="val", error_method="mse", sibt=3, iter_per_cycle=2, max_cycles=10, log=False):
+    def train(self, eval_method="val", error_method="mse", sibt=3, iter_per_cycle=2, max_cycles=50, log=False):
         """
         Trains the HTM on `dataSource`
 

@@ -223,6 +223,9 @@ class TimeSeriesStream(RecordStreamIface):
     def in_train_set(self):
         return self.sequence.in_train_set()
 
+    def len_eval_set(self):
+        return (self.sequence._eval_set_end - self.sequence._eval_set)
+
     def set_to_eval_theta(self):
         self.sequence.set_to_eval_theta()
 
