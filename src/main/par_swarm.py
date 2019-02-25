@@ -48,11 +48,11 @@ def vbsfunc5v2(x):
     return HTM(VeryBasicSequence(pattern=5), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def vbsfunc2v3(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x[9]) }
     return HTM(VeryBasicSequence(pattern=5), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def vbsfunc5v3(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x[9]) }
     return HTM(VeryBasicSequence(pattern=5), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc1(x):
@@ -71,23 +71,23 @@ def arfunc5(x):
     return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc1v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x[9]) }
     return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc2v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x[9]) }
     return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc3v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x9) } }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x[9]) } }
     return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc4v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x9)} }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x[9])} }
     return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc5v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x9) } }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x[9]) } }
     return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def sanfunc(x):
@@ -335,7 +335,7 @@ def swarmsan():
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
 def cust():
-    swarmvbs3()
+    swarmvbsv3()
     arswarmv2()
 
 def main():
@@ -367,6 +367,9 @@ def main():
     elif args.mode == "san":
         print("Sanity check selected")
         swarmsan()
+    elif args.mode == "cust":
+        print("custom setup")
+        cust()
 
 
 
