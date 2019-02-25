@@ -47,6 +47,14 @@ def vbsfunc4v2(x):
 def vbsfunc5v2(x):
     return HTM(VeryBasicSequence(pattern=5), x[0], verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
+def vbsfunc2v3(x):
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
+    return HTM(VeryBasicSequence(pattern=5), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
+
+def vbsfunc5v3(x):
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
+    return HTM(VeryBasicSequence(pattern=5), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
+
 def arfunc1(x):
     return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
@@ -271,7 +279,7 @@ def swarm_test():
     bounds=[(-100,100),(-100,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(testfunc,bounds,num_particles=6, maxiter=24, processes=6, descr=["x-coordinate", "y-coordinate"])
 
-def swarmv1():
+def swarmvbsv1():
     bounds=[(0.00000001,1)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc1v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
     bounds=[(0.00000001,2)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -283,7 +291,7 @@ def swarmv1():
     bounds=[(0.00000001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc5v1,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
-def swarmv2():
+def swarmvbsv2():
     descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
     bounds=[(0.0000001,1), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc1v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
@@ -294,7 +302,14 @@ def swarmv2():
     bounds=[(0.00000001,1), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(vbsfunc4v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
     bounds=[(0.00000001,4), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(vbsfunc452,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
+    PSO(vbsfunc4v2,bounds,num_particles=12,maxiter=24, processes=12, descr=descr)
+
+def swarmvbsv3():
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
+    bounds=[(0.0000000001,2), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
+    PSO(vbsfunc2v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    bounds=[(0.0000000001,4), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
+    PSO(vbsfunc5v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
 
 def arswarmv1():
     descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
@@ -319,6 +334,10 @@ def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
+def cust():
+    swarmvbs3()
+    arswarmv2()
+
 def main():
     parser = argparse.ArgumentParser(
         description=__doc__,
@@ -330,12 +349,15 @@ def main():
     if args.mode == "test":
         print("Testing....")
         swarm_test()
-    elif args.mode == "v1":
-        print("Version 1 selected")
+    elif args.mode == "vbsv1":
+        print("Very basic sequence Version 1 selected")
         swarmv1()
-    elif args.mode == "v2":
-        print("Version 2 selected")
+    elif args.mode == "vbsv2":
+        print("Very basic sequence Version 2 selected")
         swarmv2()
+    elif args.mode == "vbsv3":
+        print("Very basic sequence version 3 selected")
+        swarmvbs3()
     elif args.mode == "arv1":
         print("Autoregressive version 1 selected")
         arswarmv1()

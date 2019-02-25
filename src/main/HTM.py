@@ -132,7 +132,7 @@ class HTM():
                     for vkey, vvalue in value.iteritems():
                         #print(key, vkey, vvalue)
                         self.modelParams[key][vkey] = vvalue
-        log.debug(json.dumps(self.modelParams, sort_keys=True, indent=4))
+        log.debug("xxx HTM Params: xxx\n{}\n".format(json.dumps(self.modelParams, sort_keys=True, indent=4)))
         # Add SP and TM regions.
         self.network.addRegion("spatialPoolerRegion", "py.SPRegion", json.dumps(self.modelParams["spParams"]))
         self.network.addRegion("temporalPoolerRegion", "py.TMRegion", json.dumps(self.modelParams["tmParams"]))
@@ -227,11 +227,8 @@ class HTM():
 
     def runNetwork(self, learning = True):
         DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-        _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}.csv".format(DATE, time_series_model)
-
-        sensorRegion = self.network.regions["sensor"]
-        spatialPoolerRegion = self.network.regions["spatialPoolerRegion"]
-        temporalPoolerRegion = self.network.regions["temporalPoolerRegion"]
+        _OUTPUT_PATH = "../outputs/HTMOutput-{}-{}.csv".format(DATE, self.network.regions["sensor"].getSelf().dataSource)
+        self.sensorRegion.dataSource.rewind()
 
         # Set predicted field
         self.network.regions["sensor"].setParameter("predictedField", "series")
@@ -249,23 +246,27 @@ class HTM():
         with open(_OUTPUT_PATH, "w") as outputFile:
             writer = csv.writer(outputFile)
             log.info("Writing output to {}".format(_OUTPUT_PATH))
-            writer.writerow(["Time Step", "Series", "One Step Prediction", "One Step Prediction Confidence", "Five Step Prediction", "Five Step Prediction Confidence"])
+            steps = self.network.regions["classifier"].getSelf().stepsList
+            header_row = ["Time Step", "Series"]
+            for step in steps:
+                header_row.append("{} Step Pred".format(step))
+                header_row.append("{} Step Pred Conf".format(step))
+            writer.writerow(header_row)
             results = []
             for i in range(len(_model)):
                 # Run the network for a single iteration
                 self.network.run(1)
 
-                series = sensorRegion.getOutputData("sourceOut")[0]
+                series = self.network.regions["sensor"].getOutputData("sourceOut")[0]
                 predictionResults = self.getClassifierResults()
-                oneStep = predictionResults[1]["predictedValue"]
-                oneStepConfidence = predictionResults[1]["predictionConfidence"]
-                fiveStep = predictionResults[5]["predictedValue"]
-                fiveStepConfidence = predictionResults[5]["predictionConfidence"]
-
-                result = [_model.getBookmark(), series, oneStep, oneStepConfidence*100, fiveStep, fiveStepConfidence*100]
+                result = [_model.getBookmark(), series ]
+                for key, value in predictionResults.iteritems():
+                    result.append(value["predictedValue"])
+                    result.append(value["predictionConfidence"]*100)
                 #print "{:6}: 1-step: {:16} ({:4.4}%)\t 5-step: {:16} ({:4.4}%)".format(*result)
                 results.append(result)
                 writer.writerow(result)
+                outputFile.flush()
             return results
 
 
@@ -411,6 +412,7 @@ class HTM():
             counter+=1
             if last_error == -1:
                 last_error = float("inf")
+        self.sensorRegion.dataSource.rewind()
         return self.runWithMode("eval", eval_method, error_method)
 
     def turnInferenceOn(self):
@@ -466,10 +468,11 @@ class HTM():
 
 if __name__ == "__main__":
     time_series_model = VeryBasicSequence(pattern=1, n=1000)
-    network = HTM(time_series_model, 60, verbosity=4)
+    network = HTM(time_series_model, .6, verbosity=4)
     print(network)
     #print(network.train(error_method="binary"))
-    #network.runNetwork()
+    network.train("val", "binary")
+    network.runNetwork()
     '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())
     print(network.network.regions["spatialPoolerRegion"].getInputData("bottomUpIn"))
