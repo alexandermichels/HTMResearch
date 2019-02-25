@@ -373,7 +373,6 @@ class HTM():
 
             # normalize result over length of evaluation set
             if eval_method=="val":
-                print(self.sensorRegion.dataSource.len_eval_set())
                 result/=(self.sensorRegion.dataSource.len_eval_set()-1)
 
         return result

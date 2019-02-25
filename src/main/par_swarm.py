@@ -63,23 +63,23 @@ def arfunc5(x):
     return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc1v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])} }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
     return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc2v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])} }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8])}, "newSynapseCount" : int(x9) }
     return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc3v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]) } }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x9) } }
     return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc4v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]) } }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x9)} }
     return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfunc5v2(x):
-    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]) } }
+    param_dict = { "spParams" : { "potentialPct": x[4], "numActiveColumnsPerInhArea": int(x[5]), "synPermConnected": x[6], "synPermInactiveDec": x[7] }, "tmParams" : { "activationThreshold": int(x[8]), "newSynapseCount" : int(x9) } }
     return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="mse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def sanfunc(x):
@@ -106,7 +106,7 @@ class Particle:
         self.velocity_i=copy.deepcopy(particle.velocity_i)
         self.pos_best_i=copy.deepcopy(particle.pos_best_i)
         self.err_best_i=-particle.err_best_i
-        self.err_i=-particle.err_I
+        self.err_i=-particle.err_i
 
     # evaluate current fitness
     def evaluate(self,costFunc):
@@ -150,9 +150,9 @@ class Particle:
 def eval_pos_unpacker(args):
     return evaluate_position(*args)
 
-def evaluate_position(swarm, j, costFunc):
-    swarm[j].evaluate(costFunc)
-    return (j, swarm[j])
+def evaluate_position(particle, j, costFunc):
+    particle.evaluate(costFunc)
+    return (j, particle)
 
 class PSO():
     def __init__(self, costFunc, bounds, num_particles ,maxiter, processes = (mp.cpu_count()-1), descr=None):
@@ -165,7 +165,7 @@ class PSO():
         global num_dimensions
         num_dimensions=len(bounds)
         log.debug("    \n    num_dimensions: {}".format(num_dimensions))
-        err_best_g=-1                   # best error for group
+        err_best_g=float("inf")                   # best error for group
         pos_best_g=[]                   # best position for group
 
         # establish the swarm
@@ -197,34 +197,28 @@ class PSO():
 
         pool = mp.Pool(processes = processes)
         while i < maxiter:
-            print i,err_best_g, pos_best_g
+            print i, err_best_g, pos_best_g
             log.debug("\n+++++ Beginning Iteration {} +++++".format(i))
             log.debug("    i: {}\n    err_best: {}\n    pos_best {}".format(i, err_best_g, pos_best_g))
             log.debug("...entering pool mapping...")
-            results = pool.map(eval_pos_unpacker, itertools.izip(itertools.repeat(swarm), range(num_particles), itertools.repeat(costFunc)))
+            results = pool.map(eval_pos_unpacker, itertools.izip(swarm, range(num_particles), itertools.repeat(costFunc)))
 
             log.debug("...pool mapping exited...")
             results.sort()
             log.debug("...pool results sorted...")
-            results = [r[1] for r in results]
-            swarm = copy.deepcopy(results)
+            swarm = [r[1] for r in results]
             log.debug("...copying results back to main thread's copy...")
 
             log.debug("...evaluating fitness...")
             # cycle through particles in swarm and evaluate fitness
             for j in range(0,num_particles):
+                print(swarm[j].position_i)
                 # determine if current particle is the best (globally)
-                if swarm[j].err_i < err_best_g or err_best_g == -1:
+                if swarm[j].err_i < err_best_g:
                     pos_best_g=list(swarm[j].position_i)
                     err_best_g=float(swarm[j].err_i)
 
             log.debug("New best error: {}\nNew best position: {}".format(err_best_g, pos_best_g))
-
-            log.debug("...updating particle position and velocity...")
-            # cycle through swarm and update velocities and position
-            for j in range(0,num_particles):
-                swarm[j].update_velocity(pos_best_g)
-                swarm[j].update_position(bounds)
 
             output_row = ["{}".format(i)]
             avg_err = 0
@@ -236,6 +230,12 @@ class PSO():
             output_row.append(avg_err/num_particles)
             writer.writerow(output_row)
             csv_out.flush()
+
+            log.debug("...updating particle position and velocity...")
+            # cycle through swarm and update velocities and position
+            for j in range(0,num_particles):
+                swarm[j].update_velocity(pos_best_g)
+                swarm[j].update_position(bounds)
             i+=1
 
         pool.close()
@@ -306,18 +306,18 @@ def arswarmv1():
     PSO(arfunc5,bounds,num_particles=12,maxiter=36, processes=12, descr=descr)
 
 def arswarmv2():
-    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold"]
-    bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40)]
-    PSO(arfunc1v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
-    PSO(arfunc2v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
-    PSO(arfunc3v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
-    PSO(arfunc4v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
-    PSO(arfunc5v2,bounds,num_particles=24,maxiter=48, processes=24, descr=descr)
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
+    bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
+    PSO(arfunc1v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(arfunc2v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(arfunc3v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(arfunc4v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(arfunc5v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
 
 def swarmsan():
 
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(sanfunc,bounds,num_particles=4,maxiter=16, processes=4, descr=["RDSE Resolution"])
+    PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
 def main():
     parser = argparse.ArgumentParser(
