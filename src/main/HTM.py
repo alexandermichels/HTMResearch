@@ -301,76 +301,121 @@ class HTM():
             result = []
 
         last_prediction = None
+        five_pred = [None]*5 # list of 5 Nones
         if mode == "strain" or mode == "train":
             _model.set_to_train_theta()
             while _model.in_train_set():
                 self.network.run(1)
                 series = sensorRegion.getOutputData("sourceOut")[0]
+
                 if eval_method == "val":
                     if last_prediction == None:
                         pass
                     elif error_method == "mse":
                         result+=sqrt((series-last_prediction)**2)
+                        if not five_pred[0] == None:
+                            result+=sqrt((series-five_pred[0])**2)
                     elif error_method == "binary":
                         if series==last_prediction:
                             result+=0
                         else:
                             result+=1
+                        if not five_pred[0] == None:
+                            if series==five_pred[0]:
+                                result+=0
+                            else:
+                                result+=1
+
+
                 elif error_method == "expr":
                     temp = [_model.getBookmark(), series ]
                     for i in range(1,6):
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
-                last_prediction=self.getClassifierResults()[1]["predictedValue"]
-                #print(series, last_prediction)
+
+                # update predictions
+                classRes = self.getClassifierResults()
+                last_prediction = classRes[1]["predictedValue"]
+                for i in range(4):
+                    five_pred[i] = five_pred[i+1] # shift down
+                five_pred[4] = classRes[5]["predictedValue"]
         elif mode == "test":
             _model.set_to_test_theta()
             while _model.in_test_set():
                 self.network.run(1)
                 series = sensorRegion.getOutputData("sourceOut")[0]
                 predictions = self.getClassifierResults()
+
                 if eval_method == "val":
                     if last_prediction == None:
                         pass
                     elif error_method == "mse":
                         result+=sqrt((series-last_prediction)**2)
+                        if not five_pred[0] == None:
+                            result+=sqrt((series-five_pred[0])**2)
                     elif error_method == "binary":
                         if series==last_prediction:
-                            result+= 0
+                            result+=0
                         else:
                             result+=1
+                        if not five_pred[0] == None:
+                            if series==five_pred[0]:
+                                result+=0
+                            else:
+                                result+=1
+
                 elif error_method == "expr":
                     temp = [_model.getBookmark(), series ]
                     for i in range(1,6):
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
-                #print(series, last_prediction)
-                last_prediction=self.getClassifierResults()[1]["predictedValue"]
+
+                # update predictions
+                classRes = self.getClassifierResults()
+                last_prediction = classRes[1]["predictedValue"]
+                for i in range(4):
+                    five_pred[i] = five_pred[i+1] # shift down
+                five_pred[4] = classRes[5]["predictedValue"]
         elif mode == "eval":
             _model.set_to_eval_theta()
             while _model.in_eval_set():
                 self.network.run(1)
                 series = sensorRegion.getOutputData("sourceOut")[0]
                 predictions = self.getClassifierResults()
+
                 if eval_method == "val":
                     if last_prediction == None:
                         pass
                     elif error_method == "mse":
                         result+=sqrt((series-last_prediction)**2)
+                        if not five_pred[0] == None:
+                            result+=sqrt((series-five_pred[0])**2)
                     elif error_method == "binary":
                         if series==last_prediction:
-                            result+= 0
+                            result+=0
                         else:
                             result+=1
+                        if not five_pred[0] == None:
+                            if series==five_pred[0]:
+                                result+=0
+                            else:
+                                result+=1
+
                 elif error_method == "expr":
                     temp = [_model.getBookmark(), series ]
                     for i in range(1,6):
                         temp.append(predictions[i]["predictedValue"])
                         temp.append(predictions[i]["predictionConfidence"]*100)
                     result.append(temp)
-                last_prediction=self.getClassifierResults()[1]["predictedValue"]
+
+                # update predictions
+                classRes = self.getClassifierResults()
+                last_prediction = classRes[1]["predictedValue"]
+                for i in range(4):
+                    five_pred[i] = five_pred[i+1] # shift down
+                five_pred[4] = classRes[5]["predictedValue"]
 
             # normalize result over length of evaluation set
             if eval_method=="val":
@@ -467,7 +512,7 @@ class HTM():
 
 
 if __name__ == "__main__":
-    time_series_model = VeryBasicSequence(pattern=1, n=1000)
+    time_series_model = VeryBasicSequence(pattern=2, n=1000)
     network = HTM(time_series_model, .6, verbosity=4)
     print(network)
     #print(network.train(error_method="binary"))
