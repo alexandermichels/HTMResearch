@@ -331,9 +331,9 @@ def swarmvbsv2():
 def swarmvbsv3():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
     bounds=[(0.0000000001,2), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(vbsfunc2v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(vbsfunc2v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
     bounds=[(0.0000000001,4), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(vbsfunc5v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(vbsfunc5v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
 
 def arswarmv1():
     descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
@@ -347,20 +347,20 @@ def arswarmv1():
 def arswarmv2():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(arfunc1v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc2v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc3v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc4v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc5v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc1v2,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc2v2,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc3v2,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc4v2,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc5v2,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
 
 def arswarmv3():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "fiveWeight"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
-    PSO(arfunc1v3,bounds,num_particles=2,maxiter=32, processes=2, descr=descr)
-    PSO(arfunc2v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc3v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc4v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
-    PSO(arfunc5v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc1v3,bounds,num_particles=2,maxiter=24, processes=2, descr=descr)
+    PSO(arfunc2v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc3v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc4v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
+    PSO(arfunc5v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
 
 def swarmsan():
 
@@ -368,14 +368,12 @@ def swarmsan():
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
 def cust():
-    time.sleep(10000)
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(vbsfunc5v3,bounds,num_particles=32,maxiter=24, processes=32, descr=descr)
+    PSO(vbsfunc5v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "fiveWeight"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
-    PSO(vbsfunc5v4,bounds,num_particles=32,maxiter=24, processes=32, descr=descr)
-    arswarmv2()
+    PSO(vbsfunc5v4,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
     arswarmv3()
 
 def main():
