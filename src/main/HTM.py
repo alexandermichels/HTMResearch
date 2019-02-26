@@ -324,7 +324,7 @@ class HTM():
         elif mode == "eval":
             _model.set_to_eval_theta()
             while _model.in_eval_set():
-                temp = self.run_with_mode_one_iter(eval_method, error_method, result, 1.0, last_prediction, five_pred)
+                temp = self.run_with_mode_one_iter(eval_method, error_method, result, 0, last_prediction, five_pred)
                 result = temp[0]
                 last_prediction = temp[1]
                 five_pred = temp[2]
