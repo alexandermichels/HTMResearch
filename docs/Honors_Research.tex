@@ -113,8 +113,12 @@
 	\begin{center}
 		\textbf{\LARGE CHANGE LOG}
 	\end{center}
-	Brought over Chapter 1 from Proposal with edits and will add an ``Evolutionary Computing'' section to segue into HTM\\
-	Brought over Sparse Distributed Representations from Proposal (Section 3.2) \\
+	\begin{itemize}
+		\item Brought over Chapter 1 from Proposal with edits and will add an ``Evolutionary Computing'' section to segue into HTM
+		\item Brought over Sparse Distributed Representations from Proposal (Section 3.2) 
+		\item Wrote some of ``Hardware and Software Specifications'' (Section 5.1)
+		\item Wrote some on Swarming (Section 5.2)
+	\end{itemize}
 	
 	
 	\vfill
@@ -224,16 +228,18 @@
 	
 	\section{Hierarchical Temporal Memory}
 	
-	\textcolor{red}{Overview - Sequence memory - SDRs and transitions}
-	
-	\textcolor{red}{Variable order sequence memory - cells per minicolumn}
+	Hierarchical Temporal Memory aims to implement the functions of the neocortex as faithfully as possible, and unsurprisingly uses the same atomic unit of the cell. Modeled after the pyramidal neurons of the neocortex, these cells each take their own inputs and make their own predictions which the layer combines into a cohesive prediction \cite{Whitepaper}. They have three states: active from feed-forward input, active from lateral input (predictive state), and inactive. These first two states correspond to a short burst of action potentials in a neuron, and a slower steady burst of action potentials on a neuron respectively in our own brain.
 	
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=\linewidth]{images/HTMCell.jpg}
-		\caption{Hierarchical Temporal Memory Cell}
+		\caption{Pyramidal Neuron vs. Hierarchical Temporal Memory Cell}
 		\label{fig:HTMCell}
 	\end{figure}
+
+	Just like actual pyramidal neurons, HTM cells also dendrite segments. Each cell has one proximal dendrite segment and a dozen or more distal dendrite segments \cite {Whitepaper}. Proximal dendrites accept feed-forward input and all cells in the same column respond to a similar feed-forward input due to a class of inhibitory cells. On the other hand, distal dendrites receive lateral input from nearby cells and their response is unique on a cell-by-cell basis dependent on the connected synapses on each cells distal dendrites. Figure~\ref{fig:HTMCell} illustrates the similarities between a pyramidal neuron and an HTM cell.
+	
+	\textcolor{red}{talk about synapses}
 	
 	\subsection{Encoder}
 	
@@ -280,7 +286,7 @@
 	
 	I utilized the official Python (Python 2.7) implementation of Numenta's cortical learning algorithms, NuPIC\footnote{NuPIC repository: \href{https://github.com/numenta/nupic}{\ttfamily https://github.com/numenta/nupic} } and it's Network API\footnote{Network API docs: \href{http://nupic.docs.numenta.org/stable/api/network/}{\ttfamily http://nupic.docs.numenta.org/stable/api/network/}}. At the time of my work NuPIC was at version 1.05 and I chose to use this version. It should be noted that although much of NuPIC is in Python, many of its computationally intensive algorithms are implemented in C++ using their NuPIC.core repository\footnote{NuPIC.core repository: \href{https://github.com/numenta/nupic.core}{\ttfamily https://github.com/numenta/nupic.core}} and it also relies on a number of external libraries such as \texttt{numpy} and \texttt{pandas}. 
 	
-	Due to the computationally intensive nature of my research and the limited time available to me, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 20$\times$ when running independent tests or swarming.
+	Due to the computationally intensive nature of my research and the limited time available to me, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
 	
 	\begin{table}[h!]
 		\centering
@@ -291,19 +297,19 @@
 			RAM     & 24 GB                                \\ \hline
 			OS      & Linux Mint 19 Cinnamon               \\ \hline
 			\multicolumn{2}{|l|}{Galois (HP DL380 G7)}     \\ \hline
-			CPU     &  Intel Xeon X5650, 6-Core, 2.70 GHz       \\ \hline
+			CPU     &  2x Intel Xeon X5650, 6-Core, 2.70 GHz       \\ \hline
 			RAM     & 192 GB                               \\ \hline
 			OS      & Linux Mint 19 Cinnamon               \\ \hline
-			\multicolumn{2}{|l|}{}                         \\ \hline
-			&                                      \\ \hline
-			&                                      \\ \hline
-			&                                      \\ \hline
+			\multicolumn{2}{|l|}{Aslan (\textbf{Type})}                         \\ \hline
+			CPU&    2x  Intel Xeon E5-2690, 10-Core, 3.00 GHz    \\ \hline
+			RAM&    252 GB                                  \\ \hline
+			OS&    Gentoo                               \\ \hline
 		\end{tabular}
 		\caption{Hardware Specifications}
 		\label{tab:hardware}
 	\end{table}
 
-	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades (see Table~\ref{tab:hardware} for details). The code was then deployed to my HP DL380 G7 server which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
+	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades (see Table~\ref{tab:hardware} for details). The code was then deployed to my HP DL380 G7 or \textbf{[ASLAN's type]} server which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
 	
 	\textcolor{red}{Hardware and language}
 	
