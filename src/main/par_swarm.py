@@ -55,6 +55,10 @@ def vbsfunc5v3(x):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
     return HTM(VeryBasicSequence(pattern=5), x[0], params=param_dict, verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
+def vbsfunc5v4(x):
+    param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
+    return HTM(VeryBasicSequence(pattern=5), x[0], params=param_dict, verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
+
 def arfunc1(x):
     return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
@@ -92,23 +96,23 @@ def arfunc5v2(x):
 
 def arfunc1v3(x):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), five_weight=x[9])
+    return HTM(ARMATimeSeries(1,0, sigma=1, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
 def arfunc2v3(x):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), five_weight=x[9])
+    return HTM(ARMATimeSeries(1,0, sigma=2, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
 def arfunc3v3(x):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), five_weight=x[9])
+    return HTM(ARMATimeSeries(1,0, sigma=3, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
 def arfunc4v3(x):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), five_weight=x[9])
+    return HTM(ARMATimeSeries(1,0, sigma=4, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
 def arfunc5v3(x):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), five_weight=x[9])
+    return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=4, n=1000), x[0], verbosity=0).train(error_method="binary")
@@ -327,9 +331,9 @@ def swarmvbsv2():
 def swarmvbsv3():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
     bounds=[(0.0000000001,2), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(vbsfunc2v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(vbsfunc2v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
     bounds=[(0.0000000001,4), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(vbsfunc5v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(vbsfunc5v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
 
 def arswarmv1():
     descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
@@ -343,20 +347,20 @@ def arswarmv1():
 def arswarmv2():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
-    PSO(arfunc1v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc2v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc3v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc4v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc5v2,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(arfunc1v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc2v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc3v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc4v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc5v2,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
 
 def arswarmv3():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "fiveWeight"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
-    PSO(arfunc1v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc2v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc3v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc4v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
-    PSO(arfunc5v3,bounds,num_particles=32,maxiter=64, processes=32, descr=descr)
+    PSO(arfunc1v3,bounds,num_particles=2,maxiter=32, processes=2, descr=descr)
+    PSO(arfunc2v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc3v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc4v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
+    PSO(arfunc5v3,bounds,num_particles=32,maxiter=32, processes=32, descr=descr)
 
 def swarmsan():
 
@@ -364,8 +368,15 @@ def swarmsan():
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
 def cust():
-    swarmvbsv3()
+    time.sleep(10000)
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount"]
+    bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35)]
+    PSO(vbsfunc5v3,bounds,num_particles=32,maxiter=24, processes=32, descr=descr)
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "fiveWeight"]
+    bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
+    PSO(vbsfunc5v4,bounds,num_particles=32,maxiter=24, processes=32, descr=descr)
     arswarmv2()
+    arswarmv3()
 
 def main():
     parser = argparse.ArgumentParser(

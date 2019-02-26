@@ -185,6 +185,9 @@ class HTM():
     def getCurrSeries(self):
         return self.network.regions["sensor"].getOutputData("sourceOut")[0]
 
+    def getStepsList(self):
+        return self.network.regions["classifier"].getSelf().stepsList
+
     def getTimeSeriesStream(self):
         return self.network.regions["sensor"].getSelf().dataSource
 
@@ -252,7 +255,7 @@ class HTM():
         with open(_OUTPUT_PATH, "w") as outputFile:
             writer = csv.writer(outputFile)
             log.info("Writing output to {}".format(_OUTPUT_PATH))
-            steps = self.network.regions["classifier"].getSelf().stepsList
+            steps = self.getStepsList()
             header_row = ["Time Step", "Series"]
             for step in steps:
                 header_row.append("{} Step Pred".format(step))
@@ -276,7 +279,7 @@ class HTM():
             return results
 
 
-    def runWithMode(self, mode, eval_method="val", error_method="rmse", five_weight=1.0):
+    def runWithMode(self, mode, eval_method="val", error_method="rmse", weights={ 1: 1.0, 5: 1.0 } ):
         '''
         Modes:
         * "strain" - Learning on spatial pool, on training set
@@ -300,7 +303,14 @@ class HTM():
 
         if eval_method == "val":
             log.debug("val evaluation method selected in `runWithMode`")
-            result = 0
+            results = {}
+
+            steps = self.getStepsList()
+            for step in steps:
+                results[step] = 0
+            predictions = {}
+            for step in steps:
+                predictions[step] = [None]*step
         elif eval_method == "expr":
             log.debug("expr (expressive) evaluation method selected in `runWithMode`")
             result = []
@@ -310,71 +320,82 @@ class HTM():
         if mode == "strain" or mode == "train":
             _model.set_to_train_theta()
             while _model.in_train_set():
-                temp = self.run_with_mode_one_iter("val", error_method, result, five_weight, last_prediction, five_pred)
-                result = temp[0]
-                last_prediction = temp[1]
-                five_pred = temp[2]
+                temp = self.run_with_mode_one_iter("val", error_method, results, predictions)
+                results = temp[0]
+                predictions = temp[1]
         elif mode == "test":
             _model.set_to_test_theta()
             while _model.in_test_set():
-                temp = self.run_with_mode_one_iter("val", error_method, result, five_weight, last_prediction, five_pred)
-                result = temp[0]
-                last_prediction = temp[1]
-                five_pred = temp[2]
+                temp = self.run_with_mode_one_iter("val", error_method, results, predictions)
+                results = temp[0]
+                predictions = temp[1]
         elif mode == "eval":
             _model.set_to_eval_theta()
             while _model.in_eval_set():
-                temp = self.run_with_mode_one_iter(eval_method, error_method, result, 0, last_prediction, five_pred)
-                result = temp[0]
-                last_prediction = temp[1]
-                five_pred = temp[2]
+                steps = self.getStepsList()
+                for step in steps:
+                    weights[step] = 0
+                weights[0]=1 # weights for eval hard-coded to just look at one-step prediction for now
+                temp = self.run_with_mode_one_iter(eval_method, error_method, results, predictions)
+                results = temp[0]
+                predictions = temp[1]
 
             # normalize result over length of evaluation set
             if eval_method=="val":
-                result/=(2*self.sensorRegion.dataSource.len_eval_set()-2)
+                for key, value in results.iteritems():
+                    results[key]/=(2*self.sensorRegion.dataSource.len_eval_set()-2)
 
-        return result
+        # preprocess weights to put in zero weights
+        for key, value in results.iteritems():
+            try:
+                weights[key]
+            except:
+                weights[key] = 0
 
-    def run_with_mode_one_iter(self, eval_method, error_method, result, five_weight, last_prediction, five_pred):
+        for key, value in results.iteritems():
+            results[key]=results[key]*weights[key]
+
+        return results
+
+    def run_with_mode_one_iter(self, eval_method, error_method, results, predictions=None):
         self.network.run(1)
         series = self.getCurrSeries()
-        predictions = self.getClassifierResults()
 
         if eval_method == "val":
-            if last_prediction == None:
-                pass
-            elif error_method == "rmse":
-                result+=sqrt((series-last_prediction)**2)
-                if not five_pred[0] == None:
-                    result+=(five_weight*sqrt((series-five_pred[0])**2))
-            elif error_method == "binary":
-                if series==last_prediction:
-                    result+=0
-                else:
-                    result+=1
-                if not five_pred[0] == None:
-                    if series==five_pred[0]:
-                        result+=0
-                    else:
-                        result+=five_weight
+            for key, value in results.iteritems():
+                if predictions[key][0] == None:
+                    pass
+                elif error_method == "rmse":
+                    results[key] += sqrt((series-predictions[key][0])**2)
+                elif error_method == "binary":
+                    if not series == predictions[key][0]:
+                        results[key] += 1
+
+            # update predictions
+            classRes = self.getClassifierResults()
+            for key, value in predictions.iteritems():
+                for i in range(key-1):
+                    value[i]=value[i+1] # shift predictions down one
+                value[key-1] = classRes[key]["predictedValue"]
+
         elif error_method == "expr":
             temp = [_model.getBookmark(), series ]
-            steps = self.network.regions["classifier"].getSelf().stepsList
-            for step in steps:
-                temp.append(predictions[i]["predictedValue"])
-                temp.append(predictions[i]["predictionConfidence"]*100)
-            result.append(temp)
+            classRes = self.getClassifierResults()
+            steps = self.getStepsList()
+            for key, value in steps.iteritems():
+                temp.append(classRes[key]["predictedValue"])
+                temp.append(classRes[key]["predictionConfidence"]*100)
+            results.append(temp)
 
-        # update predictions
-        classRes = self.getClassifierResults()
-        last_prediction = classRes[1]["predictedValue"]
+
+        '''last_prediction = classRes[1]["predictedValue"]
         for i in range(4):
             five_pred[i] = five_pred[i+1] # shift down
-        five_pred[4] = classRes[5]["predictedValue"]
+        five_pred[4] = classRes[5]["predictedValue"]'''
 
-        return (result, last_prediction, five_pred)
+        return (results, predictions)
 
-    def train(self, eval_method="val", error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=50, five_weight=1.0, log=False):
+    def train(self, eval_method="val", error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=50, weights={ 1: 1.0, 5: 1.0 } , log=False):
         """
         Trains the HTM on `dataSource`
 
@@ -386,7 +407,7 @@ class HTM():
             for i in range(sibt):
                 log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
                 # train on spatial pooler
-                log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", "val", error_method, five_weight), error_method))
+                log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", "val", error_method, weights), error_method))
             log.info("\nExited spatial pooler only training loop")
         last_error = 0 # set to infinity error so you keep training the first time
         curr_error = -1
@@ -401,15 +422,17 @@ class HTM():
             for i in range(int(iter_per_cycle)):
                 if log:
                     log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
-                    log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", "val", error_method, five_weight), error_method))
-                curr_error+=self.runWithMode("test", "val", error_method, five_weight)
+                    log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", "val", error_method, weights), error_method))
+                result = self.runWithMode("test", "val", error_method, weights)
+                for key, value in result.iteritems():
+                    curr_error+=value
             if log:
                 log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
             counter+=1
             if last_error == -1:
                 last_error = float("inf")
         self.sensorRegion.dataSource.rewind()
-        return self.runWithMode("eval", eval_method, error_method, five_weight)
+        return self.runWithMode("eval", eval_method, error_method, weights)
 
     def turnInferenceOn(self):
         log.debug("Inference enabled for all regions")
