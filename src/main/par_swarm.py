@@ -355,7 +355,7 @@ def arswarmv2():
 def arswarmv3():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "fiveWeight"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
-    PSO(arfunc1v3,bounds,num_particles=2,maxiter=24, processes=2, descr=descr)
+    PSO(arfunc1v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
     PSO(arfunc2v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
     PSO(arfunc3v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
     PSO(arfunc4v3,bounds,num_particles=18,maxiter=24, processes=18, descr=descr)
