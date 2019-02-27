@@ -115,7 +115,7 @@ def arfunc5v3(x):
     return HTM(ARMATimeSeries(1,0, sigma=5, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
 def sanfunc(x):
-    return HTM(VeryBasicSequence(pattern=4, n=1000), x[0], verbosity=0).train(error_method="binary")
+    return HTM(VeryBasicSequence(pattern=1, n=1000), x[0], verbosity=0).train(error_method="binary")
 
 
 #--- MAIN ---------------------------------------------------------------------+
@@ -244,7 +244,6 @@ class PSO():
             log.debug("...evaluating fitness...")
             # cycle through particles in swarm and evaluate fitness
             for j in range(0,num_particles):
-                print(swarm[j].position_i)
                 # determine if current particle is the best (globally)
                 if swarm[j].err_i < err_best_g:
                     pos_best_g=list(swarm[j].position_i)

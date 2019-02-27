@@ -342,8 +342,9 @@ class HTM():
 
             # normalize result over length of evaluation set
             if eval_method=="val":
-                for key, value in results.iteritems():
+                for key in results:
                     results[key]/=(2*self.sensorRegion.dataSource.len_eval_set()-2)
+
 
         # preprocess weights to put in zero weights
         for key, value in results.iteritems():
@@ -432,7 +433,8 @@ class HTM():
             if last_error == -1:
                 last_error = float("inf")
         self.sensorRegion.dataSource.rewind()
-        return self.runWithMode("eval", eval_method, error_method, weights)
+        final_error = self.runWithMode("eval", eval_method, error_method, weights)
+        return final_error[1]
 
     def turnInferenceOn(self):
         log.debug("Inference enabled for all regions")
