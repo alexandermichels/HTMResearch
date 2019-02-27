@@ -289,7 +289,7 @@ class HTM():
         '''
         mode = mode.lower()
         error_method = error_method.lower()
-        log.debug("enetered `runWithMode` with with:\n  mode: {}\nerror_method: {}".format(mode, error_method))
+        log.debug("entered `runWithMode` with with:\n  mode: {}\n    error_method: {}".format(mode, error_method))
 
         _model = self.getTimeSeriesStream()
 
@@ -373,14 +373,14 @@ class HTM():
 
         return (results, predictions)
 
-    def train(self, error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=50, weights={ 1: 1.0, 5: 1.0 } , logging=False):
+    def train(self, error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=20, weights={ 1: 1.0, 5: 1.0 } , logging=False):
         """
         Trains the HTM on `dataSource`
 
         :param  error_method - the metric for calculating error ("rmse" root mean squared error or "binary")
         :param  sibt - spatial (pooler) iterations before temporal (pooler)
         """
-        if log:
+        if logging:
             for i in range(sibt):
                 log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
                 # train on spatial pooler
@@ -389,21 +389,21 @@ class HTM():
         last_error = 0 # set to infinity error so you keep training the first time
         curr_error = -1
         counter = 0
-        if log:
+        if logging:
             log.info("Entering full training loop")
         while (fcompare(curr_error, last_error) == -1 and counter < max_cycles):
-            if log:
+            if logging:
                 log.debug("\n++++++++++ Cycle {} of the full training loop +++++++++\n".format(counter))
             last_error=curr_error
             curr_error = 0
             for i in range(int(iter_per_cycle)):
-                if log:
+                if logging:
                     log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
                     log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", error_method, weights), error_method))
                 result = self.runWithMode("test", error_method, weights)
                 for key, value in result.iteritems():
                     curr_error+=value
-            if log:
+            if logging:
                 log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
             counter+=1
             if last_error == -1:
