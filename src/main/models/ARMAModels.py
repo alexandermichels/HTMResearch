@@ -11,7 +11,7 @@ from Sequence import Sequence
 
 class ARMATimeSeries(Sequence):
 
-    def __init__(self, p, q, sigma=1, n=10000, normalize=True):
+    def __init__(self, p, q, sigma=1, n=1000, normalize=True):
         self.n = n
         self.p = p
         self.q = q
