@@ -293,7 +293,7 @@ def swarmvbsv3():
 def swarmvbsv4():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "fiveWeight"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
-    for i in range(1,6):
+    for i in range(1,11):
         if i == 2 or i == 3:
             bounds=[(0.0000000001,2), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
         elif i == 5:
@@ -322,14 +322,15 @@ def arswarmv4():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "twoWeight", "threeWeight", "fourWeight"]
     bounds=[(0.0000000001,1), (0,50), (1,5), (0,10), (0,10), (0,10)]
     for i in range(1,6):
-        PSO(arfuncv4,bounds,num_particles=6,maxiter=24, func_sel={"sigma":i}, processes=6, descr=descr)
+        PSO(arfuncv4,bounds,num_particles=16,maxiter=24, func_sel={"sigma":i}, processes=16, descr=descr)
 
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
 
 def cust():
-    pass
+    arswarmv3()
+    arswarmv4()
 
 def main():
     parser = argparse.ArgumentParser(
