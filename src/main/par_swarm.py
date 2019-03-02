@@ -20,7 +20,8 @@ def signal_handler(sig, frame):
 #--- COST FUNCTION ------------------------------------------------------------+
 
 # function we are attempting to optimize (minimize)
-def testfunc(x):
+def testfunc(args):
+    x = args["x"]
     return (x[0]**2/2 +x[1]**2/4)
 
 def vbsfuncv1(args):
@@ -48,12 +49,17 @@ def arfuncv1(args):
 def arfuncv2(args):
     x = args["x"]
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], n=100, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
+    return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
 
 def arfuncv3(args):
     x = args["x"]
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], n=100, normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
+    return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
+
+def arfuncv4(args):
+    x = args["x"]
+    param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 }
+    return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2: x[3], 3: x[4], 4: x[5] })
 
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=1, n=1000), x[0], verbosity=0).train(error_method="binary")
@@ -94,10 +100,12 @@ class Particle:
     # update new particle velocity
     def update_velocity(self,pos_best_g):
         w=0.4 # constant inertia weight (how much to weight the previous velocity)
-        if self.step < 12:
+        if self.step < 24:
             w=1.1+((self.step*-.7)/24) # start it out higher and linearly lower it
-        c1=2        # cognitive constant
-        c2=2        # social constant
+        c1=1        # cognitive constant
+        c2=1        # social constant
+        if self.step < 12:
+            c2=1+((self.step*-.5)/12) # start it out higher and linearly lower it
 
         for i in range(0,num_dimensions):
             r1=random.random()
@@ -135,7 +143,7 @@ class PSO():
         if not func_sel == None:
             sel_string = ""
             for key, value in func_sel.iteritems():
-                sel_string+="{}-{}"
+                sel_string+="{}-{}".format(key, value)
             self.log_file = join('../logs/', 'swarmp-on_{}-({})-({}particles-{}maxiter-{}processes)-{}.log'.format(costFunc.__name__,sel_string,num_particles,maxiter,processes,DATE))
         log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
 
@@ -160,7 +168,11 @@ class PSO():
 
         # begin optimization loop
         i=0
-        csv_out = open(join('../outputs/', 'swarmp-on_{}-({})-({}particles-{}maxiter-{}processes)-{}.csv'.format(costFunc.__name__,func_sel,num_particles,maxiter,processes,DATE)), "w+")
+        if func_sel == None:
+            csv_out = open(join('../outputs/', 'swarmp-on_{}-({}particles-{}maxiter-{}processes)-{}.csv'.format(costFunc.__name__,num_particles,maxiter,processes,DATE)), "w+")
+            func_sel = {"____": "----"}
+        else:
+            csv_out = open(join('../outputs/', 'swarmp-on_{}-({})-({}particles-{}maxiter-{}processes)-{}.csv'.format(costFunc.__name__,sel_string,num_particles,maxiter,processes,DATE)), "w+")
         writer = csv.writer(csv_out)
         header_row = ["Iteration"]
         for j in range(0,num_particles):
@@ -306,6 +318,12 @@ def arswarmv3():
     for i in range(1,6):
         PSO(arfuncv3,bounds,num_particles=18,maxiter=24, func_sel={"sigma":i}, processes=18, descr=descr)
 
+def arswarmv4():
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "twoWeight", "threeWeight", "fourWeight"]
+    bounds=[(0.0000000001,1), (0,50), (1,5), (0,10), (0,10), (0,10)]
+    for i in range(1,6):
+        PSO(arfuncv4,bounds,num_particles=6,maxiter=24, func_sel={"sigma":i}, processes=6, descr=descr)
+
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
@@ -345,6 +363,9 @@ def main():
     elif args.mode == "arv3":
         print("Autoregressive version 3 selected")
         arswarmv3()
+    elif args.mode == "arv4":
+        print("Autoregressive version 4 selected")
+        arswarmv4()
     elif args.mode == "san":
         print("Sanity check selected")
         swarmsan()

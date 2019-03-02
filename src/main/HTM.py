@@ -80,9 +80,6 @@ class RDSEEncoder():
 
 class HTM():
 
-    global param_dict
-    param_dict = { "tmParams" : { "cellsPerColumn": 4 } }
-
     def __init__(self, dataSource, rdse_resolution, params=None, verbosity=3):
         """Create the Network instance.
 
@@ -279,7 +276,7 @@ class HTM():
             return results
 
 
-    def runWithMode(self, mode, error_method="rmse", weights={ 1: 1.0, 5: 1.0 } ):
+    def runWithMode(self, mode, error_method="rmse", weights={ 1: 1.0, 5: 1.0 }, normalize_error=False):
         '''
         Modes:
         * "strain" - Learning on spatial pool, on training set
@@ -296,8 +293,11 @@ class HTM():
         if mode == "strain":
             self.turnLearningOff("t")
             self.turnLearningOn("cs")
-        else:
+        elif mode == "train":
             self.turnLearningOn()
+        else:
+            self.turnLearningOff("s")
+            self.turnLearningOn("ct")
         self.turnInferenceOn()
 
         results = {}
@@ -349,6 +349,12 @@ class HTM():
         for key, value in results.iteritems():
             results[key]=results[key]*weights[key]
 
+        if normalize_error == True:
+            _range = self.getTimeSeriesStream().get_range()
+            if not _range == None:
+                for key, value in results.iteritems():
+                    results[key] = value/_range
+
         return results
 
     def run_with_mode_one_iter(self, error_method, results, predictions=None):
@@ -373,7 +379,7 @@ class HTM():
 
         return (results, predictions)
 
-    def train(self, error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=20, weights={ 1: 1.0, 5: 1.0 } , logging=False):
+    def train(self, error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=20, weights={ 1: 1.0, 5: 1.0 }, normalize_error=False, logging=False):
         """
         Trains the HTM on `dataSource`
 
@@ -384,7 +390,7 @@ class HTM():
             for i in range(sibt):
                 log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
                 # train on spatial pooler
-                log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", error_method, weights), error_method))
+                log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", error_method, weights, normalize_error), error_method))
             log.info("\nExited spatial pooler only training loop")
         last_error = 0 # set to infinity error so you keep training the first time
         curr_error = -1
@@ -399,8 +405,8 @@ class HTM():
             for i in range(int(iter_per_cycle)):
                 if logging:
                     log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
-                    log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", error_method, weights), error_method))
-                result = self.runWithMode("test", error_method, weights)
+                    log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", error_method, weights, normalize_error), error_method))
+                result = self.runWithMode("test", error_method, weights, normalize_error)
                 for key, value in result.iteritems():
                     curr_error+=value
             if logging:
@@ -409,7 +415,8 @@ class HTM():
             if last_error == -1:
                 last_error = float("inf")
         self.sensorRegion.dataSource.rewind()
-        final_error = self.runWithMode("eval", error_method, weights)
+        final_error = self.runWithMode("eval", error_method, weights, normalize_error)
+        log.info("FINAL ERROR: {}".format(final_error[1]))
         return final_error[1]
 
     def turnInferenceOn(self):
@@ -465,11 +472,14 @@ class HTM():
 
 if __name__ == "__main__":
     #time_series_model = VeryBasicSequence(pattern=1, n=1000)
-    time_series_model = ARMATimeSeries(1,0, sigma=2, n =1000, normalize=False)
-    network = HTM(time_series_model, 1.06)
+    param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 } # default params from masters
+    #param_dict = { "spParams" : { "potentialPct": .00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": .27, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 30}, "newSynapseCount" : 32 }
+    time_series_model = ARMATimeSeries(1,0, sigma=5, normalize=False)
+    network = HTM(time_series_model, .2)
     print(network)
     #print(network.train(error_method="binary"))
-    network.train("rmse", sibt=1, iter_per_cycle=1, logging=True)
+    network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
+    #network.train("rmse", sibt=50, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
     network.runNetwork()
     '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())

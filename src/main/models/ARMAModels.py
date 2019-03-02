@@ -122,10 +122,11 @@ class ARMATimeSeries(Sequence):
         self.sequence = [x*val/furthest for x in self.sequence]
 
 def main():
-        ts = ARMATimeSeries(1,0, sigma=5, normalize=False)
+        ts = ARMATimeSeries(1,0, sigma=1, normalize=False)
         for i in range(10):
                 print("The time series at {} is {}".format(i, ts.get()))
         ts.plot()
+        print(ts.get_range())
 
 if __name__ == "__main__":
         main()

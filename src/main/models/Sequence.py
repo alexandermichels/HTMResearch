@@ -61,6 +61,11 @@ class Sequence():
             self.theta=self.theta+1
             return self.sequence[self.theta-1]
 
+    def get_range(self):
+        _min = min(self.sequence)
+        _max = max(self.sequence)
+        return (_max-_min)
+
     def get_theta(self):
         return self.theta
 

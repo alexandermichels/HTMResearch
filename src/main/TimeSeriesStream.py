@@ -234,3 +234,6 @@ class TimeSeriesStream(RecordStreamIface):
 
     def set_to_train_theta(self):
         self.sequence.set_to_train_theta()
+
+    def get_range(self):
+        return self.sequence.get_range()
