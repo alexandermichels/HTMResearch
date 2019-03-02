@@ -15,7 +15,7 @@ class ARMATimeSeries(Sequence):
         self.n = n
         self.p = p
         self.q = q
-        self.normalize=normalize
+        self.norm=normalize
         np.random.seed(int(time.time()))
         self.sigma = sigma
         self.ar_poly = np.r_[1, np.random.rand(p)]
@@ -24,7 +24,7 @@ class ARMATimeSeries(Sequence):
         #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
-        if self.normalize:
+        if self.norm:
             self.normalize()
 
         if randint(0,1) == 0:
@@ -76,7 +76,7 @@ class ARMATimeSeries(Sequence):
         print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
-        if self.normalize:
+        if self.norm:
             self.normalize()
 
         self._train_set = -1
@@ -122,7 +122,7 @@ class ARMATimeSeries(Sequence):
         self.sequence = [x*val/furthest for x in self.sequence]
 
 def main():
-        ts = ARMATimeSeries(1,0, sigma=1, normalize=False)
+        ts = ARMATimeSeries(1,0, sigma=1)
         for i in range(10):
                 print("The time series at {} is {}".format(i, ts.get()))
         ts.plot()

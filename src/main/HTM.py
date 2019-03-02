@@ -472,14 +472,14 @@ class HTM():
 
 if __name__ == "__main__":
     #time_series_model = VeryBasicSequence(pattern=1, n=1000)
-    param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 } # default params from masters
+    #param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 } # default params from masters
     #param_dict = { "spParams" : { "potentialPct": .00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": .27, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 30}, "newSynapseCount" : 32 }
     time_series_model = ARMATimeSeries(1,0, sigma=5, normalize=False)
-    network = HTM(time_series_model, .2)
+    network = HTM(time_series_model, .01)
     print(network)
     #print(network.train(error_method="binary"))
-    network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
-    #network.train("rmse", sibt=50, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
+    #network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
+    network.train("rmse", sibt=37, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
     network.runNetwork()
     '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())

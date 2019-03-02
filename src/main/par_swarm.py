@@ -42,6 +42,10 @@ def vbsfuncv4(args):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
     return HTM(VeryBasicSequence(pattern=args["pattern"]), x[0], params=param_dict, verbosity=0).train(error_method="binary", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 5: x[9] })
 
+def arfuncnorm(args):
+    x = args["x"]
+    return HTM(ARMATimeSeries(1,0), x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
+
 def arfuncv1(args):
     x = args["x"]
     return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], normalize=False), x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]))
@@ -300,6 +304,11 @@ def swarmvbsv4():
             bounds=[(0.0000000001,4), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10)]
         PSO(vbsfuncv4,bounds,num_particles=12,maxiter=24, func_sel={"pattern":i}, processes=12, descr=descr)
 
+def arswarmnorm():
+    descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
+    bounds=[(0.0000001,10), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(arfuncnorm,bounds,num_particles=16,maxiter=24, processes=16, descr=descr)
+
 def arswarmv1():
     descr=["RDSE Resolution", "SIBT", "IterPerCycle"]
     bounds=[(0.00000001,1), (0,50), (1,5)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -355,6 +364,9 @@ def main():
     elif args.mode == "vbsv4":
         print("Very basic sequence version 4 selected")
         swarmvbsv4()
+    elif args.mode == "arnorm":
+        print("Autoregressive normalized selected")
+        arswarmnorm()
     elif args.mode == "arv1":
         print("Autoregressive version 1 selected")
         arswarmv1()
