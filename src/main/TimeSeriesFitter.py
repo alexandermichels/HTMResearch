@@ -47,7 +47,6 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                 for ma in MArange:
                     for justdoit in range(n): # parallelize on n
                         result_row = [counter, cpmc, ar, ma]
-                        print("{}, {}, {}".format(cpmc, ar, ma))
                         ts = ARMATimeSeries(ar,ma) # generate a (ar,ma)-ARMA model
                         for i in range(1, len(ts.ar_poly)):
                             result_row.append(ts.ar_poly[i])
@@ -58,11 +57,9 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                         for i in range(max(MArange)-len(ts.ma_poly)+1):
                             result_row.append(0)
                         tso = get_order(ts.sequence, max_ar=(max(ARrange)+1), max_ma=(max(MArange)+1)) # use BIC to get order
-                        print(tso)
                         result_row.append(tso[0])
                         result_row.append(tso[1])
                         tarps, tmaps = fit(ts.sequence, tso) # fit the model
-                        print(tarps, tmaps)
                         for i in range(len(tarps)):
                             if i < max(ARrange):
                                 result_row.append(-1*tarps[i])
@@ -80,11 +77,9 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                         tso = get_order(ones, max_ar=(max(ARrange)+1), max_ma=(max(MArange)+1)) # use BIC to get order
                         network.__del__
                         del network
-                        print(tso)
                         result_row.append(tso[0])
                         result_row.append(tso[1])
                         tarps, tmaps = fit(ones, tso) # fit the model
-                        print(tarps, tmaps)
                         for i in range(len(tarps)):
                             if i < max(ARrange):
                                 result_row.append(-1*tarps[i])
@@ -217,7 +212,7 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
 
 
 def main():
-    fitHTMOutputspar(range(1,4), range(0), range(2,4), n = 4)
+    fitHTMOutputs(range(1,4), range(0), range(2,4), n = 4)
 
 if __name__ == "__main__":
     main()
