@@ -147,6 +147,13 @@ class HTM():
         self.turnInferenceOn()
         self.turnLearningOn()
 
+    def __del__(self):
+        logger = log.getLogger()
+        handlers = logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            logger.removeHandler(handler)
+
     def __str__(self):
         spRegion = self.network.getRegionsByType(SPRegion)[0]
         sp = spRegion.getSelf().getAlgorithmInstance()
@@ -259,6 +266,7 @@ class HTM():
                 header_row.append("{} Step Pred Conf".format(step))
             writer.writerow(header_row)
             results = []
+            one_preds = []
             for i in range(len(_model)):
                 # Run the network for a single iteration
                 self.network.run(1)
@@ -266,6 +274,7 @@ class HTM():
                 series = self.network.regions["sensor"].getOutputData("sourceOut")[0]
                 predictionResults = self.getClassifierResults()
                 result = [_model.getBookmark(), series ]
+                one_preds.append(predictionResults[1]["predictedValue"])
                 for key, value in predictionResults.iteritems():
                     result.append(value["predictedValue"])
                     result.append(value["predictionConfidence"]*100)
@@ -273,7 +282,7 @@ class HTM():
                 results.append(result)
                 writer.writerow(result)
                 outputFile.flush()
-            return results
+            return one_preds, results
 
 
     def runWithMode(self, mode, error_method="rmse", weights={ 1: 1.0, 5: 1.0 }, normalize_error=False):
@@ -474,13 +483,14 @@ if __name__ == "__main__":
     #time_series_model = VeryBasicSequence(pattern=1, n=1000)
     #param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 } # default params from masters
     #param_dict = { "spParams" : { "potentialPct": .00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": .27, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 30}, "newSynapseCount" : 32 }
-    time_series_model = ARMATimeSeries(1,0, sigma=5, normalize=False)
-    network = HTM(time_series_model, .01)
+    time_series_model = ARMATimeSeries(1,0, sigma=.1)
+    network = HTM(time_series_model, 5)
     print(network)
     #print(network.train(error_method="binary"))
     #network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
-    network.train("rmse", sibt=37, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
-    network.runNetwork()
+    network.train("rmse", sibt=0, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
+    ones, res = network.runNetwork()
+    print(ones)
     '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())
     print(network.network.regions["spatialPoolerRegion"].getInputData("bottomUpIn"))

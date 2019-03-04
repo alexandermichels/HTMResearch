@@ -90,7 +90,7 @@
 		\textbf{ABSTRACT}
 		
 		\begin{quotation}
-			\noindent Hierarchical Temporal Memory (HTM) is model of intelligence based on the the interactions of pyramidal neurons in the mammalian neocortex currently being developed by Numenta. It has stood out from other machine learning techniques due to high noise tolerance and learning capacity making it well-suited for anomaly detection, prediction, signal processing, and sensorimotor processes. We seek to find a mathematical analogy to the predictive power of this biologically constrained theory using models from time series analysis. To do this, we statistically analyzed the error in predictions of HTM networks that we asked to predict outputs of autoregressive integrated moving average (ARIMA) models, varying the parameters of both the networks and the ARIMA models. We hope to to find a relation between sets of HTM network parameters and ARIMA model parameters to better explain the functions of each part of the neocortex and cortical learning algorithms in sequence memory.
+			\noindent Hierarchical Temporal Memory (HTM) is model of intelligence based on the the interactions of pyramidal neurons in the mammalian neocortex which is currently being developed by Numenta. It has stood out due to high noise tolerance and learning capacity which makes it well-suited for anomaly detection, prediction, signal processing, and sensorimotor processes. We seek to find a mathematical analogy to the predictive power of this biologically constrained theory using models from time series analysis. To do this, we statistically analyzed the predictions of HTM networks which were asked to predict outputs of autoregressive moving average (ARMA) models, varying the parameters of both the networks and the ARMA models. We hope to to find a relation between sets of HTM network parameters and ARMA model parameters to better explain cortical learning algorithms and the neocortex.
 		\end{quotation}
 		
 	\end{center}
@@ -337,6 +337,11 @@
 	p_{t+1} &= p_{t} + v_{t+1} .
 	\end{split}
 	\end{align}
+	
+	\section{TS Stuff}
+	
+	\textcolor{red}{Used Statsmodels to get Bayes Information Criterion for time series --> order (uses full exact MLE estimate) \\ fed order to fit ARMA model (exact maximum likelihood via Kalman filter) --> get lag poly }
+
 	
 	\textcolor{red}{Wrote wrapper and swarming utility}
 	
