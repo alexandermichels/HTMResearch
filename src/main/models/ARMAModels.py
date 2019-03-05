@@ -25,9 +25,13 @@ class ARMATimeSeries(Sequence):
             temp = uniform(0,1-sum)
             self.ar_poly.append(temp)
             sum+=temp
-
-        #print("The AR lag polynomial is: {}".format(self.ar_poly))
+        #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.ma_poly = np.r_[1, np.random.rand(q)]
+        self.ma_poly = [1]
+        for i in range(q):
+            temp = uniform(0,1-sum)
+            self.ma_poly.append(temp)
+            sum+=temp
         #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
@@ -136,17 +140,17 @@ def fit(arr, order):
     return list(res.arparams), list(res.maparams)
 
 def main():
-    '''for k in range(18,4,-1):
+    for k in range(18,4,-1):
         for j in range(3):
-            ts = ARMATimeSeries(k,0, sigma=1)
+            ts = ARMATimeSeries(k,k, sigma=1)
             for i in range(10):
                     print("The time series at {} is {}".format(i, ts.get()))
-            ts.plot()'''
+            ts.plot()
 
-    ts = ARMATimeSeries(2,0, sigma=5)
+    '''ts = ARMATimeSeries(10,10, sigma=5)
     order = get_order(ts.sequence)
     print(fit(ts.sequence, order))
-    print(ts.ar_poly)
+    print(ts.ar_poly)'''
 
 if __name__ == "__main__":
         main()
