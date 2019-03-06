@@ -9,8 +9,12 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     if MArange == []:
         MArange = [0]
+    if ARrange == []:
+        ARrange = [0]
     if MArange == [0]:
         _OUTPUT_PATH = "../outputs/TimeSeriesFitter-{}-ARRange({}-{})-MARange-(NULL)-CPMCRange-({}-{}).csv".format(DATE, min(ARrange), max(ARrange), min(CPMCrange), max(CPMCrange))
+    elif ARrange == [0]:
+        _OUTPUT_PATH = "../outputs/TimeSeriesFitter-{}-ARRange(NULL)-MARange-({}-{})-CPMCRange-({}-{}).csv".format(DATE, min(MArange), max(MArange), min(CPMCrange), max(CPMCrange))
     else:
         _OUTPUT_PATH = "../outputs/TimeSeriesFitter-{}-ARRange({}-{})-MARange-({}-{})-CPMCRange-({}-{}).csv".format(DATE, min(ARrange), max(ARrange), min(MArange), max(MArange), min(CPMCrange), max(CPMCrange))
     with open(_OUTPUT_PATH, "w") as outputFile:
@@ -278,6 +282,8 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
 
 
 def main():
+    fitHTMOutputs(range(1,9), range(0), range(2,17), n = 10)
+    fitHTMOutputs(range(0), range(1,9), range(2,17), n = 10)
     fitHTMOutputs(range(0,9), range(1,9), range(2,17), n = 10)
 
 if __name__ == "__main__":
