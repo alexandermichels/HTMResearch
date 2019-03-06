@@ -58,7 +58,7 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
         last=0
         for ma in MArange:
             if not ma == 0:
-                header_row.append("HTM MA {}-lag Coeff".format(ar))
+                header_row.append("HTM MA {}-lag Coeff".format(ma))
             last = ma
         header_row.append("HTM MA {}-lag Coeff".format(last+1))
         writer.writerow(header_row)
@@ -85,12 +85,12 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                         if not tarps == None:
                             for i in range(len(tarps)):
                                 if i < max(ARrange) +1:
-                                    result_row.append(-1*tarps[i])
+                                    result_row.append(tarps[i])
                             for i in range(max(ARrange)-len(tarps)+1): # fit the modelrange_ar-len(ts.ar_poly)):
                                 result_row.append(0)
                             for i in range(len(tmaps)):
                                 if i < max(MArange)+1:
-                                    result_row.append(-1*tmaps[i])
+                                    result_row.append(tmaps[i])
                             for i in range(max(MArange)-len(tmaps)+1):
                                 result_row.append(0)
                         else:
@@ -117,12 +117,12 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                         if not tarps == None:
                             for i in range(len(tarps)):
                                 if i < max(ARrange)+1:
-                                    result_row.append(-1*tarps[i])
+                                    result_row.append(tarps[i])
                             for i in range(max(ARrange)-len(tarps)+1): # fit the modelrange_ar-len(ts.ar_poly)):
                                 result_row.append(0)
                             for i in range(len(tmaps)):
                                 if i < max(MArange)+1:
-                                    result_row.append(-1*tmaps[i])
+                                    result_row.append(tmaps[i])
                             for i in range(max(MArange)-len(tmaps)+1):
                                 result_row.append(0)
                         else:
@@ -163,12 +163,12 @@ def fit_outputs_one_iter(counter, cpmc, ar, ma, armax, mamax):
     if not tarps == None:
         for i in range(len(tarps)):
             if i < armax:
-                result_row.append(-1*tarps[i])
+                result_row.append(tarps[i])
         for i in range(armax-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
             result_row.append(0)
         for i in range(len(tmaps)):
             if i < mamax:
-                result_row.append(-1*tmaps[i])
+                result_row.append(tmaps[i])
         for i in range(mamax-len(tmaps)):
             result_row.append(0)
     else:
@@ -195,12 +195,12 @@ def fit_outputs_one_iter(counter, cpmc, ar, ma, armax, mamax):
     if not tarps == None:
         for i in range(len(tarps)):
             if i < armax:
-                result_row.append(-1*tarps[i])
+                result_row.append(tarps[i])
         for i in range(armax-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
             result_row.append(0)
         for i in range(len(tmaps)):
             if i < mamax:
-                result_row.append(-1*tmaps[i])
+                result_row.append(tmaps[i])
         for i in range(mamax-len(tmaps)):
             result_row.append(0)
     else:
@@ -253,7 +253,7 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
                 header_row.append("HTM AR {}-lag Coeff".format(ar))
         for ma in MArange:
             if not ma == 0:
-                header_row.append("HTM MA {}-lag Coeff".format(ar))
+                header_row.append("HTM MA {}-lag Coeff".format(ma))
         writer.writerow(header_row)
         counter = 0
 

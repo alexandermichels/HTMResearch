@@ -187,13 +187,14 @@ def fit(arr, order):
     return list(res.arparams), list(res.maparams)
 
 def main():
-    for k in range(18,4,-1):
+    for k in range(1,3):
         for j in range(3):
             ts = ARMATimeSeries(k,k, sigma=1)
             for i in range(10):
                     print("The time series at {} is {}".format(i, ts.get()))
             print(ts)
             print(ts.ar_poly, ts.ma_poly)
+            print(fit(ts.sequence, get_order(ts.sequence, ts.p, ts.q)))
             ts.plot()
 
     '''ts = ARMATimeSeries(10,10, sigma=5)
