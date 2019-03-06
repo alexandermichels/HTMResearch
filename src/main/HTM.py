@@ -23,6 +23,10 @@ from models.SimpleSequence import VeryBasicSequence
 from models.ARMAModels import ARMATimeSeries
 from TimeSeriesStream import TimeSeriesStream
 
+"""Handles Ctrl+C"""
+def signal_handler(sig, frame):
+        sys.exit(0)
+
 
 _PARAMS_PATH = "model.yaml"
 

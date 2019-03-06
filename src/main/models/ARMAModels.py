@@ -10,6 +10,10 @@ import numpy as np
 from random import randint, uniform
 from Sequence import Sequence
 
+"""Handles Ctrl+C"""
+def signal_handler(sig, frame):
+        sys.exit(0)
+
 class ARMATimeSeries(Sequence):
 
     def __init__(self, p, q, sigma=1, n=1000, normalize=True, seed=int(time.time())):
@@ -22,16 +26,23 @@ class ARMATimeSeries(Sequence):
         self.ar_poly = [1]
         sum = 0
         for i in range(p):
-            temp = uniform(0,1-sum)
+            temp = randint(0,1000)
             self.ar_poly.append(temp)
             sum+=temp
+        norm = uniform(0,1)/sum
+        for i in range(1,p+1):
+            self.ar_poly[i]=self.ar_poly[i]*norm
+        sum=0
         #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.ma_poly = np.r_[1, np.random.rand(q)]
         self.ma_poly = [1]
         for i in range(q):
-            temp = uniform(0,1-sum)
+            temp = randint(0,1000)
             self.ma_poly.append(temp)
             sum+=temp
+        for i in range(1,q+1):
+            self.ma_poly[i]=self.ma_poly[i]*norm
+
         #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
@@ -78,7 +89,7 @@ class ARMATimeSeries(Sequence):
         """"
         To string
         """
-        return "({},{})-ARMA".format(self.p, self.q)
+        return self.__str__()
 
     def new(self):
         self.ar_poly = np.r_[1, np.random.rand(self.p)]
@@ -136,7 +147,40 @@ def get_order(arr, max_ar=4, max_ma=2):
     return arma_order_select_ic(arr, max_ar=max_ar, max_ma=max_ma, trend="nc").bic_min_order
 
 def fit(arr, order):
-    res = ARMA(arr, order).fit(trend="nc", disp=-1)
+    try:
+        res = ARMA(arr, order).fit(trend="nc", maxiter=len(arr), disp=-1)
+    except Exception as e1:
+        print(e1)
+        try:
+            print("LBFGS failed for {}, trying BFGS".format(arr))
+            res = ARMA(arr, order).fit(trend="nc", solver="bfgs", maxiter=len(arr), disp=-1)
+        except Exception as e2:
+            print(e2)
+            try:
+                print("BFGS failed for {}, trying netwon".format(arr))
+                res = ARMA(arr, order).fit(trend="nc", solver="newton", maxiter=len(arr), disp=-1)
+            except Exception as e3:
+                print(e3)
+                try:
+                    print("Newton failed for {}, trying Nelder-Mead".format(arr))
+                    res = ARMA(arr, order).fit(trend="nc", solver="nm", maxiter=len(arr), disp=-1)
+                except Exception as e4:
+                    print(e4)
+                    try:
+                        print("Nelder-Mead failed for {}, trying Conjugate Gradient".format(arr))
+                        res = ARMA(arr, order).fit(trend="nc", solver="cg", maxiter=len(arr), disp=-1)
+                    except Exception as e5:
+                        print(e5)
+                        try:
+                            print("Conjugate Gradient failed for {}, trying Non-Conjugate Gradient".format(arr))
+                            res = ARMA(arr, order).fit(trend="nc", solver="ncg", maxiter=len(arr), disp=-1)
+                        except Exception as e6:
+                            print(e6)
+                            try:
+                                print("Non-Conjugate Gradient failed for {}, trying Powell".format(arr))
+                                res = ARMA(arr, order).fit(trend="nc", solver="powell", maxiter=len(arr), disp=-1)
+                            except:
+                                return None, None
     return list(res.arparams), list(res.maparams)
 
 def main():
@@ -145,6 +189,8 @@ def main():
             ts = ARMATimeSeries(k,k, sigma=1)
             for i in range(10):
                     print("The time series at {} is {}".format(i, ts.get()))
+            print(ts)
+            print(ts.ar_poly, ts.ma_poly)
             ts.plot()
 
     '''ts = ARMATimeSeries(10,10, sigma=5)

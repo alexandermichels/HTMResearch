@@ -56,40 +56,64 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                             result_row.append(ts.ma_poly[i])
                         for i in range(max(MArange)-len(ts.ma_poly)+1):
                             result_row.append(0)
-                        tso = get_order(ts.sequence, max_ar=(max(ARrange)+1), max_ma=(max(MArange)+1)) # use BIC to get order
+                        tso = get_order(ts.sequence, max_ar=(int(max(ARrange)*1.5)), max_ma=(int(max(MArange)*1.5))) # use BIC to get order
                         result_row.append(tso[0])
                         result_row.append(tso[1])
                         tarps, tmaps = fit(ts.sequence, tso) # fit the model
-                        for i in range(len(tarps)):
-                            if i < max(ARrange):
-                                result_row.append(-1*tarps[i])
-                        for i in range(max(ARrange)-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
-                            result_row.append(0)
-                        for i in range(len(tmaps)):
-                            if i < max(MArange):
-                                result_row.append(-1*tmaps[i])
-                        for i in range(max(MArange)-len(tmaps)):
-                            result_row.append(0)
+                        if not tarps == None:
+                            for i in range(len(tarps)):
+                                if i < max(ARrange):
+                                    result_row.append(-1*tarps[i])
+                            for i in range(max(ARrange)-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
+                                result_row.append(0)
+                            for i in range(len(tmaps)):
+                                if i < max(MArange):
+                                    result_row.append(-1*tmaps[i])
+                            for i in range(max(MArange)-len(tmaps)):
+                                result_row.append(0)
+                        else:
+                            for i in range(tso[0]):
+                                if i < max(ARrange):
+                                    result_row.append("N/A")
+                            for i in range(max(ARrange)-tso[0]): # fit the modelrange_ar-len(ts.ar_poly)):
+                                result_row.append("N/A")
+                            for i in range(tso[1]):
+                                if i < max(MArange):
+                                    result_row.append("N/A")
+                            for i in range(max(MArange)-tso[1]):
+                                result_row.append("N/A")
                         # train the HTM
                         network = HTM(ts, 5, verbosity=0)
                         result_row.append(network.train("rmse", sibt=0, iter_per_cycle=1, normalize_error=True)) # record its error
                         ones, res = network.runNetwork()
-                        tso = get_order(ones, max_ar=(max(ARrange)+1), max_ma=(max(MArange)+1)) # use BIC to get order
+                        tso = get_order(ones, max_ar=(int(max(ARrange)*1.5)), max_ma=(int(max(MArange)*1.5))) # use BIC to get order
                         network.__del__
                         del network
                         result_row.append(tso[0])
                         result_row.append(tso[1])
                         tarps, tmaps = fit(ones, tso) # fit the model
-                        for i in range(len(tarps)):
-                            if i < max(ARrange):
-                                result_row.append(-1*tarps[i])
-                        for i in range(max(ARrange)-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
-                            result_row.append(0)
-                        for i in range(len(tmaps)):
-                            if i < max(MArange):
-                                result_row.append(-1*tmaps[i])
-                        for i in range(max(MArange)-len(tmaps)):
-                            result_row.append(0)
+                        if not tarps == None:
+                            for i in range(len(tarps)):
+                                if i < max(ARrange):
+                                    result_row.append(-1*tarps[i])
+                            for i in range(max(ARrange)-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
+                                result_row.append(0)
+                            for i in range(len(tmaps)):
+                                if i < max(MArange):
+                                    result_row.append(-1*tmaps[i])
+                            for i in range(max(MArange)-len(tmaps)):
+                                result_row.append(0)
+                        else:
+                            for i in range(tso[0]):
+                                if i < max(ARrange):
+                                    result_row.append("N/A")
+                            for i in range(max(ARrange)-tso[0]): # fit the modelrange_ar-len(ts.ar_poly)):
+                                result_row.append("N/A")
+                            for i in range(tso[1]):
+                                if i < max(MArange):
+                                    result_row.append("N/A")
+                            for i in range(max(MArange)-tso[1]):
+                                result_row.append("N/A")
 
                         # fit the output
                         writer.writerow(result_row)
@@ -110,40 +134,64 @@ def fit_outputs_one_iter(counter, cpmc, ar, ma, armax, mamax):
         result_row.append(ts.ma_poly[i])
     for i in range(mamax-ma):
         result_row.append(0)
-    tso = get_order(ts.sequence, max_ar=(armax+1), max_ma=(mamax+1)) # use BIC to get order
+    tso = get_order(ts.sequence, max_ar=(int(armax*1.5)), max_ma=(int(mamax*1.5))) # use BIC to get order
     result_row.append(tso[0])
     result_row.append(tso[1])
     tarps, tmaps = fit(ts.sequence, tso) # fit the model
-    for i in range(len(tarps)):
-        if i < armax:
-            result_row.append(-1*tarps[i])
-    for i in range(armax-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
-        result_row.append(0)
-    for i in range(len(tmaps)):
-        if i < mamax:
-            result_row.append(-1*tmaps[i])
-    for i in range(mamax-len(tmaps)):
-        result_row.append(0)
+    if not tarps == None:
+        for i in range(len(tarps)):
+            if i < armax:
+                result_row.append(-1*tarps[i])
+        for i in range(armax-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
+            result_row.append(0)
+        for i in range(len(tmaps)):
+            if i < mamax:
+                result_row.append(-1*tmaps[i])
+        for i in range(mamax-len(tmaps)):
+            result_row.append(0)
+    else:
+        for i in range(tso[0]):
+            if i < max(ARrange):
+                result_row.append("N/A")
+        for i in range(max(ARrange)-tso[0]): # fit the modelrange_ar-len(ts.ar_poly)):
+            result_row.append("N/A")
+        for i in range(tso[1]):
+            if i < max(MArange):
+                result_row.append("N/A")
+        for i in range(max(MArange)-tso[1]):
+            result_row.append("N/A")
     # train the HTM
     network = HTM(ts, 5, verbosity=0)
     result_row.append(network.train("rmse", sibt=0, iter_per_cycle=1, normalize_error=True)) # record its error
     ones, res = network.runNetwork()
-    tso = get_order(ones, max_ar=(armax+1), max_ma=(mamax+1)) # use BIC to get order
+    tso = get_order(ones, max_ar=(int(armax*1.5)), max_ma=(int(mamax*1.5))) # use BIC to get order
     network.__del__
     del network
     result_row.append(tso[0])
     result_row.append(tso[1])
     tarps, tmaps = fit(ones, tso) # fit the model
-    for i in range(len(tarps)):
-        if i < armax:
-            result_row.append(-1*tarps[i])
-    for i in range(armax-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
-        result_row.append(0)
-    for i in range(len(tmaps)):
-        if i < mamax:
-            result_row.append(-1*tmaps[i])
-    for i in range(mamax-len(tmaps)):
-        result_row.append(0)
+    if not tarps == None:
+        for i in range(len(tarps)):
+            if i < armax:
+                result_row.append(-1*tarps[i])
+        for i in range(armax-len(tarps)): # fit the modelrange_ar-len(ts.ar_poly)):
+            result_row.append(0)
+        for i in range(len(tmaps)):
+            if i < mamax:
+                result_row.append(-1*tmaps[i])
+        for i in range(mamax-len(tmaps)):
+            result_row.append(0)
+    else:
+        for i in range(tso[0]):
+            if i < max(ARrange):
+                result_row.append("N/A")
+        for i in range(max(ARrange)-tso[0]): # fit the modelrange_ar-len(ts.ar_poly)):
+            result_row.append("N/A")
+        for i in range(tso[1]):
+            if i < max(MArange):
+                result_row.append("N/A")
+        for i in range(max(MArange)-tso[1]):
+            result_row.append("N/A")
 
     return (counter, result_row)
 
@@ -212,7 +260,7 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
 
 
 def main():
-    fitHTMOutputs(range(1,4), range(0), range(2,4), n = 4)
+    fitHTMOutputs(range(1,4), range(0), range(2,33), n = 10)
 
 if __name__ == "__main__":
     main()
