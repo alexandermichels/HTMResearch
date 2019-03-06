@@ -12,7 +12,7 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
     if MArange == [0]:
         _OUTPUT_PATH = "../outputs/TimeSeriesFitter-{}-ARRange({}-{})-MARange-(NULL)-CPMCRange-({}-{}).csv".format(DATE, min(ARrange), max(ARrange), min(CPMCrange), max(CPMCrange))
     else:
-        _OUTPUT_PATH = "../outputs/TimeSeriesFitter-ARRange({}-{})-MARange-({}-{})-CPMCRange-({}-{}).csv".format(DATE, min(ARrange), max(ARrange), min(MArange), max(MArange), min(CPMCrange), max(CPMCrange))
+        _OUTPUT_PATH = "../outputs/TimeSeriesFitter-{}-ARRange({}-{})-MARange-({}-{})-CPMCRange-({}-{}).csv".format(DATE, min(ARrange), max(ARrange), min(MArange), max(MArange), min(CPMCrange), max(CPMCrange))
     with open(_OUTPUT_PATH, "w") as outputFile:
         writer = csv.writer(outputFile)
         header_row = ["Run #", "CPMC", "AR Order", "MA Order"]
@@ -260,7 +260,7 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
 
 
 def main():
-    fitHTMOutputs(range(1,4), range(0), range(2,33), n = 10)
+    fitHTMOutputs(range(1,12), range(1,12), range(2,17), n = 10)
 
 if __name__ == "__main__":
     main()
