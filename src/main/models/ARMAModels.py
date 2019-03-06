@@ -25,23 +25,26 @@ class ARMATimeSeries(Sequence):
         self.sigma = sigma
         self.ar_poly = [1]
         sum = 0
-        for i in range(p):
-            temp = randint(0,1000)
-            self.ar_poly.append(temp)
-            sum+=temp
-        norm = uniform(0,1)/sum
-        for i in range(1,p+1):
-            self.ar_poly[i]=self.ar_poly[i]*norm
+        if self.p > 0:
+            for i in range(p):
+                temp = randint(0,1000)
+                self.ar_poly.append(temp)
+                sum+=temp
+            if sum > 0:
+                norm = uniform(0,1)/sum
+                for i in range(1,p+1):
+                    self.ar_poly[i]=self.ar_poly[i]*norm
         sum=0
-        #print("The MA lag polynomial is: {}".format(self.ma_poly))
-        self.ma_poly = np.r_[1, np.random.rand(q)]
         self.ma_poly = [1]
-        for i in range(q):
-            temp = randint(0,1000)
-            self.ma_poly.append(temp)
-            sum+=temp
-        for i in range(1,q+1):
-            self.ma_poly[i]=self.ma_poly[i]*norm
+        if self.q > 0:
+            for i in range(q):
+                temp = randint(0,1000)
+                self.ma_poly.append(temp)
+                sum+=temp
+            if sum > 0:
+                norm = uniform(0,1)/sum
+                for i in range(1,q+1):
+                    self.ma_poly[i]=self.ma_poly[i]*norm
 
         #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
