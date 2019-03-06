@@ -56,7 +56,7 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                             result_row.append(ts.ma_poly[i])
                         for i in range(max(MArange)-len(ts.ma_poly)+1):
                             result_row.append(0)
-                        tso = get_order(ts.sequence, max_ar=(int(max(ARrange)*1.5)), max_ma=(int(max(MArange)*1.5))) # use BIC to get order
+                        tso = get_order(ts.sequence, max_ar=(int(max(ARrange)+2)), max_ma=(int(max(MArange)+2))) # use BIC to get order
                         result_row.append(tso[0])
                         result_row.append(tso[1])
                         tarps, tmaps = fit(ts.sequence, tso) # fit the model
@@ -86,7 +86,7 @@ def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
                         network = HTM(ts, 5, verbosity=0)
                         result_row.append(network.train("rmse", sibt=0, iter_per_cycle=1, normalize_error=True)) # record its error
                         ones, res = network.runNetwork()
-                        tso = get_order(ones, max_ar=(int(max(ARrange)*1.5)), max_ma=(int(max(MArange)*1.5))) # use BIC to get order
+                        tso = get_order(ones, max_ar=(int(max(ARrange)+2)), max_ma=(int(max(MArange)+2))) # use BIC to get order
                         network.__del__
                         del network
                         result_row.append(tso[0])
@@ -134,7 +134,7 @@ def fit_outputs_one_iter(counter, cpmc, ar, ma, armax, mamax):
         result_row.append(ts.ma_poly[i])
     for i in range(mamax-ma):
         result_row.append(0)
-    tso = get_order(ts.sequence, max_ar=(int(armax*1.5)), max_ma=(int(mamax*1.5))) # use BIC to get order
+    tso = get_order(ts.sequence, max_ar=(int(armax+2)), max_ma=(int(mamax+2))) # use BIC to get order
     result_row.append(tso[0])
     result_row.append(tso[1])
     tarps, tmaps = fit(ts.sequence, tso) # fit the model
@@ -164,7 +164,7 @@ def fit_outputs_one_iter(counter, cpmc, ar, ma, armax, mamax):
     network = HTM(ts, 5, verbosity=0)
     result_row.append(network.train("rmse", sibt=0, iter_per_cycle=1, normalize_error=True)) # record its error
     ones, res = network.runNetwork()
-    tso = get_order(ones, max_ar=(int(armax*1.5)), max_ma=(int(mamax*1.5))) # use BIC to get order
+    tso = get_order(ones, max_ar=(int(armax+2)), max_ma=(int(mamax+2))) # use BIC to get order
     network.__del__
     del network
     result_row.append(tso[0])
@@ -260,7 +260,7 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
 
 
 def main():
-    fitHTMOutputs(range(1,12), range(1,12), range(2,17), n = 10)
+    fitHTMOutputs(range(1,8), range(1,8), range(2,17), n = 10)
 
 if __name__ == "__main__":
     main()
