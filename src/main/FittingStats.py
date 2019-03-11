@@ -144,9 +144,8 @@ def getDiffs(ARrange, MArange, n = 1000):
                 outputFile.close()
 
 def main():
-    getDiffs(range(1,9), range(0), n = 10)
-    getDiffs(range(0), range(1,9), n = 10)
-    #getDiffs(range(0,9), range(1,9), n = 10)
+    getDiffs(range(1,9), range(0))
+    getDiffs(range(0), range(1,9))
 
 if __name__ == "__main__":
     main()
