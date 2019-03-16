@@ -114,7 +114,7 @@
 		\textbf{\LARGE CHANGE LOG}
 	\end{center}
 	\begin{itemize}
-		\item Brought over Chapter 1 from Proposal with edits and will add an ``Evolutionary Computing'' section to segue into HTM
+		\item Brought over Chapter 1 from Proposal with edits and added an ``Biologically Inspired Computing'' section to segue into HTM
 		\item Brought over Sparse Distributed Representations from Proposal (Section 3.2) 
 		\item Wrote some of ``Hardware and Software Specifications'' (Section 5.1)
 		\item Wrote some on Swarming (Section 5.2)
@@ -162,33 +162,58 @@
 	
 	\section{Biologically Inspired Computing}
 	
-	\textcolor{red}{Talk about genetic algorithms and neural networks}
+	Emulating natural processes--and even the human brain--is not a new idea to computer scientists. In fact, artificial neural networks that we still use today were originally proposed in a 1943 paper that introduced the first mathematical model of a neuron~\cite{FundNatComp}. The 1950's and 60's saw the rise of evolutionary computing which attempts to simulate evolution usually for finding optimal solutions to problems. Computational neuroscience is the newest field to emerge from this interdisciplinary intersection of biologists and computer scientists.
 	
-	\textcolor{red}{Computational neuroscience approach}
+	Computational neuroscience can be described as ``simulating human cognition using biologically based networks of neuronlike units''~\cite{Eberhart}. In other words, the field has tasked itself with the incredibly difficult task of trying to understand cognition by breaking the brain down into algorithms and data structures which we can then implement in a computational model. So rather than trying to create a computational model that is as intelligent as the brain, they are taking the more direct approach in attempting to model the brain itself.
 	
-	\textcolor{red}{Briefly discuss \textit{On Intelligence}, Numenta and CLAs}
+	One such set of computational neuroscientists are the researchers at Numenta who are attempting to replicate the mammalian neocortex. Their founder, Jeff Hawkins, realized in the early 1980's that we needed to truly understand what made the brain intelligent before we created our own intelligence~\cite{OnIntelligence}. Unfortunately, this view was not shared by  researchers at Intel and MIT where he unsuccessfully attempted to start a research lab and study computer science respectively. To support his inquiry, Jeff Hawkins decided to supplement his computer science and engineering background with some training in biophysics and set out to develop a theoretical understanding of the neocortex. In 2002, he founded the Redwood Neuroscience Institute and Hawkins is currently developing cortical learning algorithms and Hierarchical Temporal Memory at Numenta which he founded in 2005~\cite{OnIntelligence}. 
 	
 	\chapter{Time Series}
 	
-	\textcolor{red}{Motivate the problem, time series are everywhere}
+	A \textbf{time series} is a ``sequence of observations taken sequentially in time'' and are everywhere in today's world~\cite{Box}. Anything that can be measured numerically over time can become a time series and Figure~\ref{fig:TimeSeriesExamples} shows two such examples, stock prices (Figure~\ref{fig:AMDChart}) and levels of precipitation in Seatle, WA from 1948-1979 (Figure~\ref{fig:SeattlePrecip}). Their ubiquity in nearly every field has lead to an intense study to mathematically formalize time series to characterize and predict them.
 	
 	\begin{figure}[h!]
 		\centering
 		\begin{subfigure}[b]{.45\textwidth}
 			\includegraphics[width=\textwidth]{images/AMDChart.png}
 			\caption{A chart of AMD stock prices}
-			\label{AMD Chart}
+			\label{fig:AMDChart}
 		\end{subfigure}
 		\begin{subfigure}[b]{.45\textwidth}
 			\includegraphics[width=\textwidth]{images/SeattleRainfall.png}
 			\caption{Seattle precipitation, 1948-1979}
-			\label{AMD Chart}
+			\label{fig:SeattlePrecip}
 		\end{subfigure}
 		\caption[Examples of Time Series]{Examples of Time Series \footnotemark}
-		\label{TimeSeriesExamples}
+		\label{fig:TimeSeriesExamples}
 			
 	\end{figure}
-\footnotetext{Seattle precipitation image courtesy of Seattle Weather Blog: \href{http://www.seattleweatherblog.com/rain-stats/}{\texttt{http://www.seattleweatherblog.com/rain-stats/}} }
+\footnotetext{Image (b) courtesy of Seattle Weather Blog: \href{http://www.seattleweatherblog.com/rain-stats/}{\texttt{http://www.seattleweatherblog.com/rain-stats/}} }
+
+	Understanding time series can be an extremely complex task because there is generally a dependence on prior terms due to the sequential nature and some uncertainty to their movements. One model for representing time series is the autoregressive (or AR) model. In an autoregressive model, the series at some time $t$ is expressed as a finite weighted sum of previous values of the series plus a random component $a_{t}$~\cite{Box}. Let $z_{t}, z_{t-1}, z_{t-2},...$ denote the series at times $t, t-1, t-2,...$. Further, let $\mu$ be the mean or level of the process and let $\tilde{z}_{t-n}=z_{t-n}-\mu$. We can then express an autoregressive process of order $p$ by
+	
+	\begin{align}
+		\label{eqn:armodel}
+		\tilde{z}_{t}=\phi_{1} \tilde{z}_{t-1}+\phi_{2} \tilde{z}_{t-2}+...+\phi_{p} \tilde{z}_{t-p}+a_{t}
+	\end{align}
+	
+	\noindent where $\mu, \phi_{1}, \phi_{2}, ..., \phi_{p}, \sigma^{2}_{a}$ are the $p+2$ unknown parameters of the model with $\sigma^{2}_{a}$ being the variance of the white noise process $a_{t}$~\cite{Box}. Using a backshift operator $B$ such that $Bz_{t}=z_{t-1}$ we can define an autoregressive operator of order $p$ by
+	
+	\begin{align}
+		\label{eqn:arop}
+		\phi(B)=1-\phi_{1}B-\phi_{2}B^{2}-...-\phi_{p}^{p}
+	\end{align}
+	
+	\noindent which allows us to write an autoregressive model succinctly as $\phi(B)\tilde{z}_{t}=a_{t}$~\cite{Box}.
+	
+	Suppose instead that the true process is regressed on the random shocks rather than the deviations from the level. Starting from our autoregressive model  of order p we can recursively substitute the model's definition of $\tilde{z}_{t-n}$ until we end up with an infinite summation of innovation terms~\cite{Box}. However, the moving average model provides us a much more direct approach by representing the time series as a finite number of shocks to the process. Formally we express a moving average (MA) model of order $q$ by
+	
+	\begin{align}
+		\label{eqn:mamodel}
+		\tilde{z}_{t}=a_{t}-\theta_{1}a_{t-1}-\theta_{2}a_{t-2}-...-\theta_{q}a_{t-q}
+	\end{align}
+	
+	\noindent just as with the autoregressive model, we have $q+2$ unknown paramters and the model can be written more succinctly using the backshift operator yielding $\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
 	
 	\textcolor{red}{Talk about AR/MA models}
 	
@@ -222,7 +247,15 @@
 	
 	To achieve our goal, we employ sparse distributed representations or SDRs. Just as with traditional dense binary representations, we will represent sparse distributed representations as vectors over their code alphabet, in this case GF(2). We call them \textbf{sparse} distributed representations because these vectors typically only have a small proportion of the components as 1. We will use Numenta's notation of letting $w_{\overrightarrow{x}}$ denote the number of components in an SDR $\overrightarrow{x}$ that are 1, so $w_{\overrightarrow{x}} = \norm{x}_{1}$ \cite{Properties}.
 	
-	Given our definition of distance, we could say that two decodings of sparse distributed representations, $a$ and $b$, are equal if and only if the $d_{H}(a,b) = w_{a} = w_{b}$. This would mean that both vectors would have to have the same dimensionality, same number of on bits, and all on and off bits would have to match. This definition is good for ``equals,'' but suppose we have a single error in transmission or a single component of our distributed system fails, equality would thus fail. In order to be able preserve the ability to subsample and thus to preserve fault tolerance, we therefore need a less stringent definition for decoding SDRs. Numenta refers to this as the $overlap$, which is $$ overlap(\overrightarrow{a}, \overrightarrow{b}) \equiv \overrightarrow{a} \cdot \overrightarrow{b} \equiv \sum_{0}^{n-1} a_{i}b_{i}$$ Thus, we say two SDRs $\overrightarrow{a}$ and $\overrightarrow{b}$ decode to the same element of the input space if and only if $overlap(a,b) \geq \theta$ where $\theta \leq w_{a}$ and $\theta \leq w_{b}$ \cite{Properties}. Denote the function that determines if two sparse distributed representations decode to the same element of the input space using some $\theta$ and $overlap(\overrightarrow{a}, \overrightarrow{b})$, $match_{\theta}(\overrightarrow{a}, \overrightarrow{b})$ and it is a function from SDR$\times$SDR $\longrightarrow$\{true, false\}.
+	Given our definition of distance, we could say that two decodings of sparse distributed representations, $a$ and $b$, are equal if and only if the $d_{H}(a,b) = w_{a} = w_{b}$. This would mean that both vectors would have to have the same dimensionality, same number of on bits, and all on and off bits would have to match. This definition is good for ``equals,'' but suppose we have a single error in transmission or a single component of our distributed system fails, equality would thus fail. In order to be able preserve the ability to subsample and thus to preserve fault tolerance, we therefore need a less stringent definition for decoding SDRs. Numenta refers to this as the $overlap$, which is 
+	
+	\begin{align}
+	\label{eqn:overlap}
+		overlap(\overrightarrow{a}, \overrightarrow{b}) \equiv \overrightarrow{a} \cdot \overrightarrow{b} \equiv \sum_{0}^{n-1} a_{i}b_{i}
+	\end{align}
+	
+	
+	 Thus, we say two SDRs $\overrightarrow{a}$ and $\overrightarrow{b}$ decode to the same element of the input space if and only if $overlap(a,b) \geq \theta$ where $\theta \leq w_{a}$ and $\theta \leq w_{b}$ \cite{Properties}. Denote the function that determines if two sparse distributed representations decode to the same element of the input space using some $\theta$ and $overlap(\overrightarrow{a}, \overrightarrow{b})$, $match_{\theta}(\overrightarrow{a}, \overrightarrow{b})$ and it is a function from SDR$\times$SDR $\longrightarrow$\{true, false\}.
 	
 	Given a set of sparse distributed representations with the same dimension, $X =\{\overrightarrow{x_{1}}, \overrightarrow{x_{2}}, ...,\overrightarrow{x_{n}}\}$, we can union the vectors using the bitwise OR operation over the $i^{th}$ position of the vectors in the set to produce the $i^{th}$ position of $union(X)$ \cite{Properties}. For example, given [0100] and [0010] the union would be [0110]. We say an SDR $\overrightarrow{y}$ is an element of the union of a set of SDRs, $\overrightarrow{X}$, if and only if $match_{\theta}(\overrightarrow{X},\ \overrightarrow{y})$ \cite{Properties}.
 	
@@ -266,7 +299,15 @@
 		\label{fig 3}
 	\end{figure}
 	
-	SDR Classifiers are able to decode the information HTMs give about predictions $n$ times steps in the future by maintaining a weight matrix \cite{Dillon}. The matrix's weights are adjusted to ``learn'' after each time step to reflect the correct weighting between the output vector at time $t$ and the probability distribution of the input/output space at time $t-n$ \cite{Dillon}. This enables the matrix to reflect relationships between inputs and outputs $n$ time steps apart. To determine the SDR Classifier's interpretation of an output at time $t+n$, the SDR Classifer takes in the HTM's output vector and uses Softmax to determine the most likely decoding \cite{Dillon}. So for each of the $k$ classes in the output space, the certainty that the output vector is referring to it is $$y_{j} = \dfrac{e^{a_{j}}}{\sum_{i=1}^{k} e^{a_{i}}}$$ where $a_{j}$ is the activation level of the $j^{th}$ element of the output space, calculated by multiplying the output vector by the $j^{th}$ column of the weight matrix element wise \cite{Dillon}. 
+	SDR Classifiers are able to decode the information HTMs give about predictions $n$ times steps in the future by maintaining a weight matrix \cite{Dillon}. The matrix's weights are adjusted to ``learn'' after each time step to reflect the correct weighting between the output vector at time $t$ and the probability distribution of the input/output space at time $t-n$ \cite{Dillon}. This enables the matrix to reflect relationships between inputs and outputs $n$ time steps apart. To determine the SDR Classifier's interpretation of an output at time $t+n$, the SDR Classifer takes in the HTM's output vector and uses Softmax to determine the most likely decoding \cite{Dillon}. So for each of the $k$ classes in the output space, the certainty that the output vector is referring to it is 
+	
+	\begin{align}
+	\label{eqn:htmclassact}
+	y_{j} = \dfrac{e^{a_{j}}}{\sum_{i=1}^{k} e^{a_{i}}}
+	\end{align}
+	
+	
+	 \noindent where $a_{j}$ is the activation level of the $j^{th}$ element of the output space, calculated by multiplying the output vector by the $j^{th}$ column of the weight matrix element wise \cite{Dillon}. 
 	
 	\chapter{Literature Review}
 	
@@ -338,7 +379,7 @@
 	\end{split}
 	\end{align}
 	
-	\section{TS Stuff}
+	\section{Time Series Prediction and Fitting}
 	
 	\textcolor{red}{Used Statsmodels to get Bayes Information Criterion for time series --> order (uses full exact MLE estimate) \\ fed order to fit ARMA model (exact maximum likelihood via Kalman filter) --> get lag poly }
 
