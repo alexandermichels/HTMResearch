@@ -16,35 +16,41 @@ def signal_handler(sig, frame):
 
 class ARMATimeSeries(Sequence):
 
-    def __init__(self, p, q, sigma=1, n=1000, normalize=True, seed=int(time.time())):
+    def __init__(self, p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None):
         self.n = n
         self.p = p
         self.q = q
         self.norm=normalize
         np.random.seed(seed)
         self.sigma = sigma
-        self.ar_poly = [1]
-        sum = 0
-        if self.p > 0:
-            for i in range(p):
-                temp = randint(0,1000)
-                self.ar_poly.append(temp)
-                sum+=temp
-            if sum > 0:
-                norm = uniform(0,1)/sum
-                for i in range(1,p+1):
-                    self.ar_poly[i]=self.ar_poly[i]*norm
-        sum=0
-        self.ma_poly = [1]
-        if self.q > 0:
-            for i in range(q):
-                temp = randint(0,1000)
-                self.ma_poly.append(temp)
-                sum+=temp
-            if sum > 0:
-                norm = uniform(0,1)/sum
-                for i in range(1,q+1):
-                    self.ma_poly[i]=self.ma_poly[i]*norm
+        if ar_poly == None:
+            self.ar_poly = [1]
+            sum = 0
+            if self.p > 0:
+                for i in range(p):
+                    temp = randint(0,1000)
+                    self.ar_poly.append(temp)
+                    sum+=temp
+                if sum > 0:
+                    norm = uniform(0,1)/sum
+                    for i in range(1,p+1):
+                        self.ar_poly[i]=self.ar_poly[i]*norm
+        else:
+            self.ar_poly = ar_poly
+        if ma_poly == None:
+            self.ma_poly = [1]
+            sum = 0
+            if self.q > 0:
+                for i in range(q):
+                    temp = randint(0,1000)
+                    self.ma_poly.append(temp)
+                    sum+=temp
+                if sum > 0:
+                    norm = uniform(0,1)/sum
+                    for i in range(1,q+1):
+                        self.ma_poly[i]=self.ma_poly[i]*norm
+        else:
+            self.ma_poly = ma_poly
 
         #print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
@@ -94,11 +100,15 @@ class ARMATimeSeries(Sequence):
         """
         return self.__str__()
 
-    def new(self):
-        self.ar_poly = np.r_[1, np.random.rand(self.p)]
-        print("The AR lag polynomial is: {}".format(self.ar_poly))
-        self.ma_poly = np.r_[1, np.random.rand(self.q)]
-        print("The MA lag polynomial is: {}".format(self.ma_poly))
+    def new(self, newPoly = True):
+        if newPoly:
+            self.ar_poly = np.r_[1, np.random.rand(self.p)]
+            print("The AR lag polynomial is: {}".format(self.ar_poly))
+            self.ma_poly = np.r_[1, np.random.rand(self.q)]
+            print("The MA lag polynomial is: {}".format(self.ma_poly))
+        else:
+            print("The AR lag polynomial is: {}".format(self.ar_poly))
+            print("The MA lag polynomial is: {}".format(self.ma_poly))
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0
         if self.norm:

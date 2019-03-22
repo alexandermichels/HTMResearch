@@ -67,7 +67,7 @@
 		{\large \today\par}
 	\end{titlepage}
 	\renewcommand{\baselinestretch}{.7}
-	\setcounter{tocdepth}{1}
+	\setcounter{tocdepth}{0}
 	\tableofcontents
 	\vfill
 	\pagebreak
@@ -96,7 +96,7 @@
 	\end{center}
 	\vfill
 	\pagebreak
-	
+	\setcounter{tocdepth}{1}
 	\addcontentsline{toc}{chapter}{List of Figures}
 	\chaptermark{LIST OF FIGURES}
 	\listoffigures
@@ -115,6 +115,7 @@
 	\end{center}
 	\begin{itemize}
 		\item Brought over Chapter 1 from Proposal with edits and added an ``Biologically Inspired Computing'' section to segue into HTM
+		\item Wrote Chapter 2 - Time Series
 		\item Brought over Sparse Distributed Representations from Proposal (Section 3.2) 
 		\item Wrote some of ``Hardware and Software Specifications'' (Section 5.1)
 		\item Wrote some on Swarming (Section 5.2)
@@ -213,24 +214,48 @@
 		\tilde{z}_{t}=a_{t}-\theta_{1}a_{t-1}-\theta_{2}a_{t-2}-...-\theta_{q}a_{t-q}
 	\end{align}
 	
-	\noindent just as with the autoregressive model, we have $q+2$ unknown paramters and the model can be written more succinctly using the backshift operator yielding $\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
+	\noindent just as with the autoregressive model, we have $q+2$ unknown paramters and using the backshift operator we can define a moving average operator that allows us to express the model more succinctly yielding $\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
 	
-	\textcolor{red}{Talk about AR/MA models}
+	Real world processes may require a combination of these two approaches for a succinct and accurate model, resulting in a mixed Autoregressive Moving-Average (ARMA) model~\cite{Box}. Such a model includes terms from both the autoregressive and moving average model resulting in:
+	
+	\begin{align}
+		\label{eqn:armamodel}
+		\tilde{z}_{t}=\phi_{1} \tilde{z}_{t-1}+...+\phi_{p} \tilde{z}_{t-p}+a_{t}-\theta_{1}a_{t-1}-...-\theta_{q}a_{t-q}
+	\end{align}
+	
+	\noindent This model has $p+q+2$ unknown parameters and can also be written more succinctly using our autoregressive operator and moving average operator resulting in $\phi(B)\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
+	
+	The ubiquity of time series makes forecasting them an important and many times profitable task such as in the case of financial time series (as seen in Figure~\ref{fig:AMDChart}), making them a common prediction task for machine learning and artificial intelligence systems. It allows us to test an ``intelligent'' systems ability to discover temporal patterns which may sometimes be fuzzy or complex: a hallmark of human intelligence.
+	
+	
+	
+	
+	
+	
 	
 	\chapter{Cortical Learning Algorithms}
 	
-	\section{The Neocortex}
+	Hierarchical Temporal Memory is a framework attempting to produce cortical learning algorithms---algorithms that mimic the processes of the human neocortex. In the human brain, the neocortex is approximately seventy-percent of the brain's volume~\cite{DiscoveriesBrainWorks}. It can be described as a ``wrinkly sheet of sheet of cells, about two millimeters thick'' and is responsible for the characteristics of intelligence that set humanity apart from other species~\cite{DiscoveriesBrainWorks}. 
 	
 	\textcolor{red}{Vernon Mountcastle}
 	
 	\textcolor{red}{Overview of the neocortex}
 	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=\linewidth]{images/Brain.png}
+		\caption{Overview of the Human Brain}
+		\label{fig:brain}
+	\end{figure}
+	
 	\textcolor{red}{Cortical Columns and Pyramidal Neurons}
+	
+	
 	
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=8cm]{images/ColumnOfNeocortex.png}
-		\caption{Column of the Neocortex}{Column of the Neocortex\footnotemark}
+		\caption[Column of the Neocortex]{Column of the Neocortex\footnotemark}
 		\label{CorticalColumn}
 	\end{figure}
 	\footnotetext{Image courtesy of Wikipedia: \href{https://en.wikipedia.org/wiki/Neocortex}{\texttt{https://en.wikipedia.org/wiki/Neocortex}}}
@@ -277,6 +302,13 @@
 	\subsection{Encoder}
 	
 	\subsection{Spatial Pooler}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=\linewidth]{images/SpatialPooler.jpg}
+		\caption[Spatial Pooler]{Spatial Pooler \cite{TheHTMSpatialPooler}}
+		\label{fig:SpatialPooler}
+	\end{figure}
 	
 	\subsection{Temporal Pooler}
 
@@ -333,15 +365,15 @@
 		\centering
 		\begin{tabular}{|l|l|}
 			\hline
-			\multicolumn{2}{|l|}{Dijkstra (Asus Vivobook)} \\ \hline
+			\multicolumn{2}{|l|}{\textbf{Dijkstra (Asus Vivobook)}} \\ \hline
 			CPU     & Intel i5-8250U, 4-Core, 1.60GHz     \\ \hline
 			RAM     & 24 GB                                \\ \hline
 			OS      & Linux Mint 19 Cinnamon               \\ \hline
-			\multicolumn{2}{|l|}{Galois (HP DL380 G7)}     \\ \hline
+			\multicolumn{2}{|l|}{\textbf{Galois (HP DL380 G7)}}     \\ \hline
 			CPU     &  2x Intel Xeon X5650, 6-Core, 2.70 GHz       \\ \hline
 			RAM     & 192 GB                               \\ \hline
 			OS      & Linux Mint 19 Cinnamon               \\ \hline
-			\multicolumn{2}{|l|}{Aslan (\textbf{Type})}                         \\ \hline
+			\multicolumn{2}{|l|}{\textbf{Aslan (Type)}}                         \\ \hline
 			CPU&    2x  Intel Xeon E5-2690, 10-Core, 3.00 GHz    \\ \hline
 			RAM&    252 GB                                  \\ \hline
 			OS&    Gentoo                               \\ \hline
