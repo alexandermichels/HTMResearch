@@ -95,12 +95,12 @@ def getDiffs(ARrange, MArange, n = 1000):
                         '''
                         minlen = min(len(tmaps),len(ts.ma_poly[1:]))
                         for i in range(minlen):
-                            result_row.append(ts.ma_poly[i+1]+tmaps[i])
+                            result_row.append(ts.ma_poly[i+1]-tmaps[i])
 
                         if len(tmaps) >= len(ts.ma_poly[1:]):
                             for i in range(ma, len(tmaps)):
                                 if i < ma+EXTRA_TERMS:
-                                    result_row.append(0+tmaps[i])
+                                    result_row.append(0-tmaps[i])
                         else:
                             for i in range(len(tmaps), ma):
                                 if i < ma+EXTRA_TERMS:
@@ -197,12 +197,12 @@ def singleModelGetDiffs(model, n, EXTRA_TERMS=2):
                 '''
                 minlen = min(len(tmaps),len(model.ma_poly[1:]))
                 for i in range(minlen):
-                    result_row.append(model.ma_poly[i+1]+tmaps[i])
+                    result_row.append(model.ma_poly[i+1]-tmaps[i])
 
                 if len(tmaps) >= len(model.ma_poly[1:]):
                     for i in range(model.q, len(tmaps)):
                         if i < model.q+EXTRA_TERMS:
-                            result_row.append(0+tmaps[i])
+                            result_row.append(0-tmaps[i])
                 else:
                     for i in range(len(tmaps), model.q):
                         if i < model.q+EXTRA_TERMS:

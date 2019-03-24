@@ -1,6 +1,7 @@
 \documentclass[oneside,12pt,openany]{book}
 \usepackage[toc,page]{appendix}
 \usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,textcomp,commath,mathtools,hyperref,pgfplots,epigraph,enumitem,pdfpages}
+\usepackage[table]{colortbl}
 
 \hypersetup{
 	colorlinks=true,
@@ -421,6 +422,26 @@
 	\textcolor{red}{LOTS of swarming}
 	
 	\chapter{Results and Discussion}
+	
+	
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|l|l|l|l|l|l|}
+			\hline
+			\multicolumn{3}{|c|}{\textbf{Autoregressive}}                    & \multicolumn{3}{c|}{\textbf{Moving-Average}}                     \\ \hline
+			\cellcolor{black} & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & \cellcolor{black}         \\ \hline
+			AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
+			AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
+			AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
+			AR Lag 4 & -0.00039                 & 0.03909                    & 0.00192                  & 0.03478                    & MA Lag 4 \\ \hline
+			AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
+			AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
+			AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
+			AR Lag 8 & .00008                   & 0.00314                    & -0.0001                  & 0.00788                    & MA Lag 8 \\ \hline
+			MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
+			MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
+		\end{tabular}
+	\end{table}
 	
 	\chapter{Further Work}
 	

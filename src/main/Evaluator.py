@@ -5,6 +5,8 @@ import multiprocessing as mp
 from HTM import *
 from models.ARMAModels import *
 
+""" for the love of god don't use this. needs to be re-written al la FittingStats.py"""
+
 def fitHTMOutputs(ARrange, MArange, CPMCrange, n = 10):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     if MArange == []:
