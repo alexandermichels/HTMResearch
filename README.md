@@ -2,15 +2,22 @@
 
 A repository for files related to my Honors Research Thesis at Westminster College.
 
-
 <center>
   <figure>
-    <img src="images/hierarchy.png"  style="max-width:90%;">
-    <figcaption>A Hierarchical Temporal Mememory Network</figcaption>
+    <img src="images/hierarchy.png"  style="max-width:40%;">
   </figure>
 </center>
 
-## Thesis
+## Table of Contents
+* [Thesis](#thesis)
+* [Implementations](#impl)
+* [Time Series Analysis](#timeseries)
+* [Introduction to Hierarchical Temporal Memory](#introHTM)
+* [Particle Swarm Optimization](#pso)
+* [Sources](#sources)
+
+
+## <a id="thesis">Thesis</a>
 
 We've been playing with a few ideas, but have to find something achievable within our time frame.
 
@@ -18,7 +25,7 @@ Right now we are working on trying to categorize the predictive power of Hierarc
 
 ***
 
-## Implementations of Interest
+## <a id="imp">Implementations of Interest</a>
 
 * [HTMCLA (C++)](https://github.com/MichaelFerrier/HTMCLA)
   * [Demo: C++ implementation of Numenta's HTM Cortical Learning Algorithm](https://www.youtube.com/watch?v=IXg_XIm5kqk)
@@ -29,16 +36,59 @@ Right now we are working on trying to categorize the predictive power of Hierarc
 
 ***
 
-## Particle Swarm Optimization
+## <a id="timeseries">Time Series Analysis</a>
 
-[Read up on swarming](http://www.swarmintelligence.org/index.php)
+Slides from PhDEconomics:
+* [What is a Time Series](http://www.phdeconomics.sssup.it/documents/Lesson1.pdf)
+* [What is a Time Series Model](http://www.phdeconomics.sssup.it/documents/Lesson2.pdf)
+* [ARMA Models](http://www.phdeconomics.sssup.it/documents/Lesson9.pdf)
 
-![Swarming GIF](images/ParticleSwarmArrowsAnimation.gif)
+[Introduction to ARMA Models from Wharton](http://www-stat.wharton.upenn.edu/~stine/stat910/lectures/08_intro_arma.pdf)
+
+[ARMA Lection Notes from OSU](https://www.asc.ohio-state.edu/de-jong.8/note2.pdf)
+
+***
+
+## <a id="introHTM">Introduction to Hierarchical Temporal Memory</a>
+
+**Numenta Research: Key Discoveries in Understanding How the Brain Works**
+
+[![Numenta Research: Key Discoveries in Understanding How the Brain Works](https://img.youtube.com/vi/X50GY0mdHlw/maxresdefault.jpg)](https://youtu.be/X50GY0mdHlw)
+
+This video gives an excellent overview of the neocortex and gives an intuitive understanding of the theory.
+
+**Numenta's HTM School with Matt Taylor**
+
+[![Numenta's HTM School with Matt Taylor](https://img.youtube.com/vi/XMB0ri4qgwc/maxresdefault.jpg)](https://www.youtube.com/watch?v=XMB0ri4qgwc&list=PL3yXMgtrZmDqhsFQzwUC9V8MeeVOQ7eZ9)
+
+HTM School provides a multipart overview of the various components of Hierarchical Temporal Memory.
+
+***
+
+## <a id="pso">Particle Swarm Optimization</a>
+
+**Particle Swarm Optimization (PSO) Visualized**
+
+[![Particle Swarm Optimization (PSO) Visualized](https://img.youtube.com/vi/OUHAypWn1Ro/maxresdefault.jpg)](https://www.youtube.com/watch?v=OUHAypWn1Ro)
+
+Particle swarm optimization (PSO) is a population based stochastic optimization technique developed by Dr. Eberhart and Dr. Kennedy in 1995, inspired by social behavior of bird flocking or fish schooling.
+
+PSO shares many similarities with evolutionary computation techniques such as Genetic Algorithms (GA). The system is initialized with a population of random solutions and searches for optima by updating generations. However, unlike GA, PSO has no evolution operators such as crossover and mutation. In PSO, the potential solutions, called particles, fly through the problem space by following the current optimum particles.
+
+Each particle keeps track of its coordinates in the problem space which are associated with the best solution (fitness) it has achieved so far. (The fitness value is also stored.) This value is called pbest. Another "best" value that is tracked by the particle swarm optimizer is the best value, obtained so far by any particle in the neighbors of the particle. This location is called lbest. when a particle takes all the population as its topological neighbors, the best value is a global best and is called gbest.
+
+The particle swarm optimization concept consists of, at each time step, changing the velocity of (accelerating) each particle toward its pbest and lbest locations (local version of PSO). Acceleration is weighted by a random term, with separate random numbers being generated for acceleration toward pbest and lbest locations.
+
+In past several years, PSO has been successfully applied in many research and application areas. It is demonstrated that PSO gets better results in a faster, cheaper way compared with other methods.
+
+Another reason that PSO is attractive is that there are few parameters to adjust. One version, with slight variations, works well in a wide variety of applications. Particle swarm optimization has been used for approaches that can be used across a wide range of applications, as well as for specific applications focused on a specific requirement.
+
+[Read more on swarming](http://www.swarmintelligence.org/index.php)
 
 
-## Sources
+## <a id="sources">Sources</a>
 
-A great resource to learn about Cortical Learning Algorithms is of source, Numenta. They strongly advocate for open science and post their [research papers](https://numenta.com/neuroscience-research/research-publications/papers/) as well as [conference posters](https://numenta.com/neuroscience-research/research-publications/posters/) online at their website. Numenta also has a [YouTube channel](https://www.youtube.com/channel/UCLNQzXAfcH8H8cMmG0sfV6g) with lots of helpful resources and for a more gentle introduction, Numenta's Matt Taylor has an excellent [YouTube channel called HTM School](https://www.youtube.com/user/OfficialNumenta).
+A great resource to learn about Cortical Learning Algorithms is of course, Numenta. They strongly advocate for open science and post their [research papers](https://numenta.com/neuroscience-research/research-publications/papers/) as well as [conference posters](https://numenta.com/neuroscience-research/research-publications/posters/) online at their website. Numenta also has a [YouTube channel](https://www.youtube.com/channel/UCLNQzXAfcH8H8cMmG0sfV6g) with lots of helpful resources and for a more gentle introduction, Numenta's Matt Taylor has an excellent [YouTube channel called HTM School](https://www.youtube.com/user/OfficialNumenta).
 
 For a comprehensive list of papers and presentations, check the **References** section of my Honors Research draft, but here is a good list to get you started:
 

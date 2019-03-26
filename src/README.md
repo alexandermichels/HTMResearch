@@ -1,17 +1,5 @@
 # htm-timeseries
 
-## Things to work on
-* Add 2-4 error/prediction
-* Make that output more readable (by putting in line with sequence)
-* Objectify HTM
-* Swarm on params
-    * RDSE resolution
-    * number of times spatial pooler sees before temporal pooler
-* Moving Average Error (how does this time series act as a function of CPMC? does the MA get better faster for higher CPMC in all cases and how much faster? how long should I look at training it?)
-* Higher order time series, Need to check for roots to make sure the ARIMA models are stationary
-* Category encoder and numeric encoder for SimpleSequence
-* Make the I/O better for the program
-
 ## Getting Started
 
 We are using [NuPiC](https://github.com/alexandermichels/nupic) as a dependency which as specific requirements for some core packages like Numpy, so I highly recommend starting by making a [virtual environment with `virtualenv`](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/).
