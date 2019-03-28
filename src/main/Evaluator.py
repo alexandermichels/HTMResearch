@@ -284,9 +284,10 @@ def fitHTMOutputspar(ARrange, MArange, CPMCrange, n = 10):
 
 
 def main():
-    fitHTMOutputs(range(1,9), range(0), range(2,17), n = 10)
+    
+    '''fitHTMOutputs(range(1,9), range(0), range(2,17), n = 10)
     fitHTMOutputs(range(0), range(1,9), range(2,17), n = 10)
-    fitHTMOutputs(range(0,9), range(1,9), range(2,17), n = 10)
+    fitHTMOutputs(range(0,9), range(1,9), range(2,17), n = 10)'''
 
 if __name__ == "__main__":
     main()

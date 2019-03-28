@@ -3,6 +3,8 @@ import csv
 from time import localtime, strftime
 from models.ARMAModels import *
 
+from HTM import *
+
 def getDiffs(ARrange, MArange, n = 1000):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
     if MArange == []:
@@ -224,11 +226,28 @@ def singleModelGetDiffs(model, n, EXTRA_TERMS=2):
             outputFile.flush()
         outputFile.close()
 
+def train_HTM_on_model(model):
+    network = HTM(model, 5, verbosity=0)
+    network.train("rmse", sibt=0, iter_per_cycle=1, normalize_error=True)
+    ones, res = network.runNetwork()
+    return ones
+
+def test_HTM_output(arr, ar_max, ma_max):
+    tso = get_order(arr, max_ar=ar_max, max_ma=ma_max)
+    print(tso)
+    tarps, tmaps = fit(arr, tso)
+    print(tarps)
+    print(tmaps)
+
 def main():
     model = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+    test_HTM_output(train_HTM_on_model(model), 8,2)
+    model = ARMATimeSeries( 0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+    test_HTM_output(train_HTM_on_model(model), 2,8)
+    '''model = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
     singleModelGetDiffs(model, 1500)
     model = ARMATimeSeries( 0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
-    singleModelGetDiffs(model, 1500)
+    singleModelGetDiffs(model, 1500)'''
     # getDiffs(range(1,9), range(0))
     # getDiffs(range(0), range(1,9))
 

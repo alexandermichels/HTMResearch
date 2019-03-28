@@ -172,9 +172,9 @@
 	
 	\chapter{Time Series}
 	
-	A \textbf{time series} is a ``sequence of observations taken sequentially in time'' and are everywhere in today's world~\cite{Box}. Anything that can be measured numerically over time can become a time series and Figure~\ref{fig:TimeSeriesExamples} shows two such examples, stock prices (Figure~\ref{fig:AMDChart}) and levels of precipitation in Seatle, WA from 1948-1979 (Figure~\ref{fig:SeattlePrecip}). Their ubiquity in nearly every field has lead to an intense study to mathematically formalize time series to characterize and predict them.
+	A \textbf{time series} is a ``sequence of observations taken sequentially in time'' and are everywhere in today's world~\cite{Box}. Figure~\ref{fig:TimeSeriesExamples} shows two such examples, stock prices (Figure~\ref{fig:AMDChart}) and levels of precipitation in Seatle, WA from 1948-1979 (Figure~\ref{fig:SeattlePrecip}). Their ubiquity drives a desire to understand, characterize, and predict time series, but it can be an extremely complex task because there is generally a dependence on prior terms due to the sequential nature and some uncertainty to their movements.
 	
-	\begin{figure}[h!]
+	\begin{figure}[!ht]
 		\centering
 		\begin{subfigure}[b]{.45\textwidth}
 			\includegraphics[width=\textwidth]{images/AMDChart.png}
@@ -192,7 +192,9 @@
 	\end{figure}
 \footnotetext{Image (b) courtesy of Seattle Weather Blog: \href{http://www.seattleweatherblog.com/rain-stats/}{\texttt{http://www.seattleweatherblog.com/rain-stats/}} }
 
-	Understanding time series can be an extremely complex task because there is generally a dependence on prior terms due to the sequential nature and some uncertainty to their movements. One model for representing time series is the autoregressive (or AR) model. In an autoregressive model, the series at some time $t$ is expressed as a finite weighted sum of previous values of the series plus a random component $a_{t}$~\cite{Box}. Let $z_{t}, z_{t-1}, z_{t-2},...$ denote the series at times $t, t-1, t-2,...$. Further, let $\mu$ be the mean or level of the process and let $\tilde{z}_{t-n}=z_{t-n}-\mu$. We can then express an autoregressive process of order $p$ by
+	\section{Autoregressive Models}
+
+	 One model for representing time series is the autoregressive (or AR) model. In an autoregressive model, the series at some time $t$ is expressed as a finite weighted sum of previous values of the series plus a random component $a_{t}$~\cite{Box}. Let $z_{t}, z_{t-1}, z_{t-2},...$ denote the series at times $t, t-1, t-2,...$. Further, let $\mu$ be the mean or level of the process and let $\tilde{z}_{t-n}=z_{t-n}-\mu$. We can then express an autoregressive process of order $p$ by
 	
 	\begin{align}
 		\label{eqn:armodel}
@@ -207,6 +209,8 @@
 	\end{align}
 	
 	\noindent which allows us to write an autoregressive model succinctly as $\phi(B)\tilde{z}_{t}=a_{t}$~\cite{Box}.
+
+	\section{Moving-Average Models}
 	
 	Suppose instead that the true process is regressed on the random shocks rather than the deviations from the level. Starting from our autoregressive model  of order p we can recursively substitute the model's definition of $\tilde{z}_{t-n}$ until we end up with an infinite summation of innovation terms~\cite{Box}. However, the moving average model provides us a much more direct approach by representing the time series as a finite number of shocks to the process. Formally we express a moving average (MA) model of order $q$ by
 	
@@ -216,6 +220,8 @@
 	\end{align}
 	
 	\noindent just as with the autoregressive model, we have $q+2$ unknown paramters and using the backshift operator we can define a moving average operator that allows us to express the model more succinctly yielding $\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
+
+	\section{Autoregressive Moving-Average Models}
 	
 	Real world processes may require a combination of these two approaches for a succinct and accurate model, resulting in a mixed Autoregressive Moving-Average (ARMA) model~\cite{Box}. Such a model includes terms from both the autoregressive and moving average model resulting in:
 	
@@ -225,6 +231,17 @@
 	\end{align}
 	
 	\noindent This model has $p+q+2$ unknown parameters and can also be written more succinctly using our autoregressive operator and moving average operator resulting in $\phi(B)\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
+
+	\section{Classification of Time Series}
+
+	A key question in time series analysis is how to select the correct model for a given time series. There are a few approaches, but one is to use information criterion such as the Akaike Information Criterion or the Bayes Information Criterion~\cite{Box}. For both AIC and BIC, optimal models minimize the information criterion and there is a penalty for the number of parameters used resulting in a bias towards a smaller set of parameters. The formula for BIC is
+
+	\begin{align}
+		\label{eqn:bic}
+		BIC_{p,q}=\ln(\hat{\sigma}_{a}^{2})+r\frac{\ln(n)}{n}
+	\end{align}
+
+	\noindent where $n$ is the sample size, $\hat{\sigma}_{a}^{2}$ is the maximum likelihood estimate of $\sigma_{a}^{2}$, and $r=p+q+1$ is the number of parameters estimated in the model.
 	
 	The ubiquity of time series makes forecasting them an important and many times profitable task such as in the case of financial time series (as seen in Figure~\ref{fig:AMDChart}), making them a common prediction task for machine learning and artificial intelligence systems. It allows us to test an ``intelligent'' systems ability to discover temporal patterns which may sometimes be fuzzy or complex: a hallmark of human intelligence.
 	
@@ -242,7 +259,7 @@
 	
 	\textcolor{red}{Overview of the neocortex}
 	
-	\begin{figure}[h!]
+	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=\linewidth]{images/Brain.png}
 		\caption{Overview of the Human Brain}
@@ -253,7 +270,7 @@
 	
 	
 	
-	\begin{figure}[h!]
+	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=8cm]{images/ColumnOfNeocortex.png}
 		\caption[Column of the Neocortex]{Column of the Neocortex\footnotemark}
@@ -289,10 +306,10 @@
 	
 	Hierarchical Temporal Memory aims to implement the functions of the neocortex as faithfully as possible, and unsurprisingly uses the same atomic unit of the cell. Modeled after the pyramidal neurons of the neocortex, these cells each take their own inputs and make their own predictions which the layer combines into a cohesive prediction \cite{Whitepaper}. They have three states: active from feed-forward input, active from lateral input (predictive state), and inactive. These first two states correspond to a short burst of action potentials in a neuron, and a slower steady burst of action potentials on a neuron respectively in our own brain.
 	
-	\begin{figure}[h!]
+	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=\linewidth]{images/HTMCell.jpg}
-		\caption{Pyramidal Neuron vs. Hierarchical Temporal Memory Cell}
+		\includegraphics[width=.7\linewidth]{images/HTMCell.jpg}
+		\caption[Pyramidal Neuron vs. Hierarchical Temporal Memory Cell]{Pyramidal Neuron vs. Hierarchical Temporal Memory Cell~\cite{TheHTMSpatialPooler}}
 		\label{fig:HTMCell}
 	\end{figure}
 
@@ -303,18 +320,26 @@
 	\subsection{Encoder}
 	
 	\subsection{Spatial Pooler}
-	
-	\begin{figure}[h!]
+
+	The Spatial Pooler's job is to recieve the encoded representation of the input space and convert the input to a sparse pattern-a requirement for learning and prediction in Hierarchical Temporal Memory theory~\cite{Whitepaper}. Upon intitialization, all of the potential synapses on the dentrite segments of all of the mini-columns are randomly assigned permenance values and based on these permance values a potential synapse may be valid or not~\cite{Whitepaper}. 
+
+	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=\linewidth]{images/SpatialPooler.jpg}
+		\includegraphics[width=.6\linewidth]{images/SpatialPooler.jpg}
 		\caption[Spatial Pooler]{Spatial Pooler \cite{TheHTMSpatialPooler}}
 		\label{fig:SpatialPooler}
 	\end{figure}
+
+	
+	The pooler begins with an input from the encoder that has a fixed number of bits and for each column we determine how many valid synapses are connected to active input bits~\cite{Whitepaper}. This number is then multipled by a ``boosting'' factor determined dynamically by how often a column is active relative to its neighbors. The most highly activated mini-columns after boosting then disable a percentage of the mini-columns within a dynamically determined ``inhibition radius'' to create a sparse set of activated mini-columns~\cite{Whitepaper}. Lastly, each active column updates the permanence values of its potential synapses. The permanence values associated with active input bits are increased while those associated with inactive bits are decremented~\cite{Whitepaper}.
+
 	
 	\subsection{Temporal Pooler}
 
+	The temporal pooler takes over where the spatial pooler left off, with a sparse set of activated mini-columns
 
-	\begin{figure}[h!]
+	% get a better image
+	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=\linewidth]{images/Poolers.jpg}
 		\caption{Spatial and Temporal Poolers}
@@ -325,7 +350,7 @@
 	
 	Once the system completes its processing of a time step's input, the system outputs a sparse distributed representation which may have gone through multiple layers and it is important to be able to decode the system's prediction in order for the system to be useful. Hierarchical Temporal Memory currently uses something called an SDR Classifier to decode the predictions of an HTM \cite{Dillon}. At its essence, an SDR Classifier is a single layer, feed forward, neural network \cite{Dillon}.
 	
-	\begin{figure}[h!]
+	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=.6\linewidth]{images/SDRClassifier.jpg}
 		\caption{SDR Classifier}
@@ -362,7 +387,7 @@
 	
 	Due to the computationally intensive nature of my research and the limited time available to me, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
 	
-	\begin{table}[h!]
+	\begin{table}[!ht]
 		\centering
 		\begin{tabular}{|l|l|}
 			\hline
@@ -395,7 +420,7 @@
 	
 	Usually abbreviated to PSO or \textit{swarming}, it draws inspiration from bird flocks and schools of fish~\cite{Eberhart}. The concept is quite simple: it simulates particles on parameter space and at each time-step every particle evaluates fitness as a function of its location in parameter space, then moves towards some linear combination of its personal best and the overall best score among the particles using weights representing a cognitive constant or individuality (denoted $c$) and a social constant (denoted $s$).
 	
-	\begin{figure}[h!]
+	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=.7\linewidth]{images/PSOVisual.png}
 		\caption{Visualization of the PSO Algorithm}
@@ -411,8 +436,12 @@
 	p_{t+1} &= p_{t} + v_{t+1} .
 	\end{split}
 	\end{align}
+
+	I utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however I wrote my own swarming utility in Python which I throughly tested on a number of complex surfaces.
 	
 	\section{Time Series Prediction and Fitting}
+
+	A key component of this work was the classification of ARMA time series. To accomplish this, I used the statsmodels\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module which comes with a variety of tools for conducting statistical tests including time series statistics. 
 	
 	\textcolor{red}{Used Statsmodels to get Bayes Information Criterion for time series --> order (uses full exact MLE estimate) \\ fed order to fit ARMA model (exact maximum likelihood via Kalman filter) --> get lag poly }
 
@@ -424,11 +453,11 @@
 	\chapter{Results and Discussion}
 	
 	
-	\begin{table}[h!]
+	\begin{table}[!ht]
 		\centering
-		\begin{tabular}{|l|l|l|l|l|l|}
+		\begin{tabular}{|l|c|c|c|c|l|}
 			\hline
-			\multicolumn{3}{|c|}{\textbf{Autoregressive}}                    & \multicolumn{3}{c|}{\textbf{Moving-Average}}                     \\ \hline
+			\multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}     \\ \hline
 			\cellcolor{black} & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & \cellcolor{black}         \\ \hline
 			AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
 			AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
@@ -441,13 +470,39 @@
 			MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
 			MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
 		\end{tabular}
+		\caption{Errors on fitting coefficients of AR and MA models to instances of ARMA models}
 	\end{table}
+
+
+	
+	\begin{table}[]
+		\centering
+		\begin{tabular}{|l|c|c|c|c|l|}
+			\hline
+			\multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+			\cellcolor{black} & HTM & Error on & HTM & Error on & \cellcolor{black} \\
+			\cellcolor{black} & Output & Coef. of Model & Output & Coef. of Model & \cellcolor{black} \\ \hline
+			AR Lag 1 & 0.063 & 0.063 & 0.897 & -0.897 & MA Lag 1 \\ \hline
+			AR Lag 2 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 2 \\ \hline
+			AR Lag 3 & 0.000 & 0.400 & 0.000 & 0.400 & MA Lag 3 \\ \hline
+			AR Lag 4 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 4 \\ \hline
+			AR Lag 5 & 0.000 & 0.300 & 0.000 & 0.300 & MA Lag 5 \\ \hline
+			AR Lag 6 & 0.000 & 0.300 & 0.000 & 0.300 & MA Lag 6 \\ \hline
+			AR Lag 7 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 7 \\ \hline
+			AR Lag 8 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 8 \\ \hline
+			MA Lag 1 & 0.000 & 0.000 & -0.817 & 0.817 & AR Lag 1 \\ \hline
+			MA Lag 2 & 0.000 & 0.000 & 0.000 & 0.000 & AR Lag 2 \\ \hline
+		\end{tabular}
+		\label{tab:HTMARMAError}
+		\caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
+	\end{table}
+
+	
 	
 	\chapter{Further Work}
 	
 	
 	
-	\blankpage
 	\addcontentsline{toc}{chapter}{References}
 	\bibliographystyle{siam}     % Siam and Ieeetr bibliographic styles treat titles of articles in journals or collections correctly
 	\nocite{*}  % List ALL references in your references, not just the ones cited in the text.
@@ -456,5 +511,100 @@
 	
 	\appendices
 	\addcontentsline{toc}{chapter}{Appendix}
+		\chapter{Errors on Fitting AR and MA Models}
+		
+		\begin{table}[!ht]
+			\centering
+			\begin{tabular}{|l|l|l|l|l|l|}
+				\hline
+				\multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}  \\ \hline
+				\cellcolor{black} & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & \cellcolor{black}         \\ \hline
+				AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
+				AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
+				AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
+				AR Lag 4 & -0.00039                 & 0.03909                    & 0.00192                  & 0.03478                    & MA Lag 4 \\ \hline
+				AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
+				AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
+				AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
+				AR Lag 8 & .00008                   & 0.00314                    & -0.0001                  & 0.00788                    & MA Lag 8 \\ \hline
+				MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
+				MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
+			\end{tabular}
+		\end{table}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag1CoefDist.png}
+	\end{figure}
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag2CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag3CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag4CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag5CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag6CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelMALag1CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelMALag2CoefDist.png}
+	\end{figure}
+
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag1CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag2CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag3CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag4CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag5CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag6CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.84\linewidth]{images/MAModelARLag1CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.84\linewidth]{images/MAModelARLag2CoefDist.png}
+	\end{figure}
 	
 \end{document}

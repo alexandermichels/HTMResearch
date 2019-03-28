@@ -8,6 +8,7 @@ Created on Sat Mar 23 08:52:49 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
+from math import sqrt
 
 def gen_histogram(model, coef, term):
     data = np.genfromtxt('data/{}diffs{}lag{}.csv'.format(model, term, coef), delimiter='\n') # "{type}diffslag{coef}.csv"
@@ -26,13 +27,16 @@ def gen_histogram(model, coef, term):
     #plt.savefig("img/{}Model{}Lag{}CoefDist.png".format(model, term, coef))
     
 def get_summary_stats(terms, extra_terms):
+    means, stds = [], []
     for model in ["AR", "MA"]:
         for coef in range(1,terms+extra_terms+1):
             data = np.genfromtxt('data/{}diffs{}lag{}.csv'.format(model, model, coef), delimiter='\n')
             mean = round(np.mean(data), 5)
             stddev = round(np.std(data), 5)
             print(model, model, coef)
+            means.append(mean)
             print(mean)
+            stds.append(stddev)
             print(stddev)
             
         term = ""
@@ -45,12 +49,25 @@ def get_summary_stats(terms, extra_terms):
             mean = round(np.mean(data), 5)
             stddev = round(np.std(data), 5)
             print(model, term, coef)
+            means.append(mean)
             print(mean)
+            stds.append(stddev)
             print(stddev)
+    return means, stds
+            
+def confidence_intervals(means, stds, Z=3.291, N=1500):
+    for u, s in zip(means, stds):
+        # print(u, s)
+        l = u-Z*s/sqrt(N)
+        h = u+Z*s/sqrt(N)
+        # print(u-Z*s/sqrt(N), u+Z*s/sqrt(N))
+        if not l < 0 and h > 0:
+            print "Fail"
     
 def main():
     # gen_histogram("AR", 1, "AR")
-    get_summary_stats(6, 2)
+    means, stds = get_summary_stats(6, 2)
+    confidence_intervals(means, stds)
     
 if __name__ == "__main__":
     main()
