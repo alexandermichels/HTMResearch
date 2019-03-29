@@ -16,12 +16,12 @@ def gen_histogram(model, coef, term):
     stddev = round(np.std(data), 2)
     
     # An "interface" to matplotlib.axes.Axes.hist() method
-    n, bins, patches = plt.hist(x=data, bins="auto", density=True, color='#aa0405', alpha=0.7)
+    n, bins, patches = plt.hist(x=data, bins=11, density=True, color='#aa0405', alpha=0.7)
     plt.grid(axis='y', alpha=0.75)
     plt.xlabel('Error')
-    plt.ylabel('Frequency')
+    plt.ylabel('Density')
     plt.title('Error Fitting Lag-{} {} Term of 6 Order {} Model'.format(coef, term, model))
-    plt.text(.2, 3.6, r'$\mu$={}, $\sigma$={}'.format(mean, stddev))
+    plt.text(-.2, 6.5, r'$\mu$={}, $\sigma$={}'.format(mean, stddev))
     # Set a clean upper y-axis limit.
     plt.show()
     #plt.savefig("img/{}Model{}Lag{}CoefDist.png".format(model, term, coef))
@@ -65,9 +65,9 @@ def confidence_intervals(means, stds, Z=3.291, N=1500):
             print "Fail"
     
 def main():
-    # gen_histogram("AR", 1, "AR")
-    means, stds = get_summary_stats(6, 2)
-    confidence_intervals(means, stds)
+    gen_histogram("MA", 8, "MA")
+    #means, stds = get_summary_stats(6, 2)
+    #confidence_intervals(means, stds)
     
 if __name__ == "__main__":
     main()

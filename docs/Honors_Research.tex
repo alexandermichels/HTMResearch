@@ -108,22 +108,7 @@
 	\listoftables
 	\addcontentsline{toc}{chapter}{List of Tables}
 	\vfill
-	\pagebreak
-	
-	
-	\begin{center}
-		\textbf{\LARGE CHANGE LOG}
-	\end{center}
-	\begin{itemize}
-		\item Brought over Chapter 1 from Proposal with edits and added an ``Biologically Inspired Computing'' section to segue into HTM
-		\item Wrote Chapter 2 - Time Series
-		\item Brought over Sparse Distributed Representations from Proposal (Section 3.2) 
-		\item Wrote some of ``Hardware and Software Specifications'' (Section 5.1)
-		\item Wrote some on Swarming (Section 5.2)
-	\end{itemize}
-	
-	
-	\vfill
+
 	\pagebreak
 	
 	\mainmatter
@@ -232,7 +217,7 @@
 	
 	\noindent This model has $p+q+2$ unknown parameters and can also be written more succinctly using our autoregressive operator and moving average operator resulting in $\phi(B)\tilde{z}_{t}=\theta(B)a_{t}$~\cite{Box}.
 
-	\section{Classification of Time Series}
+	\section{Classification of Time Series}\label{sec:timeseries:classification}
 
 	A key question in time series analysis is how to select the correct model for a given time series. There are a few approaches, but one is to use information criterion such as the Akaike Information Criterion or the Bayes Information Criterion~\cite{Box}. For both AIC and BIC, optimal models minimize the information criterion and there is a penalty for the number of parameters used resulting in a bias towards a smaller set of parameters. The formula for BIC is
 
@@ -410,10 +395,6 @@
 
 	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades (see Table~\ref{tab:hardware} for details). The code was then deployed to my HP DL380 G7 or \textbf{[ASLAN's type]} server which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
 	
-	\textcolor{red}{Hardware and language}
-	
-	\textcolor{red}{Numerical analysis-Epsilon comparisons}
-	
 	\section{Particle Swarm Optimization}
 	
 	Introduced in by Russell Eberhart and James Kennedy in their 1995 paper, \textit{A New Optimizer Using Particle Swarm Theory}, Particle Swarm Optimization has changed the way the world optimizes continuous nonlinear functions~\cite{PSOReview}. Swarming is fast and effective for optimization over complex multidimensional search spaces and lends itself well to parallelization due to its multi-agent approach, making it an excellent choice for optimizing parameters in neural networks and is implemented by Numenta for finding optimal parameters.
@@ -439,18 +420,21 @@
 
 	I utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however I wrote my own swarming utility in Python which I throughly tested on a number of complex surfaces.
 	
-	\section{Time Series Prediction and Fitting}
+	\section{Time Series Classification}
 
-	A key component of this work was the classification of ARMA time series. To accomplish this, I used the statsmodels\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module which comes with a variety of tools for conducting statistical tests including time series statistics. 
-	
-	\textcolor{red}{Used Statsmodels to get Bayes Information Criterion for time series --> order (uses full exact MLE estimate) \\ fed order to fit ARMA model (exact maximum likelihood via Kalman filter) --> get lag poly }
+	A key component of this work was the classification of ARMA time series. To accomplish this, I used the statsmodels\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module which comes with a variety of tools for conducting statistical tests including time series statistics. Among them is the \texttt{arma\_order\_select\_ic} function which finds information criterion for ARMA models. The module also contains \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter~\cite{statsmodels}.
 
-	
-	\textcolor{red}{Wrote wrapper and swarming utility}
-	
-	\textcolor{red}{LOTS of swarming}
+	The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. I wrote a function which intially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjuage gradient, and Powell, in that order~\cite{statsmodels}.
 	
 	\chapter{Results and Discussion}
+
+	The first step of this project was learning how to interact with the NuPIC Network API in Python:this included writing a stream object to feed an HTM network in-memory arrays, writing training routines for HTMs, and conducting some sensitivity analysis with the model parameters. 
+	
+	Then we began by training HTMs on very simple deterministic sequences which did not require any temporal context past the last term-that is sequences such that you can know for certain the next term in the sequence by only knowing the last term. Examples include $1,2,1,2,...$, $1,3,1,3,...$, and $78,79,78,79,...$. This allowed us to ensure that we could train and predict using only an HTM's spatial pooler.
+
+	Next, we trained Hierarchical Temporal Memory networks using slighly more complex, but still deterministic sequences, that relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include $1,2,3,2,..$ and $1,2,2,3,5,2,2,4,1,...$. In the first example, 1 and 3 are always followed by 2, but to know what is followed by 2 you also need to know what proceeded 2.
+
+	When we transitioned to ARMA models we started with a low standard deviation for the noise terms and grew from there. We also decided to normalize the samples of the ARMA processes such that the values were bounded between [-100,100].
 	
 	
 	\begin{table}[!ht]
@@ -466,7 +450,7 @@
 			AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
 			AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
 			AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
-			AR Lag 8 & .00008                   & 0.00314                    & -0.0001                  & 0.00788                    & MA Lag 8 \\ \hline
+			AR Lag 8 & 0.00008                   & 0.00314                    & -0.00010                  & 0.00788                    & MA Lag 8 \\ \hline
 			MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
 			MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
 		\end{tabular}
@@ -480,18 +464,18 @@
 		\begin{tabular}{|l|c|c|c|c|l|}
 			\hline
 			\multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-			\cellcolor{black} & HTM & Error on & HTM & Error on & \cellcolor{black} \\
-			\cellcolor{black} & Output & Coef. of Model & Output & Coef. of Model & \cellcolor{black} \\ \hline
-			AR Lag 1 & 0.063 & 0.063 & 0.897 & -0.897 & MA Lag 1 \\ \hline
-			AR Lag 2 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 2 \\ \hline
-			AR Lag 3 & 0.000 & 0.400 & 0.000 & 0.400 & MA Lag 3 \\ \hline
-			AR Lag 4 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 4 \\ \hline
-			AR Lag 5 & 0.000 & 0.300 & 0.000 & 0.300 & MA Lag 5 \\ \hline
-			AR Lag 6 & 0.000 & 0.300 & 0.000 & 0.300 & MA Lag 6 \\ \hline
-			AR Lag 7 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 7 \\ \hline
-			AR Lag 8 & 0.000 & 0.000 & 0.000 & 0.000 & MA Lag 8 \\ \hline
-			MA Lag 1 & 0.000 & 0.000 & -0.817 & 0.817 & AR Lag 1 \\ \hline
-			MA Lag 2 & 0.000 & 0.000 & 0.000 & 0.000 & AR Lag 2 \\ \hline
+			\cellcolor{black} & HTM & Error in & HTM & Error in & \cellcolor{black} \\
+			\cellcolor{black} & Output & Terms of Sigma & Output & Terms of Sigma & \cellcolor{black} \\ \hline
+			AR Lag 1 & 0.063 & 0.79751 & 0.897 & 15.55602 & MA Lag 1 \\ \hline
+			AR Lag 2 & 0.000 & 0.05435 & 0.000 & 0.03460 & MA Lag 2 \\ \hline
+			AR Lag 3 & 0.000 & 13.77064 & 0.000 & 13.89143 & MA Lag 3 \\ \hline
+			AR Lag 4 & 0.000 & 0.00998 & 0.000 & 0.05520 & MA Lag 4 \\ \hline
+			AR Lag 5 & 0.000 & 10.22462 & 0.000 & 9.73127 & MA Lag 5 \\ \hline
+			AR Lag 6 & 0.000 & 7.60282 & 0.000 & 8.54332 & MA Lag 6 \\ \hline
+			AR Lag 7 & 0.000 & 0.02622 & 0.000 & 0.01202 & MA Lag 7 \\ \hline
+			AR Lag 8 & 0.000 & 0.02548 & 0.000 & 0.01269 & MA Lag 8 \\ \hline
+			MA Lag 1 & 0.000 & 0.06782 & -0.817 & 17.05749 & AR Lag 1 \\ \hline
+			MA Lag 2 & 0.000 & 0.05105 & 0.000 & 0.04727 & AR Lag 2 \\ \hline
 		\end{tabular}
 		\label{tab:HTMARMAError}
 		\caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
@@ -515,7 +499,7 @@
 		
 		\begin{table}[!ht]
 			\centering
-			\begin{tabular}{|l|l|l|l|l|l|}
+			\begin{tabular}{|l|c|c|c|c|l|}
 				\hline
 				\multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}  \\ \hline
 				\cellcolor{black} & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & \cellcolor{black}         \\ \hline
@@ -526,7 +510,7 @@
 				AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
 				AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
 				AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
-				AR Lag 8 & .00008                   & 0.00314                    & -0.0001                  & 0.00788                    & MA Lag 8 \\ \hline
+				AR Lag 8 & 0.00008                  & 0.00314                    & -0.00010                 & 0.00788                    & MA Lag 8 \\ \hline
 				MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
 				MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
 			\end{tabular}
@@ -559,6 +543,17 @@
 		\centering
 		\includegraphics[width=.85\linewidth]{images/ARModelARLag6CoefDist.png}
 	\end{figure}
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag7CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/ARModelARLag8CoefDist.png}
+	\end{figure}
+
 	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/ARModelMALag1CoefDist.png}
@@ -596,6 +591,15 @@
 	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MAModelMALag6CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag7CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MAModelMALag8CoefDist.png}
 	\end{figure}
 	\begin{figure}[!ht]
 		\centering
