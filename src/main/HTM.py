@@ -152,11 +152,15 @@ class HTM():
         self.turnLearningOn()
 
     def __del__(self):
+        """ closes all loggers """
         logger = log.getLogger()
         handlers = logger.handlers[:]
         for handler in handlers:
-            handler.close()
-            logger.removeHandler(handler)
+            try:
+                handler.close()
+                logger.removeHandler(handler)
+            except:
+                pass
 
     def __str__(self):
         spRegion = self.network.getRegionsByType(SPRegion)[0]
@@ -392,38 +396,35 @@ class HTM():
 
         return (results, predictions)
 
-    def train(self, error_method="rmse", sibt=3, iter_per_cycle=2, max_cycles=20, weights={ 1: 1.0, 5: 1.0 }, normalize_error=False, logging=False):
+    def train(self, error_method="rmse", sibt=0, iter_per_cycle=1, max_cycles=20, weights={ 1: 1.0, 5: 1.0 }, normalize_error=False, logging=False):
         """
         Trains the HTM on `dataSource`
 
         :param  error_method - the metric for calculating error ("rmse" root mean squared error or "binary")
         :param  sibt - spatial (pooler) iterations before temporal (pooler)
         """
-        if logging:
-            for i in range(sibt):
-                log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
-                # train on spatial pooler
-                log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", error_method, weights, normalize_error), error_method))
-            log.info("\nExited spatial pooler only training loop")
+        if not logging:
+            self.setVerbosity(1)
+        for i in range(sibt):
+            log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
+            # train on spatial pooler
+            log.debug("Error for spatial training iteration {} was {} with {} error method".format(i,self.runWithMode("strain", error_method, weights, normalize_error), error_method))
+        log.info("\nExited spatial pooler only training loop")
         last_error = 0 # set to infinity error so you keep training the first time
         curr_error = -1
         counter = 0
-        if logging:
-            log.info("Entering full training loop")
+        log.info("Entering full training loop")
         while (fcompare(curr_error, last_error) == -1 and counter < max_cycles):
-            if logging:
-                log.debug("\n++++++++++ Cycle {} of the full training loop +++++++++\n".format(counter))
+            log.debug("\n++++++++++ Cycle {} of the full training loop +++++++++\n".format(counter))
             last_error=curr_error
             curr_error = 0
             for i in range(int(iter_per_cycle)):
-                if logging:
-                    log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
-                    log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", error_method, weights, normalize_error), error_method))
+                log.debug("\n----- Iteration {}/{} of Cycle {} -----\n".format(i+1, iter_per_cycle, counter))
+                log.debug("Error for full training cycle {}, iteration {} was {} with {} error method".format(counter,i,self.runWithMode("train", error_method, weights, normalize_error), error_method))
                 result = self.runWithMode("test", error_method, weights, normalize_error)
                 for key, value in result.iteritems():
                     curr_error+=value
-            if logging:
-                log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
+            log.debug("Cycle {} - last: {}    curr: {}".format(counter, last_error, curr_error))
             counter+=1
             if last_error == -1:
                 last_error = float("inf")
@@ -487,14 +488,14 @@ if __name__ == "__main__":
     #time_series_model = VeryBasicSequence(pattern=1, n=1000)
     #param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 } # default params from masters
     #param_dict = { "spParams" : { "potentialPct": .00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": .27, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 30}, "newSynapseCount" : 32 }
-    time_series_model = ARMATimeSeries(1,0, sigma=.1)
+    time_series_model = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
     network = HTM(time_series_model, 5)
     print(network)
     #print(network.train(error_method="binary"))
     #network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
     network.train("rmse", sibt=0, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
     ones, res = network.runNetwork()
-    print(ones)
+    # print(ones)
     '''print(network.network.regions["spatialPoolerRegion"].__dict__)
     print(network.network.regions["spatialPoolerRegion"].getInputNames())
     print(network.network.regions["spatialPoolerRegion"].getInputData("bottomUpIn"))

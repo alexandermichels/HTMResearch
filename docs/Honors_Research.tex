@@ -147,7 +147,7 @@
 	
 	Lastly, we visit ``Emulation'' which is the school of thought that says we are better off copying intelligence than designing our own \cite{Connell}. Neural simulation, neural networks, animal models, human development, sociality, and cortical learning algorithms all fit in this category \cite{Connell}. The danger with this approach is abandoning theory in its sprint towards a functional copy, because if one does not understand the thing they have made, it is hard to see what it can do and where it can be improved. Another excellent point is that it can be very hard to correctly identify what needs to be copied, as Connell and Livingston note, ``artificial feathers and flapping turn out not to be needed to create airplanes'' \cite{Connell}.
 	
-	\section{Biologically Inspired Computing}
+	\section{Computational Neuroscience}
 	
 	Emulating natural processes--and even the human brain--is not a new idea to computer scientists. In fact, artificial neural networks that we still use today were originally proposed in a 1943 paper that introduced the first mathematical model of a neuron~\cite{FundNatComp}. The 1950's and 60's saw the rise of evolutionary computing which attempts to simulate evolution usually for finding optimal solutions to problems. Computational neuroscience is the newest field to emerge from this interdisciplinary intersection of biologists and computer scientists.
 	
@@ -236,164 +236,7 @@
 	
 	
 	
-	\chapter{Cortical Learning Algorithms}
-	
-	Hierarchical Temporal Memory is a framework attempting to produce cortical learning algorithms---algorithms that mimic the processes of the human neocortex. In the human brain, the neocortex is approximately seventy-percent of the brain's volume~\cite{DiscoveriesBrainWorks}. It can be described as a ``wrinkly sheet of sheet of cells, about two millimeters thick'' and is responsible for the characteristics of intelligence that set humanity apart from other species~\cite{DiscoveriesBrainWorks}. 
-	
-	\textcolor{red}{Vernon Mountcastle}
-	
-	\textcolor{red}{Overview of the neocortex}
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=\linewidth]{images/Brain.png}
-		\caption{Overview of the Human Brain}
-		\label{fig:brain}
-	\end{figure}
-	
-	\textcolor{red}{Cortical Columns and Pyramidal Neurons}
-	
-	
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=8cm]{images/ColumnOfNeocortex.png}
-		\caption[Column of the Neocortex]{Column of the Neocortex\footnotemark}
-		\label{CorticalColumn}
-	\end{figure}
-	\footnotetext{Image courtesy of Wikipedia: \href{https://en.wikipedia.org/wiki/Neocortex}{\texttt{https://en.wikipedia.org/wiki/Neocortex}}}
-	
-	\section{Sparse Distributed Representations}
-	
-	Consider the binary representation of the integer 16 versus that of the integer 15. The two numbers are quite similar: they are only 1 apart, so they are as close as two integers can be. Yet their binary representations are [100000] and [011111] respectively. They have no shared ``on'' bits so despite their similarity, their binary representations reflect none at all. In fact, despite being as close as two integers can be (a Euclidean distance of 1), their binary representations have a Hamming distance, the number places in which two codewords differ, of 5, the maximum Hamming distance of two codewords of length 5 \cite{Adams}. 
-	
-	This means that our encoding does not preserve semantic similarity or a concept of distance between elements which is highly undesirable for an code because if there is some kind of error in the code we could end up decoding something meaning the opposite of what we were trying to convey. As an example, consider $\mathbb{Z}$ from 0 to 31 which is mapped to $GF(2)^{6}$ by their binary representation. The mapping of 31 is [111111] but a single error in transmission can easily lead to [011111] which would be decoded as 15. So a code Hamming distance ($d_{H}$) of one away ($\frac{1}{5}$ of the total metric) lead to an element 16 integers away ($\frac{1}{2}$ of the total metric). We would obviously like to avoid this so that errors in the transmission of our codes are either (1) correctable or (2) lead to a decoding that is as close as possible to our original element.
-	
-	This is achievable by simply conveying more information in our code. In our binary representation any single error led to another valid codeword (a codeword which decoded to an element of the input/output set) which meant that no errors could be detected or corrected. By expanding our code length, we increase the number of codewords (multiplying by the cardinality of the code alphabet for each character added) meaning that fewer errors will result in other valid codewords and can possibly be detected or corrected. 
-	
-	A key strategy with Sparse Distributed Representations is to encode semantic similarity, such as with our idea of distance in our motivating example. This helps us achieve our second goal because even if we increase the error-tolerance of our code, there is still some probability of an uncorrectable error and we would like that error to result in a codeword as close to the original codeword as possible. To give you a real world example imagine I am sending instructions to a aircraft and I need to tell it to turn down 7\textdegree~to start its descent. Obviously, an error resulting in 8\textdegree~or 6\textdegree~being interpretted by the pilot are both preferable to 90\textdegree.
-	
-	To achieve our goal, we employ sparse distributed representations or SDRs. Just as with traditional dense binary representations, we will represent sparse distributed representations as vectors over their code alphabet, in this case GF(2). We call them \textbf{sparse} distributed representations because these vectors typically only have a small proportion of the components as 1. We will use Numenta's notation of letting $w_{\overrightarrow{x}}$ denote the number of components in an SDR $\overrightarrow{x}$ that are 1, so $w_{\overrightarrow{x}} = \norm{x}_{1}$ \cite{Properties}.
-	
-	Given our definition of distance, we could say that two decodings of sparse distributed representations, $a$ and $b$, are equal if and only if the $d_{H}(a,b) = w_{a} = w_{b}$. This would mean that both vectors would have to have the same dimensionality, same number of on bits, and all on and off bits would have to match. This definition is good for ``equals,'' but suppose we have a single error in transmission or a single component of our distributed system fails, equality would thus fail. In order to be able preserve the ability to subsample and thus to preserve fault tolerance, we therefore need a less stringent definition for decoding SDRs. Numenta refers to this as the $overlap$, which is 
-	
-	\begin{align}
-	\label{eqn:overlap}
-		overlap(\overrightarrow{a}, \overrightarrow{b}) \equiv \overrightarrow{a} \cdot \overrightarrow{b} \equiv \sum_{0}^{n-1} a_{i}b_{i}
-	\end{align}
-	
-	
-	 Thus, we say two SDRs $\overrightarrow{a}$ and $\overrightarrow{b}$ decode to the same element of the input space if and only if $overlap(a,b) \geq \theta$ where $\theta \leq w_{a}$ and $\theta \leq w_{b}$ \cite{Properties}. Denote the function that determines if two sparse distributed representations decode to the same element of the input space using some $\theta$ and $overlap(\overrightarrow{a}, \overrightarrow{b})$, $match_{\theta}(\overrightarrow{a}, \overrightarrow{b})$ and it is a function from SDR$\times$SDR $\longrightarrow$\{true, false\}.
-	
-	Given a set of sparse distributed representations with the same dimension, $X =\{\overrightarrow{x_{1}}, \overrightarrow{x_{2}}, ...,\overrightarrow{x_{n}}\}$, we can union the vectors using the bitwise OR operation over the $i^{th}$ position of the vectors in the set to produce the $i^{th}$ position of $union(X)$ \cite{Properties}. For example, given [0100] and [0010] the union would be [0110]. We say an SDR $\overrightarrow{y}$ is an element of the union of a set of SDRs, $\overrightarrow{X}$, if and only if $match_{\theta}(\overrightarrow{X},\ \overrightarrow{y})$ \cite{Properties}.
-	
-	\section{Hierarchical Temporal Memory}
-	
-	Hierarchical Temporal Memory aims to implement the functions of the neocortex as faithfully as possible, and unsurprisingly uses the same atomic unit of the cell. Modeled after the pyramidal neurons of the neocortex, these cells each take their own inputs and make their own predictions which the layer combines into a cohesive prediction \cite{Whitepaper}. They have three states: active from feed-forward input, active from lateral input (predictive state), and inactive. These first two states correspond to a short burst of action potentials in a neuron, and a slower steady burst of action potentials on a neuron respectively in our own brain.
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.7\linewidth]{images/HTMCell.jpg}
-		\caption[Pyramidal Neuron vs. Hierarchical Temporal Memory Cell]{Pyramidal Neuron vs. Hierarchical Temporal Memory Cell~\cite{TheHTMSpatialPooler}}
-		\label{fig:HTMCell}
-	\end{figure}
-
-	Just like actual pyramidal neurons, HTM cells also dendrite segments. Each cell has one proximal dendrite segment and a dozen or more distal dendrite segments \cite {Whitepaper}. Proximal dendrites accept feed-forward input and all cells in the same column respond to a similar feed-forward input due to a class of inhibitory cells. On the other hand, distal dendrites receive lateral input from nearby cells and their response is unique on a cell-by-cell basis dependent on the connected synapses on each cells distal dendrites. Figure~\ref{fig:HTMCell} illustrates the similarities between a pyramidal neuron and an HTM cell.
-	
-	\textcolor{red}{talk about synapses}
-	
-	\subsection{Encoder}
-	
-	\subsection{Spatial Pooler}
-
-	The Spatial Pooler's job is to recieve the encoded representation of the input space and convert the input to a sparse pattern-a requirement for learning and prediction in Hierarchical Temporal Memory theory~\cite{Whitepaper}. Upon intitialization, all of the potential synapses on the dentrite segments of all of the mini-columns are randomly assigned permenance values and based on these permance values a potential synapse may be valid or not~\cite{Whitepaper}. 
-
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.6\linewidth]{images/SpatialPooler.jpg}
-		\caption[Spatial Pooler]{Spatial Pooler \cite{TheHTMSpatialPooler}}
-		\label{fig:SpatialPooler}
-	\end{figure}
-
-	
-	The pooler begins with an input from the encoder that has a fixed number of bits and for each column we determine how many valid synapses are connected to active input bits~\cite{Whitepaper}. This number is then multipled by a ``boosting'' factor determined dynamically by how often a column is active relative to its neighbors. The most highly activated mini-columns after boosting then disable a percentage of the mini-columns within a dynamically determined ``inhibition radius'' to create a sparse set of activated mini-columns~\cite{Whitepaper}. Lastly, each active column updates the permanence values of its potential synapses. The permanence values associated with active input bits are increased while those associated with inactive bits are decremented~\cite{Whitepaper}.
-
-	
-	\subsection{Temporal Pooler}
-
-	The temporal pooler takes over where the spatial pooler left off, with a sparse set of activated mini-columns
-
-	% get a better image
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=\linewidth]{images/Poolers.jpg}
-		\caption{Spatial and Temporal Poolers}
-		\label{fig:Poolers}
-	\end{figure}
-
-	\subsection{Classifier}
-	
-	Once the system completes its processing of a time step's input, the system outputs a sparse distributed representation which may have gone through multiple layers and it is important to be able to decode the system's prediction in order for the system to be useful. Hierarchical Temporal Memory currently uses something called an SDR Classifier to decode the predictions of an HTM \cite{Dillon}. At its essence, an SDR Classifier is a single layer, feed forward, neural network \cite{Dillon}.
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.6\linewidth]{images/SDRClassifier.jpg}
-		\caption{SDR Classifier}
-		\label{fig 3}
-	\end{figure}
-	
-	SDR Classifiers are able to decode the information HTMs give about predictions $n$ times steps in the future by maintaining a weight matrix \cite{Dillon}. The matrix's weights are adjusted to ``learn'' after each time step to reflect the correct weighting between the output vector at time $t$ and the probability distribution of the input/output space at time $t-n$ \cite{Dillon}. This enables the matrix to reflect relationships between inputs and outputs $n$ time steps apart. To determine the SDR Classifier's interpretation of an output at time $t+n$, the SDR Classifer takes in the HTM's output vector and uses Softmax to determine the most likely decoding \cite{Dillon}. So for each of the $k$ classes in the output space, the certainty that the output vector is referring to it is 
-	
-	\begin{align}
-	\label{eqn:htmclassact}
-	y_{j} = \dfrac{e^{a_{j}}}{\sum_{i=1}^{k} e^{a_{i}}}
-	\end{align}
-	
-	
-	 \noindent where $a_{j}$ is the activation level of the $j^{th}$ element of the output space, calculated by multiplying the output vector by the $j^{th}$ column of the weight matrix element wise \cite{Dillon}. 
-	
-	\chapter{Literature Review}
-	
-	\section{Sequence Memory for Anomaly Detection and Prediction}
-	
-	\textcolor{red}{Numenta's work}
-	
-	\textcolor{red}{partners such as http://numenta.com/htm-for-stocks/ grokstream.com cortical.io}
-	
-	\textcolor{red}{Masters theses on prediction}
-	
-	\section{Spatial Data, Sensors, and Motor Response}
-	
-	\chapter{Experiment Design}
-	
-	\section{Hardware and Software Specifications}
-	
-	I utilized the official Python (Python 2.7) implementation of Numenta's cortical learning algorithms, NuPIC\footnote{NuPIC repository: \href{https://github.com/numenta/nupic}{\ttfamily https://github.com/numenta/nupic} } and it's Network API\footnote{Network API docs: \href{http://nupic.docs.numenta.org/stable/api/network/}{\ttfamily http://nupic.docs.numenta.org/stable/api/network/}}. At the time of my work NuPIC was at version 1.05 and I chose to use this version. It should be noted that although much of NuPIC is in Python, many of its computationally intensive algorithms are implemented in C++ using their NuPIC.core repository\footnote{NuPIC.core repository: \href{https://github.com/numenta/nupic.core}{\ttfamily https://github.com/numenta/nupic.core}} and it also relies on a number of external libraries such as \texttt{numpy} and \texttt{pandas}. 
-	
-	Due to the computationally intensive nature of my research and the limited time available to me, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
-	
-	\begin{table}[!ht]
-		\centering
-		\begin{tabular}{|l|l|}
-			\hline
-			\multicolumn{2}{|l|}{\textbf{Dijkstra (Asus Vivobook)}} \\ \hline
-			CPU     & Intel i5-8250U, 4-Core, 1.60GHz     \\ \hline
-			RAM     & 24 GB                                \\ \hline
-			OS      & Linux Mint 19 Cinnamon               \\ \hline
-			\multicolumn{2}{|l|}{\textbf{Galois (HP DL380 G7)}}     \\ \hline
-			CPU     &  2x Intel Xeon X5650, 6-Core, 2.70 GHz       \\ \hline
-			RAM     & 192 GB                               \\ \hline
-			OS      & Linux Mint 19 Cinnamon               \\ \hline
-			\multicolumn{2}{|l|}{\textbf{Aslan (Type)}}                         \\ \hline
-			CPU&    2x  Intel Xeon E5-2690, 10-Core, 3.00 GHz    \\ \hline
-			RAM&    252 GB                                  \\ \hline
-			OS&    Gentoo                               \\ \hline
-		\end{tabular}
-		\caption{Hardware Specifications}
-		\label{tab:hardware}
-	\end{table}
-
-	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades (see Table~\ref{tab:hardware} for details). The code was then deployed to my HP DL380 G7 or \textbf{[ASLAN's type]} server which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
+	\chapter{Biologically Inspired Computing}
 	
 	\section{Particle Swarm Optimization}
 	
@@ -417,25 +260,224 @@
 	p_{t+1} &= p_{t} + v_{t+1} .
 	\end{split}
 	\end{align}
-
+	
 	I utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however I wrote my own swarming utility in Python which I throughly tested on a number of complex surfaces.
 	
-	\section{Time Series Classification}
+	\section{Hierarchical Temporal Memory}
+	
+	Hierarchical Temporal Memory is a framework attempting to produce cortical learning algorithms---algorithms that mimic the processes of the human neocortex. In the human brain, the neocortex is approximately seventy-percent of the brain's volume~\cite{DiscoveriesBrainWorks}. It can be described as a ``wrinkly sheet of sheet of cells, about two millimeters thick'' and is responsible for the characteristics of intelligence that set humanity apart from other species~\cite{DiscoveriesBrainWorks}. 
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.5\linewidth]{images/Brain.png}
+		\caption{Overview of the Human Brain}
+		\label{fig:brain}
+	\end{figure}
+	
+	For all of its complexity, the neocortex has an incredibly consistent microarchitecture of cortical columns which are in turn made up of neurons~\cite{DiscoveriesBrainWorks}. Neuroscientist Vernon Mountcastle revolutionized the way we think about our own brains when he proposed that the consistent architecture must imply consistent processes across the cortex. This would mean that all of our high-level thinking must essentially be the same on the level of the cortical column. Therefore if we can understand how a cortical column functions, we can understand the entire cortex~\cite{DiscoveriesBrainWorks}.	
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.6\linewidth]{images/CorticalColumns.jpg}
+		\caption[3D reconstruction of five neighboring columns in rat vibrissal cortex]{3D reconstruction of five neighboring columns in rat vibrissal cortex (credit: Marcel Oberlaender et al.)}
+		\label{CorticalColumn}
+	\end{figure}
+	
+	\subsection{Sparse Distributed Representations}\label{sec:sdr}
+	
+	A key to understanding how the brain functions is understanding how the brain perceives the world. Our senses need to be encoded into a common language that is compatible with the circuitry of the cortex, and understanding how that process works is an enormous challenge itself. As an example, consider the field of Natural Language Processing. It is a field that has had an enormous amount of work done for decades and yet NLP is still incapable of human-like interpretation of text. One system of encoding that hopes to provide a language for cortical circuitry is sparse distributed representations.
+	
+	Consider the binary representation of the integer 16 versus that of the integer 15. The two numbers are quite similar: they are only 1 apart, so they are as close as two integers can be. Yet their binary representations are [100000] and [011111] respectively. They have no shared ``on'' bits so despite their similarity, their binary representations reflect none at all. In fact, despite being as close as two integers can be (a Euclidean distance of 1), their binary representations have a Hamming distance, the number places in which two codewords differ, of 5, the maximum Hamming distance of two codewords of length 5 \cite{Adams}. 
+	
+	This means that our encoding does not preserve semantic similarity or a concept of distance between elements which is highly undesirable for an code because if there is some kind of error in the code we could end up decoding something meaning the opposite of what we were trying to convey. As an example, consider $\mathbb{Z}$ from 0 to 31 which is mapped to $GF(2)^{6}$ by their binary representation. The mapping of 31 is [111111] but a single error in transmission can easily lead to [011111] which would be decoded as 15. So a code Hamming distance ($d_{H}$) of one away ($\frac{1}{5}$ of the total metric) lead to an element 16 integers away ($\frac{1}{2}$ of the total metric). We would obviously like to avoid this so that errors in the transmission of our codes are either (1) correctable or (2) lead to a decoding that is as close as possible to our original element.
+	
+	This is achievable by simply conveying more information in our code. In our binary representation any single error led to another valid codeword (a codeword which decoded to an element of the input/output set) which meant that no errors could be detected or corrected. By expanding our code length, we increase the number of codewords (multiplying by the cardinality of the code alphabet for each character added) meaning that fewer errors will result in other valid codewords and can possibly be detected or corrected. 
+	
+	A key strategy with Sparse Distributed Representations is to encode semantic similarity, such as with our idea of distance in our motivating example. This helps us achieve our second goal because even if we increase the error-tolerance of our code, there is still some probability of an uncorrectable error and we would like that error to result in a codeword as close to the original codeword as possible. To give you a real world example imagine I am sending instructions to a aircraft and I need to tell it to turn down 7\textdegree~to start its descent. Obviously, an error resulting in 8\textdegree~or 6\textdegree~being interpretted by the pilot are both preferable to 90\textdegree.
+	
+	To achieve our goal, we employ sparse distributed representations or SDRs. Just as with traditional dense binary representations, we will represent sparse distributed representations as vectors over their code alphabet, in this case GF(2). We call them \textbf{sparse} distributed representations because these vectors typically only have a small proportion of the components as 1. We will use Numenta's notation of letting $w_{\overrightarrow{x}}$ denote the number of components in an SDR $\overrightarrow{x}$ that are 1, so $w_{\overrightarrow{x}} = \norm{x}_{1}$ \cite{Properties}.
+	
+	Given our definition of distance, we could say that two decodings of sparse distributed representations, $a$ and $b$, are equal if and only if the $d_{H}(a,b) = w_{a} = w_{b}$. This would mean that both vectors would have to have the same dimensionality, same number of on bits, and all on and off bits would have to match. This definition is good for ``equals,'' but suppose we have a single error in transmission or a single component of our distributed system fails, equality would thus fail. In order to be able preserve the ability to subsample and thus to preserve fault tolerance, we therefore need a less stringent definition for decoding SDRs. Numenta refers to this as the $overlap$, which is 
+	
+	\begin{align}
+	\label{eqn:overlap}
+		overlap(\overrightarrow{a}, \overrightarrow{b}) \equiv \overrightarrow{a} \cdot \overrightarrow{b} \equiv \sum_{0}^{n-1} a_{i}b_{i}
+	\end{align}
+	
+	
+	 Thus, we say two SDRs $\overrightarrow{a}$ and $\overrightarrow{b}$ decode to the same element of the input space if and only if $overlap(a,b) \geq \theta$ where $\theta \leq w_{a}$ and $\theta \leq w_{b}$ \cite{Properties}. Denote the function that determines if two sparse distributed representations decode to the same element of the input space using some $\theta$ and $overlap(\overrightarrow{a}, \overrightarrow{b})$, $match_{\theta}(\overrightarrow{a}, \overrightarrow{b})$ and it is a function from SDR$\times$SDR $\longrightarrow$\{true, false\}.
+	
+	Given a set of sparse distributed representations with the same dimension, $X =\{\overrightarrow{x_{1}}, \overrightarrow{x_{2}}, ...,\overrightarrow{x_{n}}\}$, we can union the vectors using the bitwise OR operation over the $i^{th}$ position of the vectors in the set to produce the $i^{th}$ position of $union(X)$ \cite{Properties}. For example, given [0100] and [0010] the union would be [0110]. We say an SDR $\overrightarrow{y}$ is an element of the union of a set of SDRs, $\overrightarrow{X}$, if and only if $match_{\theta}(\overrightarrow{X},\ \overrightarrow{y})$ \cite{Properties}.
+	
+	\subsection{Cortical Learning Algorithms}
+	
+	Hierarchical Temporal Memory aims to implement the functions of the neocortex as faithfully as possible, and unsurprisingly uses the same atomic unit of the cell. Modeled after the pyramidal neurons of the neocortex, these cells each take their own inputs and make their own predictions which the layer combines into a cohesive prediction \cite{Whitepaper}. They have three states: active from feed-forward input, active from lateral input (predictive state), and inactive. These first two states correspond to a short burst of action potentials in a neuron, and a slower steady burst of action potentials on a neuron respectively in our own brain.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.7\linewidth]{images/HTMCell.jpg}
+		\caption[Pyramidal Neuron vs. Hierarchical Temporal Memory Cell]{Pyramidal Neuron vs. Hierarchical Temporal Memory Cell~\cite{TheHTMSpatialPooler}}
+		\label{fig:HTMCell}
+	\end{figure}
 
-	A key component of this work was the classification of ARMA time series. To accomplish this, I used the statsmodels\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module which comes with a variety of tools for conducting statistical tests including time series statistics. Among them is the \texttt{arma\_order\_select\_ic} function which finds information criterion for ARMA models. The module also contains \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter~\cite{statsmodels}.
+	Just like actual pyramidal neurons, HTM cells also dendrite segments. Each cell has one proximal dendrite segment and a dozen or more distal dendrite segments \cite {Whitepaper}. Proximal dendrites accept feed-forward input and all cells in the same column respond to a similar feed-forward input due to a class of inhibitory cells. On the other hand, distal dendrites receive lateral input from nearby cells and their response is unique on a cell-by-cell basis dependent on the connected synapses on each cells distal dendrites~\cite{Whitepaper}. Figure~\ref{fig:HTMCell} illustrates the similarities between a pyramidal neuron and an HTM cell.
+	
+	In a biological neuron synapses have real number weights with a stochastic nature, but in the HTM model synapses have binary weights (connected or disconnected) that are informed by real number permanence values~\cite{Whitepaper}. These permanence values allow our artificial neurons to model forming and un-forming of ``potential synapses'' which represent axons that pass close enough to a dendrite segment that they could potentially form a synapse. Once the permanence is above a certain threshold (a parameter of the network) the synapse is considered connected.
+	
+	\subsubsection{Encoder}
+	
+	As discussed in Section~\ref{sec:sdr}, in the real world we need to encode sensory data to a format which the cortex can understand. The entire data pipeline of Hierarchical Temporal Memory can be seen in Figure~\ref{fig:HTMpipeline}. For numeric data, we generally use a Random Distributed Scalar Encoder. Just as with any scalar encoder, it is a function from a number to a binary vector with \texttt{width} 1 bits and the rest of the bits being zero. All scalar encoders also have either implicitly or explicitly a \texttt{resolution} parameter which determines the size of the ``buckets'' in which all numbers in that ``bucket'' are encoded to the same binary vector, this is essentially the lower-limit topology on $\mathbb{R}$. This is necessary because for a binary vector of length $n$ there are only $2^{n}$ possibly options and infinite real numbers between any two numbers.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=\linewidth]{images/DataPipeline.jpg}
+		\caption[Data Pipeline of an HTM]{Data Pipeline of an HTM~\cite{TheHTMSpatialPooler}}
+		\label{fig:HTMpipeline}
+	\end{figure}
 
-	The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. I wrote a function which intially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjuage gradient, and Powell, in that order~\cite{statsmodels}.
+	A region's input space and output space are the same; an HTM takes in a time series over the space and predicts an element or set of elements of the input space it believes to come next \cite{Purdy}. Each region has an input space which could be a single input set or the Cartesian product of multiple input sets. As an example, \{0,1,2,3,4\} could be an input set and if a parent region receives input from child region which has \{0,1\} as its input space and another child region with \{red, green, blue\} as its input space, then the parent region's input space would be \{(0, red), (1, red), (0, green), (1, green), (0, blue), (1, blue)\}. An encoding function from an input space to $n$-dimensional sparse distributed representations is not guaranteed to be surjective or injective. We would not expect surjectivity, but could get it through nearest neighbor decoding, but injectivity is something that one would think would be preserved. However, because parent regions are allowed to take a slice of the output vector (not the ``on'' bits, just an arbitrary portion) when being fed to from multiple child regions, we cannot guarantee the property.
+	
+	\subsubsection{Spatial Pooler}
+
+	The Spatial Pooler's job is to receive the encoded representation of the input space and convert the input to a sparse pattern-a requirement for learning and prediction in Hierarchical Temporal Memory theory~\cite{Whitepaper}. Upon initialization, all of the potential synapses on the dendrite segments of all of the mini-columns are randomly assigned permanence values and based on these permanence values a potential synapse may be valid or not~\cite{Whitepaper}. 
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.6\linewidth]{images/SpatialPooler.jpg}
+		\caption[Spatial Pooler]{Spatial Pooler \cite{TheHTMSpatialPooler}}
+		\label{fig:SpatialPooler}
+	\end{figure}
+
+	
+	The pooler begins with an input from the encoder that has a fixed number of bits and for each column we determine how many valid synapses are connected to active input bits~\cite{Whitepaper}. This number is then multiplied by a ``boosting'' factor determined dynamically by how often a column is active relative to its neighbors. The most highly activated mini-columns after boosting then disable a percentage of the mini-columns within a dynamically determined ``inhibition radius'' to create a sparse set of activated mini-columns~\cite{Whitepaper}. Lastly, each active column updates the permanence values of its potential synapses. The permanence values associated with active input bits are increased while those associated with inactive bits are decremented~\cite{Whitepaper}.
+
+	
+	\subsubsection{Temporal Pooler}
+
+	The temporal pooler takes over where the spatial pooler left off, with a sparse set of activated mini-columns
+
+	% get a better image
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=\linewidth]{images/Poolers.jpg}
+		\caption{Spatial and Temporal Poolers}
+		\label{fig:Poolers}
+	\end{figure}
+
+	\subsubsection{Classifier}
+	
+	Once the system completes its processing of a time step's input, the system outputs a sparse distributed representation which may have gone through multiple layers and it is important to be able to decode the system's prediction in order for the system to be useful. Hierarchical Temporal Memory currently uses something called an SDR Classifier to decode the predictions of an HTM \cite{Dillon}. At its essence, an SDR Classifier is a single layer, feed forward, neural network \cite{Dillon}.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.6\linewidth]{images/SDRClassifier.jpg}
+		\caption{SDR Classifier}
+		\label{fig 3}
+	\end{figure}
+	
+	SDR Classifiers are able to decode the information HTMs give about predictions $n$ times steps in the future by maintaining a weight matrix \cite{Dillon}. The matrix's weights are adjusted to ``learn'' after each time step to reflect the correct weighting between the output vector at time $t$ and the probability distribution of the input/output space at time $t-n$ \cite{Dillon}. This enables the matrix to reflect relationships between inputs and outputs $n$ time steps apart. To determine the SDR Classifier's interpretation of an output at time $t+n$, the SDR Classifier takes in the HTM's output vector and uses Softmax to determine the most likely decoding \cite{Dillon}. So for each of the $k$ classes in the output space, the certainty that the output vector is referring to it is 
+	
+	\begin{align}
+	\label{eqn:htmclassact}
+	y_{j} = \dfrac{e^{a_{j}}}{\sum_{i=1}^{k} e^{a_{i}}}
+	\end{align}
+	
+	
+	 \noindent where $a_{j}$ is the activation level of the $j^{th}$ element of the output space, calculated by multiplying the output vector by the $j^{th}$ column of the weight matrix element wise \cite{Dillon}. 
+	
+	\chapter{Literature Review}
+	
+	
+	There has been some work in evaluating Hierarchical Temporal Memory's ability to predict time series. Numenta themselves has published a paper, \textit{Evaluating Real-Time Anomaly Detection Algorithms - the Numenta Anomaly Benchmark} in which they showed that the HTM algorithm outperformed other tested anomaly detectors for streaming data~\cite{NAB}. Their anomaly detection is also the center-piece of a number of applications on their HTM applications website\footnote{\href{https://numenta.com/machine-intelligence-technology/applications/}{\texttt{https://numenta.com/machine-intelligence-technology/applications/}}} listing ``rogue behavior'' detection, geospatial tracking, and financial monitoring services. The IT analytics company Grok is another commerical application of HTM anomaly detection and is a partnership between Avik Partners and Numenta.
+	
+	Outside of Numenta's work, there have been a few studies done on an HTM's ability to predict time series, two of which focused on financial time series. The first of these found ``A fair amount of the generated models reached the goal of at least a 1.05 TP/FP ratio, and several models also made a profit''~\cite{Evaluation}. However, the author also noted, ``there was more room for improvements through either larger models or...through parameter optimization...''~\cite{Evaluation}. Gabrielsson et. al. built on this work and found that ``results show that HTM models outperformed the neural network models,'' but possibly more interestingly found that ``even though the number of bad trades (False Positives) outnumber the number of good trades (True Positives) in both the validation- and test sets, all models still yielded positive PNLs [Profits Net Losses]''~\cite{EvolvingTrading}. This could indicate that HTMs are not outperforming in terms of all prediction, simply anomaly prediction.
+	
+	Two contrasting views are found in papers that more directly looked at the time series capabilities of Hierarchical Temporal Memory. The first, a Master's Thesis by Michael Galetzka, asked an HTM to predict the navigation behavior of visitors to a website using publicly available data from \texttt{msnbc.com}~\cite{Galetzka}. The paper found that the HTM had a ``surprisingly high'' prediction accuracy for the kind of noisy data it was given and claims that the results are comparable or better than state-of-the-art approaches, but acknowledges that comparisons are difficult due to a lack of a uniform performance metric across papers.
+	
+	\chapter{Experiment Design}
+	
+	\section{Hardware and Software Specifications}
+	
+	I utilized the official Python (Python 2.7) implementation of Numenta's cortical learning algorithms, NuPIC\footnote{NuPIC repository: \href{https://github.com/numenta/nupic}{\ttfamily https://github.com/numenta/nupic} } and it's Network API\footnote{Network API docs: \href{http://nupic.docs.numenta.org/stable/api/network/}{\ttfamily http://nupic.docs.numenta.org/stable/api/network/}}. At the time of my work NuPIC was at version 1.05 and I chose to use this version. It should be noted that although much of NuPIC is in Python, many of its computationally intensive algorithms are implemented in C++ using their NuPIC.core repository\footnote{NuPIC.core repository: \href{https://github.com/numenta/nupic.core}{\ttfamily https://github.com/numenta/nupic.core}} and it also relies on a number of external libraries such as \texttt{numpy} and \texttt{pandas}. 
+	
+	Due to the computationally intensive nature of my research and the limited time available to me, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
+	
+	\begin{table}[!ht]
+		\centering
+		\begin{tabular}{|l|l|}
+			\hline
+			\multicolumn{2}{|l|}{\textbf{Dijkstra (Asus Vivobook)}} \\ \hline
+			CPU     & Intel i5-8250U, 4-Core, 1.60GHz     \\ \hline
+			RAM     & 24 GB                                \\ \hline
+			OS      & Linux Mint 19 Cinnamon               \\ \hline
+			\multicolumn{2}{|l|}{\textbf{Galois (HP DL380 G7)}}     \\ \hline
+			CPU     &  2x Intel Xeon X5650, 6-Core, 2.70 GHz       \\ \hline
+			RAM     & 192 GB                               \\ \hline
+			OS      & Linux Mint 19 Cinnamon               \\ \hline
+			\multicolumn{2}{|l|}{\textbf{Aslan (Type)}}                         \\ \hline
+			CPU&    2x  Intel Xeon E5-2690, 10-Core, 3.00 GHz    \\ \hline
+			RAM&    256 GB                                  \\ \hline
+			OS&    Gentoo                               \\ \hline
+		\end{tabular}
+		\caption{Hardware Specifications}
+		\label{tab:hardware}
+	\end{table}
+
+	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades (see Table~\ref{tab:hardware} for details). The code was then deployed to my HP DL380 G7 or \textbf{[ASLAN's type]} server which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
+	
+	\section{Training Routine}\label{sec:exp:train}
+	
+	Our proposed exploration of how well a Hierarchical Temporal Memory network is able to predict ARMA models requires that we are able to train an HTM network. This required a flexible training routine that would allow us to train an HTM on a variety of of different sequences which may require vastly different parameters. 
+	
+	To do this, we drew on the training techniques of typical machine learning algorithms: we divided our data (in our case a sample from an ARMA model) into a training set, a validation set, and an evaluation set. Before an HTM enters the classical training however, we added a phase before that in which the spatial pooler could encounter the data without the temporal pooler being turned on. We hoped this would allow the spatial pooler to form some of its synapses before turning on the temporal pooler and thus have the temporal pooler learn on less ``noise.''. The number of iterations was a parameter we tuned\footnote{tuned through swarming\label{footnote:swarm}} called \texttt{sibt} (\textbf{S}patial pooler \textbf{I}terations \textbf{B}efore \textbf{T}emporal pooler).
+	
+	Then the classical machine learning techniques kicked in with the HTM learning its test set, then being tested on its validation set until performance stagnated or worsened, at which point we tested the HTM on the evaluation set. There are a few small differences in that we added a \texttt{iter\_per\_cycle} parameter\textsuperscript{\ref{footnote:swarm}} which allowed us to run on the test and validation set multiple times, summing the performances, before comparing to the previous, which would be useful for dealing with noise in the performance metric. We also added a \texttt{max\_cycles}\textsuperscript{\ref{footnote:swarm}} parameter that acted as a cut-off switch, stopping training after that many cycles. Most importantly, a weighting scheme as added (\texttt{weights}\textsuperscript{\ref{footnote:swarm}}) which allowed us to weight the predictions in any way from 1 to $n$ steps. In particular, we swarmed on weights for two through nine steps, leaving one at a constant 1.0.
+	
+	\section{Time Series Classification}\label{sec:exp:timeseriesclass}
+
+	A key component of this work was the classification of ARMA time series. To accomplish this, I used the \texttt{statsmodels}\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module which comes with a variety of tools for conducting statistical tests including time series statistics. Among them is the \texttt{arma\_order\_select\_ic} function which finds information criterion for ARMA models. The module also contains \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter~\cite{statsmodels}.
+
+	The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. I wrote a function which intially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjugate gradient, and Powell, in that order~\cite{statsmodels}. We still needed to assess the accuracy of this and the \texttt{arma\_order\_select\_ic} functions before we could draw conclusions from their outputs.
+	
+	
+	
 	
 	\chapter{Results and Discussion}
 
-	The first step of this project was learning how to interact with the NuPIC Network API in Python:this included writing a stream object to feed an HTM network in-memory arrays, writing training routines for HTMs, and conducting some sensitivity analysis with the model parameters. 
+	The central question of this research was: if a Hierarchical Temporal Memory network is given an ARMA time series, how does its predicted time series compare? The first step of this project was learning how to interact with the NuPIC Network API in Python:this included writing a stream object to feed an HTM network in-memory arrays, writing training routines for HTMs, and conducting some sensitivity analysis with the model parameters. 
 	
 	Then we began by training HTMs on very simple deterministic sequences which did not require any temporal context past the last term-that is sequences such that you can know for certain the next term in the sequence by only knowing the last term. Examples include $1,2,1,2,...$, $1,3,1,3,...$, and $78,79,78,79,...$. This allowed us to ensure that we could train and predict using only an HTM's spatial pooler.
 
 	Next, we trained Hierarchical Temporal Memory networks using slighly more complex, but still deterministic sequences, that relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include $1,2,3,2,..$ and $1,2,2,3,5,2,2,4,1,...$. In the first example, 1 and 3 are always followed by 2, but to know what is followed by 2 you also need to know what proceeded 2.
 
-	When we transitioned to ARMA models we started with a low standard deviation for the noise terms and grew from there. We also decided to normalize the samples of the ARMA processes such that the values were bounded between [-100,100].
+	In transitioning to ARMA models we were able to utilize a function from the aforementioned \texttt{statsmodels} module named \texttt{arma\_generate\_sample} which is capable of producing an $n$-term sample from an ARMA model given AR and MA lag polynomials and a standard deviation for the noise term~\cite{statsmodels}. To produce random stationary (p,q)-ARMA models, we generated a random number between one and a thousand for each coefficient of the lag polynomial and normalized the AR and MA polynomials separately such that the sum of the coefficients for AR and MA were each less than or equal to one.
 	
+	When we were ready to test an HTM's ability to learn ARMA models we started with a low standard deviation for the noise terms to test the RDSE and overall network's capability to learn real number valued and non-deterministic sequences. The samples of the ARMA processes were normalized such that the values were bounded between [-100,100] in order to avoid fine-tuning RDSE resolution and other parameters that would depend on the number of distinct binary vectors that could be produced by the encoder.
+	
+	As discussed in Section~\ref{sec:exp:timeseriesclass}, it was essential to our goal that we be able to classify time series and therefore we needed to assess the accuracy of the tools provided by the \texttt{statsmodels} module. Before assessing the power of the \texttt{fit} function we needed to assure our information criterion were accurate enough to pass as parameters. We used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
+	
+	\begin{table}[!ht]
+		\centering
+		\begin{tabular}{|l|c|c|c|c|l|}
+			\hline
+			\multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+			\cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+			AR Lag 5 & 6 & 0.40\% & 4 & 0.27\% & MA Lag 5 \\ \hline
+			AR Lag 6 & 1482 & 98.80\% & 1483 & 98.87\% & MA Lag 6 \\ \hline
+			AR Lag 7 & 11 & 0.73\% & 11 & 0.73\% & MA Lag 7 \\ \hline
+			AR Lag 8 & 1 & 0.07\% & 2 & 0.13\% & MA Lag 8 \\ \hline
+			MA Lag 1 & 12 & 0.80\% & 5 & 0.33\% & AR Lag 1 \\ \hline
+			MA Lag 2 & 4 & 0.27\% & 4 & 0.27\% & AR Lag 2 \\ \hline
+		\end{tabular}
+		\caption{BIC produced by \texttt{arma\_order\_select\_ic} for two models}
+		\label{tab:bic}
+	\end{table}
+	
+	
+
+	The results in Tables~\ref{tab:bic} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two given AR and MA models. It should be noted that Table~\ref{tab:bic} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this study. In addition to the information on BIC found in Table~\ref{tab:bic}, the number of models that were correctly identified as a (6,0)-ARMA model or (0,6)-ARMA model were 1476 (98.40\%) and 1480 (98.67\%) respectively.  
+	
+	Having quantified the accuracy of the information criterion tool, it was necessary to assess the accuracy of the \texttt{fit} tool so that we could analyze the differences between the input model and the output sequence coefficient-by-coefficient. This would give us a statistical confidence associated with our result using the standard deviation of the differences between the model coefficient and the tool's output. We again used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
 	
 	\begin{table}[!ht]
 		\centering
@@ -454,12 +496,15 @@
 			MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
 			MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
 		\end{tabular}
-		\caption{Errors on fitting coefficients of AR and MA models to instances of ARMA models}
+		\caption{Errors on fitting coefficients of AR and MA models}
+		\label{tab:errortsfitting}
 	\end{table}
 
-
+	A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
 	
-	\begin{table}[]
+	Our next test was therefore to train a Hierarchical Temporal Memory network on one of these two models, fit its output, and assess with some statistical confidence it is the same model that we input. This is exactly what we did. We fed Hierarchical Temporal Memory networks the two aforementioned AR and MA models, gave their outputs to the \texttt{arma\_order\_select\_ic} function, then the \texttt{fit} function, and finally subtracted the observed means, divided by the standard deviation, and took the absolute value to get the observations distance from the mean in terms of standard deviations. 
+		
+	\begin{table}[!ht]
 		\centering
 		\begin{tabular}{|l|c|c|c|c|l|}
 			\hline
@@ -477,9 +522,11 @@
 			MA Lag 1 & 0.000 & 0.06782 & -0.817 & 17.05749 & AR Lag 1 \\ \hline
 			MA Lag 2 & 0.000 & 0.05105 & 0.000 & 0.04727 & AR Lag 2 \\ \hline
 		\end{tabular}
-		\label{tab:HTMARMAError}
 		\caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
+		\label{tab:HTMARMAError}
 	\end{table}
+	
+	The results of this experiment can be seen in Table~\ref{tab:HTMARMAError}. Both outputs had differences from the mean above 13 sigma which allows us to conclude with 99.9999+\% statistical significance that the observed output is not drawn from the sample of outputs of the \texttt{arma\_order\_select\_ic} and \texttt{fit} function on instances of the true model, rejecting the null hypothesis. This piece of evidence also leads us to believe that one-layer HTM networks may not model ARMA models as ARMA models internally and thus may not be the best method for predicting time series that are fit well by ARMA models.
 
 	
 	
@@ -495,7 +542,23 @@
 	
 	\appendices
 	\addcontentsline{toc}{chapter}{Appendix}
-		\chapter{Errors on Fitting AR and MA Models}
+		\chapter{Errors on Fitting AR and MA Models}\label{app:errors}
+		
+			\begin{table}[!ht]
+			\centering
+			\begin{tabular}{|l|c|c|c|c|l|}
+				\hline
+				\multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+				\cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+				AR Lag 5 & 6 & 0.40\% & 4 & 0.27\% & MA Lag 5 \\ \hline
+				AR Lag 6 & 1482 & 98.80\% & 1483 & 98.87\% & MA Lag 6 \\ \hline
+				AR Lag 7 & 11 & 0.73\% & 11 & 0.73\% & MA Lag 7 \\ \hline
+				AR Lag 8 & 1 & 0.07\% & 2 & 0.13\% & MA Lag 8 \\ \hline
+				MA Lag 1 & 12 & 0.80\% & 5 & 0.33\% & AR Lag 1 \\ \hline
+				MA Lag 2 & 4 & 0.27\% & 4 & 0.27\% & AR Lag 2 \\ \hline
+			\end{tabular}
+			\caption{BIC for each instance}
+		\end{table}
 		
 		\begin{table}[!ht]
 			\centering

@@ -62,8 +62,17 @@ def arfuncv3(args):
 
 def arfuncv4(args):
     x = args["x"]
-    param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 }
     return HTM(ARMATimeSeries(1,0, sigma=args["sigma"], normalize=False), x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2: x[3], 3: x[4], 4: x[5] })
+
+def arfuncv5(args):
+    x = args["x"]
+    ts = None
+    if args["model"] == "ar":
+        ts = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
+    elif args["model"] == "ma":
+        ts = ARMATimeSeries( 0,6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])
+    param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
+    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
 
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=1, n=1000), x[0], verbosity=0).train(error_method="binary")
@@ -333,6 +342,12 @@ def arswarmv4():
     for i in range(1,6):
         PSO(arfuncv4,bounds,num_particles=16,maxiter=24, func_sel={"sigma":i}, processes=16, descr=descr)
 
+def arswarmv5():
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
+    bounds=[(1,10), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    for i in ["ar", "ma"]:
+        PSO(arfuncv5,bounds,num_particles=2,maxiter=24, func_sel={"model":i}, processes=2, descr=descr)
+
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
@@ -379,6 +394,9 @@ def main():
     elif args.mode == "arv4":
         print("Autoregressive version 4 selected")
         arswarmv4()
+    elif args.mode == "arv5":
+        print("ARMA version 5 selected")
+        arswarmv5()
     elif args.mode == "san":
         print("Sanity check selected")
         swarmsan()
