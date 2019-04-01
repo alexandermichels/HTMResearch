@@ -213,15 +213,11 @@ def singleModelGetDiffs(model, n, EXTRA_TERMS=2):
                 maxlen = max(model.q, len(tmaps))
                 for i in range(model.q-maxlen+EXTRA_TERMS):
                     result_row.append(0)
-
             else:
                 for i in range(model.p+EXTRA_TERMS):
                     result_row.append("N/A")
                 for i in range(model.q+EXTRA_TERMS):
                     result_row.append("N/A")
-
-
-                # fit the output
             writer.writerow(result_row)
             outputFile.flush()
         outputFile.close()
@@ -240,14 +236,16 @@ def test_HTM_output(arr, ar_max, ma_max):
     print(tmaps)
 
 def main():
-    model = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
-    test_HTM_output(train_HTM_on_model(model), 8,2)
-    model = ARMATimeSeries( 0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
-    test_HTM_output(train_HTM_on_model(model), 2,8)
+    polys = [[1, 0, 0, 0, .9], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
+    for poly in polys:
+        model = ARMATimeSeries( len(poly)-1, 0, 1, ar_poly = poly)  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        singleModelGetDiffs(model, 1500)
+        model = ARMATimeSeries( 0, len(poly)-1, 1, ma_poly = poly)  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        singleModelGetDiffs(model, 1500)
     '''model = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
     singleModelGetDiffs(model, 1500)
     model = ARMATimeSeries( 0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
-    singleModelGetDiffs(model, 1500)'''
+    test_HTM_output(train_HTM_on_model(model), 2,len(poly)+2)'''
     # getDiffs(range(1,9), range(0))
     # getDiffs(range(0), range(1,9))
 

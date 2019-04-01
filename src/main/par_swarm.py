@@ -74,6 +74,16 @@ def arfuncv5(args):
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
     return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
 
+def ar_or_ma_func(args):
+    x = args["x"]
+    ts = None
+    if args["model"] == "ar":
+        ts = ARMATimeSeries( 6, 0, args["sigma"], ar_poly = args["poly"])
+    elif args["model"] == "ma":
+        ts = ARMATimeSeries( 0,6, args["sigma"], ma_poly = args["poly"])
+    param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
+    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
+
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=1, n=1000), x[0], verbosity=0).train(error_method="binary")
 
@@ -198,10 +208,11 @@ class PSO():
             header_row.append("Particle {}'s Error".format(j))
         header_row.append("Average Error")
         writer.writerow(header_row)
+        print(descr)
 
         pool = mp.Pool(processes = processes)
         while i < maxiter:
-            print i, err_best_g, pos_best_g
+            print(i, err_best_g, pos_best_g)
             log.debug("\n+++++ Beginning Iteration {} +++++".format(i))
             log.debug("    i: {}\n    err_best: {}\n    pos_best {}".format(i, err_best_g, pos_best_g))
             log.debug("...entering pool mapping...")
@@ -346,7 +357,15 @@ def arswarmv5():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(1,10), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
     for i in ["ar", "ma"]:
-        PSO(arfuncv5,bounds,num_particles=2,maxiter=24, func_sel={"model":i}, processes=2, descr=descr)
+        PSO(arfuncv5,bounds,num_particles=26,maxiter=24, func_sel={"model":i}, processes=26, descr=descr)
+
+def ar_or_maswarm():
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
+    bounds=[(1,10), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    polys = [[1, 0, 0, 0, .9], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
+    for i in ["ar", "ma"]:
+        for j in polys:
+            PSO(arfuncv5,bounds,num_particles=2,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=2, descr=descr)
 
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -397,6 +416,9 @@ def main():
     elif args.mode == "arv5":
         print("ARMA version 5 selected")
         arswarmv5()
+    elif args.mode == "ar_or_ma":
+        print("AR or MA selected")
+        ar_or_maswarm()
     elif args.mode == "san":
         print("Sanity check selected")
         swarmsan()
