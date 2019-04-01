@@ -5,9 +5,9 @@
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {5.1}{\ignorespaces Hardware Specifications\relax }}{30}{table.caption.19}
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces BIC produced by \texttt {arma\_order\_select\_ic} for two models\relax }}{35}{table.caption.20}
-\contentsline {table}{\numberline {6.2}{\ignorespaces Errors on fitting coefficients of AR and MA models\relax }}{36}{table.caption.21}
-\contentsline {table}{\numberline {6.3}{\ignorespaces Errors on fitting coefficients of AR and MA models to HTM outputs\relax }}{37}{table.caption.22}
+\contentsline {table}{\numberline {6.1}{\ignorespaces BIC produced by \texttt {arma\_order\_select\_ic} for two models\relax }}{36}{table.caption.23}
+\contentsline {table}{\numberline {6.2}{\ignorespaces Errors on fitting coefficients of AR and MA models\relax }}{37}{table.caption.24}
+\contentsline {table}{\numberline {6.3}{\ignorespaces Errors on fitting coefficients of AR and MA models to HTM outputs\relax }}{38}{table.caption.25}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces BIC for each instance\relax }}{44}{table.caption.25}
+\contentsline {table}{\numberline {A.1}{\ignorespaces BIC for each instance\relax }}{46}{table.caption.28}

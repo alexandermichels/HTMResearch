@@ -361,11 +361,11 @@ def arswarmv5():
 
 def ar_or_maswarm():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
-    bounds=[(1,10), (0,50), (1,5), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    polys = [[1, 0, 0, 0, .9], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
+    bounds=[(3,8), (0,20), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    polys = [[1, 0, 0, 0, .9], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5], [1, 0, 0, .4, 0, .3, .3]]
     for i in ["ar", "ma"]:
         for j in polys:
-            PSO(arfuncv5,bounds,num_particles=2,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=2, descr=descr)
+            PSO(arfuncv5,bounds,num_particles=32,maxiter=32, func_sel={"model":i, "poly": j, "sigma":1}, processes=32, descr=descr)
 
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,

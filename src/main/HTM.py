@@ -9,6 +9,9 @@ numpy.set_printoptions(threshold=sys.maxsize)
 from time import localtime, strftime
 from tqdm import tqdm
 from math import sqrt
+import matplotlib
+from matplotlib import pyplot
+from matplotlib.pyplot import figure
 
 """ Nupic Imports"""
 from nupic.data.file_record_stream import FileRecordStream
@@ -310,11 +313,10 @@ class HTM():
         if mode == "strain":
             self.turnLearningOff("t")
             self.turnLearningOn("cs")
-        elif mode == "train":
-            self.turnLearningOn()
+        elif mode == "test":
+            self.turnLearningOff()
         else:
-            self.turnLearningOff("s")
-            self.turnLearningOn("ct")
+            self.turnLearningOn()
         self.turnInferenceOn()
 
         results = {}
@@ -483,34 +485,28 @@ class HTM():
                 log.debug("Learning disabled for temporal pooler region")
                 self.network.regions["temporalPoolerRegion"].setParameter("learningMode", 0)
 
-
-if __name__ == "__main__":
-    #time_series_model = VeryBasicSequence(pattern=1, n=1000)
-    #param_dict = { "spParams" : { "potentialPct": .8, "numActiveColumnsPerInhArea": 40, "synPermConnected": .2, "synPermInactiveDec": .0005 }, "tmParams" : { "activationThreshold": 20}, "newSynapseCount" : 32 } # default params from masters
-    #param_dict = { "spParams" : { "potentialPct": .00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": .27, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 30}, "newSynapseCount" : 32 }
-    time_series_model = ARMATimeSeries( 6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
-    network = HTM(time_series_model, 5)
+def train_and_plot(model, network, training_settings):
     print(network)
     #print(network.train(error_method="binary"))
     #network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
-    network.train("rmse", sibt=0, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
+    network.train("rmse", sibt=training_settings["sibt"], iter_per_cycle=training_settings["iter_per_cycle"], weights= training_settings["weights"], normalize_error=training_settings["weights"], logging=True)
     ones, res = network.runNetwork()
-    # print(ones)
-    '''print(network.network.regions["spatialPoolerRegion"].__dict__)
-    print(network.network.regions["spatialPoolerRegion"].getInputNames())
-    print(network.network.regions["spatialPoolerRegion"].getInputData("bottomUpIn"))
-    print(network.network.regions["spatialPoolerRegion"].getOutputNames())'''
-    """l = VeryBasicSequence()
-    for i in range(10):
-        h = RDSEEncoder(resolution=(i+1)*.01)
-        str = "{}:   ".format((i+1)*.01)
-        for j in range(len(l)//100):
-            str+="{}, ".format(h.r_overlap(l[j],l[j+1]))
-        print("{}\n".format(str[:-2]))
-    t = TimeSeriesStream(l)
-    for i in range(10):
-        h = RDSEEncoder(resolution=(i+1)*.01)
-        str = "{}:   ".format((i+1)*.01)
-        for j in range(len(l)//100):
-            str+="{}, ".format(h.m_overlap(t.getNextRecordDict()))
-        print("{}\n".format(str[:-2]))"""
+
+    pyplot.plot(model.sequence, color='red', label="series")
+    pyplot.plot(ones, color='blue', label="predictions")
+    pyplot.legend(loc="lower right", fontsize=24)
+    pyplot.autoscale(enable=True, axis='x', tight=True)
+    pyplot.tick_params(labelsize=20)
+    fig = pyplot.gcf()
+    fig.set_size_inches(18.5, 5.5)
+    fig.tight_layout()
+    fig.savefig('HTMTraining{}.png'.format(model), dpi=100)
+    fig.show()
+
+if __name__ == "__main__":
+    #time_series_model = VeryBasicSequence(pattern=1, n=1000)
+    param_dict = { "spParams" : { "potentialPct": 1, "numActiveColumnsPerInhArea": 69, "synPermConnected": .00001, "synPermInactiveDec": 0.0585628294 }, "tmParams" : { "activationThreshold": 28, "newSynapseCount" : 32 }} # default params from masters
+    model = ARMATimeSeries(6,0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
+    network = HTM(model, 4.7963695838)
+    training_settings = { "sibt" : 7, "iter_per_cycle": 1, "weights": {1:1.0, 2: 6.3563795715, 3: 2.4177994435, 4: 1.9896236157, 5: 4.1927836473, 6: 1.4838633387, 7: 8.1727171415, 8: 10, 9: 0.263161871 }, "normalize_error": True }
+    train_and_plot(model, network, training_settings)
