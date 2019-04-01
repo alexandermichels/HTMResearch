@@ -9,19 +9,12 @@ A repository for files related to my Honors Research Thesis at Westminster Colle
 </center>
 
 ## Table of Contents
-* [Thesis](#thesis)
+* [Thesis](docs/Honors_Research.pdf)
 * [Implementations](#impl)
 * [Time Series Analysis](#timeseries)
 * [Introduction to Hierarchical Temporal Memory](#introHTM)
 * [Particle Swarm Optimization](#pso)
 * [Sources](#sources)
-
-
-## <a id="thesis">Thesis</a>
-
-We've been playing with a few ideas, but have to find something achievable within our time frame.
-
-Right now we are working on trying to categorize the predictive power of Hierarchical Temporal Networks using ARIMA models as a function of some of their parameters (i.e. cells per column, number of layers, etc.). [Check out the code!](src)
 
 ***
 

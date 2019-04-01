@@ -81,7 +81,11 @@
 		\textbf{ACKNOWLEDGEMENTS}
 	\end{center}
 
-	\textcolor{red}{Type your acknowledgements here}
+	I would like to thank my Honors Board: Dr. Carolyn Cuff, Dr. C. David Shaffer, and Dr. William Procasky for their guidance throughout this project and over the past few years. Not only were they instrumental to this thesis and incredible professors through my time at Westminster, they were my advisors in Mathematics, Computer Science, and Financial Economics respectively. 
+	
+	I cannot thank the Mathematics and Computer Science faculty at Westminster College enough for everything they have done for me. They changed my perspective on mathematics and computer science, gave me ample opportunities to explore topics that interested in me, and were instrumental in many of the opportunities I have received.
+	
+	Finally, I would like to thank Marcus Lewis and Scott Purdy at Numenta for taking the time to discuss Hierarchical Temporal Memory and my research questions with them.
 	\vfill
 	\pagebreak
 	
@@ -120,7 +124,17 @@
 	
 	It quickly becomes apparent that we also need more states than just the two Boolean ``intelligent''/``not intelligent'' ones to talk about intelligence in a constructive manner. Without this everything on the spectrum from a for loop with an if-else to the robots in Isaac Asimov's \textit{I, Robot}  are under the same label of ``not intelligent'' yet we know that the `intelligence' exhibited in those cases are not at all comparable. We need a spectrum with many states of intelligence to constructively talk about the intelligence of a system.
 	
-	John Searle's 1980 paper ``Minds, Brains, and Programs'' introduced the world to The Chinese room argument \cite{Searle}. It supposes that artificial intelligence research is successful and produces an artificial intelligence that is capable of behaving as if it understands Chinese, then asks does the machine literally understand Chinese or it simulating the ability to understand Chinese \cite{Searle}? Although this may seem like a pedantic distinction at first glance, the difference is truly important. The hypothesis that we can only ever simulate the ability to think is known as the weak AI hypothesis whereas the hypothesis that we can produce a machine capable of thought is the strong AI hypothesis \cite{Jones}. These both stand in contrast to Artificial General Intelligence, which is an intelligence capable of performing any intellectual task that a human can \cite{Buchanan}.
+	John Searle's 1980 paper ``Minds, Brains, and Programs'' introduced the world to The Chinese room argument \cite{Searle}. It supposes that artificial intelligence research is successful and produces an artificial intelligence that is capable of behaving as if it understands Chinese, then asks does the machine literally understand Chinese or it simulating the ability to understand Chinese? \cite{Searle} 
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.4\linewidth]{images/ChineseRoom.jpg}
+		\caption[Searle's Chinese Room]{Searle's Chinese Room\footnotemark}
+		\label{fig:ChineseRoom}
+	\end{figure}\footnotetext{Image credits: \href{https://theness.com/neurologicablog/index.php/ai-and-the-chinese-room-argument/}{\texttt{https://theness.com/neurologicablog/index.php			/ai-and-the-chinese-
+			room-argument/}}}
+	
+	Although this may seem like a pedantic distinction at first glance, the difference is truly important. The hypothesis that we can only ever simulate the ability to think is known as the weak AI hypothesis whereas the hypothesis that we can produce a machine capable of thought is the strong AI hypothesis \cite{Jones}. These both stand in contrast to Artificial General Intelligence, which is an intelligence capable of performing any intellectual task that a human can \cite{Buchanan}.
 	
 	\section{The History of Artificial Intelligence}
 	
@@ -150,6 +164,13 @@
 	\section{Computational Neuroscience}
 	
 	Emulating natural processes--and even the human brain--is not a new idea to computer scientists. In fact, artificial neural networks that we still use today were originally proposed in a 1943 paper that introduced the first mathematical model of a neuron~\cite{FundNatComp}. The 1950's and 60's saw the rise of evolutionary computing which attempts to simulate evolution usually for finding optimal solutions to problems. Computational neuroscience is the newest field to emerge from this interdisciplinary intersection of biologists and computer scientists.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.8\linewidth]{images/ArtificialNeuron.jpg}
+		\caption{A Model for an Artificial Neuron}
+		\label{fig:ArtNeuron}
+	\end{figure}
 	
 	Computational neuroscience can be described as ``simulating human cognition using biologically based networks of neuronlike units''~\cite{Eberhart}. In other words, the field has tasked itself with the incredibly difficult task of trying to understand cognition by breaking the brain down into algorithms and data structures which we can then implement in a computational model. So rather than trying to create a computational model that is as intelligent as the brain, they are taking the more direct approach in attempting to model the brain itself.
 	
@@ -261,7 +282,7 @@
 	\end{split}
 	\end{align}
 	
-	I utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however I wrote my own swarming utility in Python which I throughly tested on a number of complex surfaces.
+	I utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however I wrote my own swarming utility in Python which I thoroughly tested on a number of complex surfaces.
 	
 	\section{Hierarchical Temporal Memory}
 	
@@ -279,9 +300,9 @@
 	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=.6\linewidth]{images/CorticalColumns.jpg}
-		\caption[3D reconstruction of five neighboring columns in rat vibrissal cortex]{3D reconstruction of five neighboring columns in rat vibrissal cortex (credit: Marcel Oberlaender et al.)}
+		\caption[3D reconstruction of five neighboring columns in rat vibrissal cortex]{3D reconstruction of five neighboring columns in rat vibrissal cortex\footnotemark}
 		\label{CorticalColumn}
-	\end{figure}
+	\end{figure}\footnotetext{Image credit: Marcel Oberlaender et al.}
 	
 	\subsection{Sparse Distributed Representations}\label{sec:sdr}
 	
@@ -354,9 +375,10 @@
 	
 	\subsubsection{Temporal Pooler}
 
-	The temporal pooler takes over where the spatial pooler left off, with a sparse set of activated mini-columns
+	The temporal pooler takes over where the spatial pooler left off, with a sparse set of activated mini-columns. For each active mini-column, if there are cells in the predictive states, activate them and in the absence of a cell in the predictive state, activate all of the cells in the mini-column~\cite{Whitepaper}. The set of active cells is the HTM's representation of the current input in the context of the previous of the previous inputs~\cite{BAMI}. Next, each cell's dendrite segment counts how many connected synapses are associated with active cells and if this number is above a certain threshold, the dendrite segment is activated. A cell with an active dendrite segment is put into a predictive state in the next time step~\cite{BAMI}. The algorithm is illustrated in Figure~\ref{fig:TemporalPooler}.
+	
+	
 
-	% get a better image
 	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=.8\linewidth]{images/TemporalPooler.png}
@@ -394,6 +416,14 @@
 	
 	Two contrasting views are found in papers that more directly looked at the time series capabilities of Hierarchical Temporal Memory. The first, a Master's Thesis by Michael Galetzka, asked an HTM to predict the navigation behavior of visitors to a website using publicly available data from \texttt{msnbc.com}~\cite{Galetzka}. The paper found that the HTM had a ``surprisingly high'' prediction accuracy for the kind of noisy data it was given and claims that the results are comparable or better than state-of-the-art approaches, but acknowledges that comparisons are difficult due to a lack of a uniform performance metric across papers.
 	
+	Most relevant to this exploration of ARMA models is Vivmond's \textit{Utilizing the HTM algorithms for weather forecasting and anomaly detection}. This paper applied HTMs to weather time series such as wind direction, wind speed, wind pressure, precipitation, humidity, and temperature some of which are quite literally textbook examples of ARMA models~\cite{Box,WeatherForecast}. Vivmond found that `` its prediction results were for the most part outperformed by a much simpler analogue method that used the average of the last few days as its forecast basis''~\cite{WeatherForecast}. 
+	
+	In particular, he points to Hierarchical Temporal Memory's inability to generalize trends, saying ``it is largely useless when seeing new values or when seeing previously seen patterns with different values''~\cite{WeatherForecast}. Vivmond also points to why he believes this is the case stating, ``if NuPIC was to learn a pattern consisting of several numbers and then be given a series of new numbers arranged in a similar pattern to the previous one, but with either higher, lower, or stretched values (i.e. multiplied by common a factor), it would be unable to correctly predict any of them''~\cite{WeatherForecast}. Although it is unclear if he tested this or not, the it fits with the theory of Hierarchical Temporal Memory because entirely different columns would be representing the numbers and the cells in those columns would have to re-form connections to each other in order to relearn ``new'' the pattern.
+	
+	
+	
+	
+	
 	\chapter{Experiment Design}
 	
 	\section{Hardware and Software Specifications}
@@ -414,7 +444,7 @@
 			CPU     &  2x Intel Xeon X5650, 6-Core, 2.70 GHz       \\ \hline
 			RAM     & 192 GB                               \\ \hline
 			OS      & Linux Mint 19 Cinnamon               \\ \hline
-			\multicolumn{2}{|l|}{\textbf{Aslan (Type)}}                         \\ \hline
+			\multicolumn{2}{|l|}{\textbf{Aslan (HP DL380 G9)}}                         \\ \hline
 			CPU&    2x  Intel Xeon E5-2690, 10-Core, 3.00 GHz    \\ \hline
 			RAM&    256 GB                                  \\ \hline
 			OS&    Gentoo                               \\ \hline
@@ -423,7 +453,7 @@
 		\label{tab:hardware}
 	\end{table}
 
-	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades (see Table~\ref{tab:hardware} for details). The code was then deployed to my HP DL380 G7 or \textbf{[ASLAN's type]} server which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
+	On the hardware side of things, the majority of development and testing was conducted on my personal laptop, an Asus Vivobook with some small upgrades. The code was then deployed to Aslan or Galois which had more cores, more memory, and a higher clock speed allowing me to get faster results. For a synopsis of the hardware specifications, see Table~\ref{tab:hardware}. 
 	
 	\section{Training Routine}\label{sec:exp:train}
 	
@@ -532,7 +562,9 @@
 	
 	\chapter{Further Work}
 	
+	Directly related to my work, there are still questions of whether the prediction outputs of Hierarchical Temporal Memory networks are more similar to the input models for certain classes of ARMA models than others. For example, for certain orders or coefficients an HTM's output may resemble the model much more closely. This work can also be extended to include ARIMA models in the hopes of better understanding how Numenta's Cortical Learning Algorithm interacts with stochastic time series. Additionally, all of the work done in this thesis was on a single-layer network and it would be informative to explore these questions with large configurations to see how that affects results.
 	
+	There is also dire need for work that furthers our understanding of the mathematical underpinnings of Hierarchical Temporal Memory. It is necessary to understand how and why these algorithms work if we hope to fully unlock the power of the brain. Namely, it would be extremely valuable to understand the kernel of Hierarchical Temporal Memory so that we can better compare it to existing methods.
 	
 	\addcontentsline{toc}{chapter}{References}
 	\bibliographystyle{siam}     % Siam and Ieeetr bibliographic styles treat titles of articles in journals or collections correctly
@@ -541,7 +573,6 @@
 	\bibliography{Bibliography}{}
 	
 	\appendices
-	\addcontentsline{toc}{chapter}{Appendix}
 		\chapter{Errors on Fitting AR and MA Models}\label{app:errors}
 		
 			\begin{table}[!ht]
