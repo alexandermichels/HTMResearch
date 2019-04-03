@@ -503,10 +503,12 @@ def train_and_plot(model, network, training_settings):
     fig.savefig('HTMTraining{}.png'.format(model), dpi=100)
     fig.show()
 
-if __name__ == "__main__":
-    #time_series_model = VeryBasicSequence(pattern=1, n=1000)
-    param_dict = { "spParams" : { "potentialPct": 1, "numActiveColumnsPerInhArea": 69, "synPermConnected": .00001, "synPermInactiveDec": 0.0585628294 }, "tmParams" : { "activationThreshold": 28, "newSynapseCount" : 32 }} # default params from masters
+def plot_models_of_interest():
+    param_dict = { "spParams" : { "potentialPct": 1, "numActiveColumnsPerInhArea": 69, "synPermConnected": .00001, "synPermInactiveDec": 0.0585628294 }, "tmParams" : { "activationThreshold": 28, "newSynapseCount" : 32 }}
     model = ARMATimeSeries(6,0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
-    network = HTM(model, 4.7963695838)
+    network = HTM(model, 4.7963695838, params=param_dict)
     training_settings = { "sibt" : 7, "iter_per_cycle": 1, "weights": {1:1.0, 2: 6.3563795715, 3: 2.4177994435, 4: 1.9896236157, 5: 4.1927836473, 6: 1.4838633387, 7: 8.1727171415, 8: 10, 9: 0.263161871 }, "normalize_error": True }
     train_and_plot(model, network, training_settings)
+
+if __name__ == "__main__":
+    models_of_interest()
