@@ -93,6 +93,12 @@ def ar_or_ma_funclite(args):
         ts = ARMATimeSeries( 0,6, args["sigma"], ma_poly = args["poly"])
     return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=1, weights={ 1: 1.0, 2 :x[2], 3: x[3], 4: x[4], 5: x[5], 6: x[6], 7: x[7], 8: x[8], 9: x[9] }, normalize_error=True, logging=False)
 
+def reproduceable_randomness(args):
+    x = args["x"]
+    param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
+    ts = ARMATimeSeries(2,0, sigma=0.00000000001, ar_poly=[1,0,.1], seed=12345)
+    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
+
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=1, n=1000), x[0], verbosity=0).train(error_method="binary")
 
@@ -384,6 +390,11 @@ def ar_or_maswarmlite():
         for j in polys:
             PSO(ar_or_ma_funclite,bounds,num_particles=20,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=20, descr=descr)
 
+def swarmrr():
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
+    bounds=[(0.5,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    PSO(reproduceable_randomness,bounds,num_particles=2,maxiter=24, func_sel=None, processes=2, descr=descr)
+
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
     PSO(sanfunc,bounds,num_particles=6,maxiter=24, processes=6, descr=["RDSE Resolution"])
@@ -439,6 +450,9 @@ def main():
     elif args.mode == "ar_or_malite":
         print("AR or MA lite selected")
         ar_or_maswarmlite()
+    elif args.mode == "rr":
+        print("Reproduceable randomness selected")
+        swarmrr()
     elif args.mode == "san":
         print("Sanity check selected")
         swarmsan()
