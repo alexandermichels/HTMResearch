@@ -398,7 +398,14 @@ def swarmrr():
 def swarmrr2():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(0.5,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    PSO(reproduceable_randomness,bounds,num_particles=20,maxiter=24, func_sel={"n":100000}, processes=20, descr=descr)
+    for length in [100, 10000, 100000]
+        PSO(reproduceable_randomness,bounds,num_particles=18,maxiter=24, func_sel={"n":length}, processes=18, descr=descr)
+
+def swarmrr3():
+    descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
+    bounds=[(0.5,10), (0,50), (1,3), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    for length in [100, 1000, 10000, 100000]
+        PSO(reproduceable_randomness,bounds,num_particles=18,maxiter=24, func_sel={"n":length}, processes=18, descr=descr)
 
 def swarmsan():
     bounds=[(0.00001,4)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
@@ -461,6 +468,9 @@ def main():
     elif args.mode == "rr2":
         print("Reproduceable randomness 2 selected")
         swarmrr2()
+    elif args.mode == "rr3":
+        print("Reproduceable randomness 3 selected")
+        swarmrr3()
     elif args.mode == "san":
         print("Sanity check selected")
         swarmsan()
