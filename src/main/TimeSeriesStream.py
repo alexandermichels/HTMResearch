@@ -40,7 +40,6 @@ class TimeSeriesStream(RecordStreamIface):
         """
         del self.sequence
 
-
     def rewind(self):
         """Put us back at the beginning of the file again. """
         self.sequence.set_theta(0)

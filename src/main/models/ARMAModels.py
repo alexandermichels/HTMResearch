@@ -9,7 +9,7 @@ from matplotlib import pyplot
 import numpy as np
 from random import randint, uniform
 from Sequence import Sequence
-
+np.warnings.filterwarnings('ignore')
 """Handles Ctrl+C"""
 def signal_handler(sig, frame):
         sys.exit(0)
@@ -205,7 +205,7 @@ def main():
             print(ts.ar_poly, ts.ma_poly)
             print(fit(ts.sequence, get_order(ts.sequence, ts.p, ts.q)))
             ts.plot()'''
-    ts = ARMATimeSeries(2,0, sigma=0.00000000001, ar_poly=[1,0,.1], seed=12345)
+    ts = ARMATimeSeries(4,0, sigma=0.00000000001, ar_poly=[1,0,0,0,.8], seed=12345)
     for i in range(10):
         print(ts.get())
     ts.plot()

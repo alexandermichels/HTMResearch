@@ -23,7 +23,7 @@ from nupic.encoders.random_distributed_scalar import RandomDistributedScalarEnco
 
 """ My Stuff """
 from models.SimpleSequence import VeryBasicSequence
-from models.ARMAModels import ARMATimeSeries
+from models.ARMAModels import *
 from TimeSeriesStream import TimeSeriesStream
 
 """Handles Ctrl+C"""
@@ -156,14 +156,17 @@ class HTM():
 
     def __del__(self):
         """ closes all loggers """
-        logger = log.getLogger()
-        handlers = logger.handlers[:]
-        for handler in handlers:
-            try:
-                handler.close()
-                logger.removeHandler(handler)
-            except:
-                pass
+        try:
+            logger = log.getLogger()
+            handlers = logger.handlers[:]
+            for handler in handlers:
+                try:
+                    handler.close()
+                    logger.removeHandler(handler)
+                except:
+                    pass
+        except:
+            pass
 
     def __str__(self):
         spRegion = self.network.getRegionsByType(SPRegion)[0]
@@ -490,7 +493,7 @@ def train_and_plot(model, network, training_settings):
     #print(network.train(error_method="binary"))
     #network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
     network.train("rmse", sibt=training_settings["sibt"], iter_per_cycle=training_settings["iter_per_cycle"], weights= training_settings["weights"], normalize_error=training_settings["weights"], logging=True)
-    ones, res = network.runNetwork()
+    ones, res = network.runNetwork(learning=False)
 
     pyplot.plot(model.sequence, color='red', label="series")
     pyplot.plot(ones, color='blue', label="predictions")
@@ -510,5 +513,41 @@ def plot_models_of_interest():
     training_settings = { "sibt" : 7, "iter_per_cycle": 1, "weights": {1:1.0, 2: 6.3563795715, 3: 2.4177994435, 4: 1.9896236157, 5: 4.1927836473, 6: 1.4838633387, 7: 8.1727171415, 8: 10, 9: 0.263161871 }, "normalize_error": True }
     train_and_plot(model, network, training_settings)
 
+def test_the_boi():
+    param_dict = { "spParams" : { "potentialPct": 0.00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": 0.100820733774665, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 25}, "newSynapseCount" : 17 }
+    ts = ARMATimeSeries(2,0, sigma=0.00000000001, ar_poly=[1,0,.1], seed=12345)
+    network = HTM(ts, 9.04208117845183, params=param_dict, verbosity=0)
+    network.train("rmse", sibt=0, iter_per_cycle=2, weights={3: 9.58137241373114, 4: 7.43853705295099, 5: 10, 7: 1.2331989825134, 8: 3.82525026117201, 9: 10}, normalize_error=True, logging=False)
+    ones, res = network.runNetwork(learning=False)
+    bic = get_order(ones, 4, 2)
+    print("The bic for the HTM predictions are {}".format(bic))
+    ar_poly, ma_poly = fit(ones, bic)
+    ar_poly = [-1*x for x in ar_poly] # ar coeff come out negative
+    ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
+    print(ar_poly)
+    print(ma_poly)
+    htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly, seed=12345)
+    ts.new()
+    rmse = 0
+    for i in range(len(htmpredts)):
+        rmse+=sqrt((ts.get()-htmpredts.get())**2)
+    _range = max(ts.get_range(), htmpredts.get_range())
+    rmse = rmse/_range/len(htmpredts)
+    print(rmse)
+
 if __name__ == "__main__":
-    models_of_interest()
+    ts = ARMATimeSeries(2,0, sigma=0.00000000001, ar_poly=[1,0,.1], seed=12345)
+    bic = get_order(ts.sequence, 4, 2)
+    ar_poly, ma_poly = fit(ts.sequence, bic)
+    ar_poly = [-1*x for x in ar_poly] # ar coeff come out negative
+    ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
+    print(ar_poly)
+    print(ma_poly)
+    modelofinstance = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly, seed=12345)
+    ts.new()
+    rmse = 0
+    for i in range(len(modelofinstance)):
+        rmse+=sqrt((ts.get()-modelofinstance.get())**2)
+    _range = max(ts.get_range(), modelofinstance.get_range())
+    rmse = rmse/_range/len(modelofinstance)
+    print(rmse)

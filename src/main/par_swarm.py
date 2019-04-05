@@ -96,12 +96,12 @@ def ar_or_ma_funclite(args):
 def reproduceable_randomness(args):
     x = args["x"]
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    ts = ARMATimeSeries(2,0, sigma=0.00000000001, n=args["n"], ar_poly=[1,0,.1], seed=12345)
+    ts = ARMATimeSeries(4,0, sigma=0.00000000001, n=args["n"], ar_poly=[1,0,0,0,.8], seed=12345)
     return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
 
 def reproduceable_randomnesslite(args):
     x = args["x"]
-    ts = ARMATimeSeries(2,0, sigma=0.00000000001, n=args["n"], ar_poly=[1,0,.1], seed=12345)
+    ts = ARMATimeSeries(4,0, sigma=0.00000000001, n=args["n"], ar_poly=[1,0,0,0,.8], seed=12345)
     return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[3], 3: x[4], 4: x[5], 5: x[6], 6: x[7], 7: x[8], 8: x[9], 9: x[10] }, normalize_error=True, logging=False)
 
 def sanfunc(x):
@@ -403,7 +403,7 @@ def swarmrr():
 def swarmrr2():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(0.5,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    for length in [100, 10000, 100000]:
+    for length in [100, 1000, 10000, 100000]:
         PSO(reproduceable_randomness,bounds,num_particles=18,maxiter=24, func_sel={"n":length}, processes=18, descr=descr)
 
 def swarmrr3():
