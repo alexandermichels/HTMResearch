@@ -527,7 +527,7 @@ def test_the_boi():
     print(ar_poly)
     print(ma_poly)
     htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly, seed=12345)
-    ts.new()
+    ts.new(False)
     rmse = 0
     for i in range(len(htmpredts)):
         rmse+=sqrt((ts.get()-htmpredts.get())**2)

@@ -125,7 +125,7 @@ def getDiffs(ARrange, MArange, n = 1000):
 
 def singleModelGetDiffs(model, n, EXTRA_TERMS=2):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-    _OUTPUT_PATH = "../outputs/SingleModelFittingDifferences-{}.csv".format(DATE, model)
+    _OUTPUT_PATH = "../outputs/SingleModelFittingDifferences-{}-{}.csv".format(DATE, model)
     with open(_OUTPUT_PATH, "w") as outputFile:
         writer = csv.writer(outputFile)
 
@@ -248,8 +248,36 @@ def test_HTM_models_of_interest():
     model = ARMATimeSeries( 0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
     test_HTM_output(train_HTM_on_model(model, params= { "rdse": 4.7963695838, "sibt": 7, "iter_per_cycle": 1 }, htmparams=param_dict), 2,len(poly)+2)
 
-def main():
+def compare_fitted_rmse(seeded, n):
+    DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+    _OUTPUT_PATH = "../outputs/CompareFittedRMSE-{}.csv".format(DATE)
+    with open(_OUTPUT_PATH, "w") as outputFile:
+        writer = csv.writer(outputFile)
+        for theMovieHerIsUnderratedAndILoveJoaquinPhoenix in range(n):
+            ts = ARMATimeSeries(4,0, sigma=0.00000000001, ar_poly=[1,0,0,0,.8], seed=12345)
+            bic = get_order(ts.sequence, 4, 2)
+            ar_poly, ma_poly = fit(ts.sequence, bic)
+            ar_poly = [-1*x for x in ar_poly] # ar coeff come out negative
+            ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
+            print(ar_poly)
+            print(ma_poly)
+            if seeded:
+                modelofinstance = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly, seed=12345)
+            else:
+                modelofinstance = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly)
+            ts.new(False)
+            rmse = 0
+            for i in range(len(modelofinstance)):
+                rmse+=sqrt((ts.get()-modelofinstance.get())**2)
+            _range = max(ts.get_range(), modelofinstance.get_range())
+            rmse = rmse/_range/len(modelofinstance)
+            print(rmse)
+            writer.writerow([rmse])
+        outputFile.close()
 
+
+def main():
+    compare_fitted_rmse(False, n=1500)
 
 if __name__ == "__main__":
     main()

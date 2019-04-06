@@ -2,6 +2,7 @@
 from pandas import datetime
 from pandas import DataFrame
 import time
+from datetime import datetime
 from statsmodels.tsa.arima_process import arma_generate_sample
 from statsmodels.tsa.arima_model import ARMA
 from statsmodels.tsa.stattools import arma_order_select_ic
@@ -16,7 +17,11 @@ def signal_handler(sig, frame):
 
 class ARMATimeSeries(Sequence):
 
-    def __init__(self, p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None):
+    def __init__(self, p, q, sigma=1, n=1000, normalize=True, seed=None, ar_poly = None, ma_poly = None):
+        if seed == None:
+            dt = datetime.now()
+            seed = int(time.time()) * 100000 + dt.microsecond
+            seed = int(seed) % 4294967295 # 2^32 - 1
         self.n = n
         self.p = p
         self.q = q
