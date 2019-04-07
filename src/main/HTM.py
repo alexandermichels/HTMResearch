@@ -316,10 +316,11 @@ class HTM():
         if mode == "strain":
             self.turnLearningOff("t")
             self.turnLearningOn("cs")
-        elif mode == "test":
-            self.turnLearningOff()
-        else:
+        elif mode == "train":
             self.turnLearningOn()
+        else:
+            self.turnLearningOff("s")
+            self.turnLearningOn("ct")
         self.turnInferenceOn()
 
         results = {}
@@ -507,47 +508,39 @@ def train_and_plot(model, network, training_settings):
     fig.show()
 
 def plot_models_of_interest():
-    param_dict = { "spParams" : { "potentialPct": 1, "numActiveColumnsPerInhArea": 69, "synPermConnected": .00001, "synPermInactiveDec": 0.0585628294 }, "tmParams" : { "activationThreshold": 28, "newSynapseCount" : 32 }}
+    param_dict = { "spParams" : { "potentialPct": 0.00005, "numActiveColumnsPerInhArea": 73, "synPermConnected": 0.4383430065, "synPermInactiveDec": 0.00001 }, "tmParams" : { "activationThreshold": 16, "newSynapseCount" : 19 }}
     model = ARMATimeSeries(6,0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
     network = HTM(model, 4.7963695838, params=param_dict)
     training_settings = { "sibt" : 7, "iter_per_cycle": 1, "weights": {1:1.0, 2: 6.3563795715, 3: 2.4177994435, 4: 1.9896236157, 5: 4.1927836473, 6: 1.4838633387, 7: 8.1727171415, 8: 10, 9: 0.263161871 }, "normalize_error": True }
     train_and_plot(model, network, training_settings)
 
 def test_the_boi():
-    param_dict = { "spParams" : { "potentialPct": 0.00001, "numActiveColumnsPerInhArea": 80, "synPermConnected": 0.100820733774665, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 25}, "newSynapseCount" : 17 }
-    ts = ARMATimeSeries(2,0, sigma=0.00000000001, ar_poly=[1,0,.1], seed=12345)
-    network = HTM(ts, 9.04208117845183, params=param_dict, verbosity=0)
-    network.train("rmse", sibt=0, iter_per_cycle=2, weights={3: 9.58137241373114, 4: 7.43853705295099, 5: 10, 7: 1.2331989825134, 8: 3.82525026117201, 9: 10}, normalize_error=True, logging=False)
+    # param_dict = { "spParams" : { "potentialPct": 0.00001, "numActiveColumnsPerInhArea": 73, "synPermConnected": 0.100820733774665, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 25}, "newSynapseCount" : 17 }
+    ts = ARMATimeSeries(4,0, sigma=0.00000000001, ar_poly=[1,0,0,0,.8], seed=12345)
+    done = False
+    counter = 0
+    network = HTM(ts, 2.2603913842)
+    # network.train("rmse", sibt=13, iter_per_cycle=3, weights={1: 1.0, 2: 9.2297703503, 3: 10, 4: 1.1735560551, 5: 6.825066147, 6: 6.6112659849, 7: 10, 8: 0.857512104, 9: 10 }, normalize_error=True, logging=False)
+    network.train("rmse", sibt=36, iter_per_cycle=2, weights={1: 1.0, 2: 6.4223237729, 3: 4.9617546938, 4: 8.3240290886, 5: 5.7037006935, 6: 4.7373287008, 7: 3.5210605231, 8: 6.1847886368, 9: 5.5869731198}, normalize_error=True, logging=True)
     ones, res = network.runNetwork(learning=False)
-    bic = get_order(ones, 4, 2)
+    print(ones)
+    bic = get_order(ones, 6, 2)
     print("The bic for the HTM predictions are {}".format(bic))
     ar_poly, ma_poly = fit(ones, bic)
+    print(ar_poly, ma_poly)
     ar_poly = [-1*x for x in ar_poly] # ar coeff come out negative
     ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
     print(ar_poly)
     print(ma_poly)
-    htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly, seed=12345)
+    htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly)
     ts.new(False)
     rmse = 0
     for i in range(len(htmpredts)):
         rmse+=sqrt((ts.get()-htmpredts.get())**2)
     _range = max(ts.get_range(), htmpredts.get_range())
     rmse = rmse/_range/len(htmpredts)
+    done = True
     print(rmse)
 
 if __name__ == "__main__":
-    ts = ARMATimeSeries(2,0, sigma=0.00000000001, ar_poly=[1,0,.1], seed=12345)
-    bic = get_order(ts.sequence, 4, 2)
-    ar_poly, ma_poly = fit(ts.sequence, bic)
-    ar_poly = [-1*x for x in ar_poly] # ar coeff come out negative
-    ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
-    print(ar_poly)
-    print(ma_poly)
-    modelofinstance = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly, seed=12345)
-    ts.new()
-    rmse = 0
-    for i in range(len(modelofinstance)):
-        rmse+=sqrt((ts.get()-modelofinstance.get())**2)
-    _range = max(ts.get_range(), modelofinstance.get_range())
-    rmse = rmse/_range/len(modelofinstance)
-    print(rmse)
+    test_the_boi()

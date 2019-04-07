@@ -14,9 +14,9 @@ def gen_histogram(model, coef, term):
     data = np.genfromtxt('data/{}diffs{}lag{}.csv'.format(model, term, coef), delimiter='\n') # "{type}diffslag{coef}.csv"
     mean = round(np.mean(data), 2)
     stddev = round(np.std(data), 2)
-    
+
     # An "interface" to matplotlib.axes.Axes.hist() method
-    n, bins, patches = plt.hist(x=data, bins=11, density=True, color='#aa0405', alpha=0.7)
+    n, bins, patches = plt.hist(x=data, bins="auto", density=True, color='#aa0405', alpha=0.7)
     plt.grid(axis='y', alpha=0.75)
     plt.xlabel('Error')
     plt.ylabel('Density')
@@ -25,7 +25,7 @@ def gen_histogram(model, coef, term):
     # Set a clean upper y-axis limit.
     plt.show()
     #plt.savefig("img/{}Model{}Lag{}CoefDist.png".format(model, term, coef))
-    
+
 def get_summary_stats(terms, extra_terms):
     means, stds = [], []
     for model in ["AR", "MA"]:
@@ -38,7 +38,7 @@ def get_summary_stats(terms, extra_terms):
             print(mean)
             stds.append(stddev)
             print(stddev)
-            
+
         term = ""
         if model == "AR":
             term = "MA"
@@ -54,20 +54,26 @@ def get_summary_stats(terms, extra_terms):
             stds.append(stddev)
             print(stddev)
     return means, stds
-            
-def confidence_intervals(means, stds, Z=3.291, N=1500):
-    for u, s in zip(means, stds):
-        # print(u, s)
-        l = u-Z*s/sqrt(N)
-        h = u+Z*s/sqrt(N)
-        # print(u-Z*s/sqrt(N), u+Z*s/sqrt(N))
-        if not l < 0 and h > 0:
-            print "Fail"
-    
+
+def gen_histogram_coef(file):
+    data = np.genfromtxt('data/{}'.format(file), delimiter='\n') # "{type}diffslag{coef}.csv"
+    mean = round(np.mean(data), 2)
+    stddev = round(np.std(data), 2)
+
+    # An "interface" to matplotlib.axes.Axes.hist() method
+    n, bins, patches = plt.hist(x=data, bins="auto", density=True, color='#aa0405', alpha=0.7)
+    plt.grid(axis='y', alpha=0.75)
+    plt.xlabel('RMSE')
+    plt.ylabel('Density')
+    plt.title('RMSE for a 4-Lag AR Instance vs. Instances with\nCoefficients Fitted from the Original Sequence')
+    plt.text(-.2, 6.5, r'$\mu$={}, $\sigma$={}'.format(mean, stddev))
+    # Set a clean upper y-axis limit.
+    plt.show()
+
 def main():
-    gen_histogram("MA", 8, "MA")
+    gen_histogram_coef("CompareFittedRMSE-2019-04-06_01:49:40.csv")
     #means, stds = get_summary_stats(6, 2)
     #confidence_intervals(means, stds)
-    
+
 if __name__ == "__main__":
     main()

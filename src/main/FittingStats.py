@@ -236,7 +236,7 @@ def test_HTM_output(arr, ar_max, ma_max):
     print(tmaps)
 
 def fit_models_of_interest():
-    polys = [[1, 0, 0, 0, .9], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
+    polys = [[1, 0, 0, 0, .8], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
     for poly in polys:
         model = ARMATimeSeries( len(poly)-1, 0, 1, ar_poly = poly)  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
         singleModelGetDiffs(model, 1500)
