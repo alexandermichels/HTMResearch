@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from pandas import datetime
 from pandas import DataFrame
-import time
+import csv, time
 from datetime import datetime
 from statsmodels.tsa.arima_process import arma_generate_sample
 from statsmodels.tsa.arima_model import ARMA
@@ -10,6 +10,7 @@ from matplotlib import pyplot
 import numpy as np
 from random import randint, uniform
 from Sequence import Sequence
+from math import sqrt
 np.warnings.filterwarnings('ignore')
 """Handles Ctrl+C"""
 def signal_handler(sig, frame):
@@ -103,6 +104,47 @@ class ARMATimeSeries(Sequence):
         To string
         """
         return self.__str__()
+
+    def fit(self, result = "armaparams"):
+        arma = ARMA(self.sequence, (self.p, self.q))
+        try:
+            res = arma.fit(trend="nc", maxiter=len(self.sequence), disp=-1)
+        except Exception as e1:
+            print(e1)
+            try:
+                print("LBFGS failed for {}, trying BFGS".format(self.__str__))
+                res = arma.fit(trend="nc", solver="bfgs", maxiter=len(self.sequence), disp=-1)
+            except Exception as e2:
+                print(e2)
+                try:
+                    print("BFGS failed for {}, trying netwon".format(self.__str__))
+                    res = arma.fit(trend="nc", solver="newton", maxiter=len(self.sequence), disp=-1)
+                except Exception as e3:
+                    print(e3)
+                    try:
+                        print("Newton failed for {}, trying Nelder-Mead".format(self.__str__))
+                        res = arma.fit(trend="nc", solver="nm", maxiter=len(self.sequence), disp=-1)
+                    except Exception as e4:
+                        print(e4)
+                        try:
+                            print("Nelder-Mead failed for {}, trying Conjugate Gradient".format(self.__str__))
+                            res = arma.fit(trend="nc", solver="cg", maxiter=len(self.sequence), disp=-1)
+                        except Exception as e5:
+                            print(e5)
+                            try:
+                                print("Conjugate Gradient failed for {}, trying Non-Conjugate Gradient".format(self.__str__))
+                                res = arma.fit(trend="nc", solver="ncg", maxiter=len(self.sequence), disp=-1)
+                            except Exception as e6:
+                                print(e6)
+                                try:
+                                    print("Non-Conjugate Gradient failed for {}, trying Powell".format(self.__str__))
+                                    res = arma.fit(trend="nc", solver="powell", maxiter=len(self.sequence), disp=-1)
+                                except:
+                                    return None, None
+        if result == "armaparams":
+            return list(res.arparams), list(res.maparams)
+        elif result == "sigma2":
+            return res.sigma2
 
     def new(self, newPoly = True):
         if newPoly:
@@ -210,10 +252,16 @@ def main():
             print(ts.ar_poly, ts.ma_poly)
             print(fit(ts.sequence, get_order(ts.sequence, ts.p, ts.q)))
             ts.plot()'''
-    ts = ARMATimeSeries(4,0, sigma=0.00000000001, ar_poly=[1,0,0,0,.8], seed=12345)
-    for i in range(10):
-        print(ts.get())
-    ts.plot()
+    _OUTPUT_PATH = "../../outputs/SigmaOfStuff.csv"
+    with open(_OUTPUT_PATH, "w") as outputFile:
+        writer = csv.writer(outputFile)
+        for j in range(30):
+            for i in range(1,10):
+                sigma = i
+                ts = ARMATimeSeries(4,0, sigma=sigma, ar_poly=[1,0,0,0,.8])
+                sigmao = sqrt(ts.fit("sigma2"))
+                print("The input sigma was {} and the calculated sigma is {}".format(sigma, sigmao))
+                writer.writerow([sigma,sigmao])
 
 if __name__ == "__main__":
         main()

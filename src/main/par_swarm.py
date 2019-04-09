@@ -78,9 +78,9 @@ def ar_or_ma_func(args):
     x = args["x"]
     ts = None
     if args["model"] == "ar":
-        ts = ARMATimeSeries( 6, 0, args["sigma"], ar_poly = args["poly"])
+        ts = ARMATimeSeries( len(args["poly"], 0, args["sigma"], ar_poly = args["poly"])
     elif args["model"] == "ma":
-        ts = ARMATimeSeries( 0,6, args["sigma"], ma_poly = args["poly"])
+        ts = ARMATimeSeries( 0,len(args["poly"], args["sigma"], ma_poly = args["poly"])
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
     return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
 
