@@ -382,18 +382,18 @@ def arswarmv5():
 def ar_or_maswarm():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(3,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    polys = [[1, 0, 0, 0, .8], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5], [1, 0, 0, .4, 0, .3, .3]]
+    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5] [1, 0, 0, 0, 0, 0, 0, 0, .9]]
     for i in ["ar", "ma"]:
         for j in polys:
-            PSO(ar_or_ma_func,bounds,num_particles=32,maxiter=32, func_sel={"model":i, "poly": j, "sigma":1}, processes=32, descr=descr)
+            PSO(ar_or_ma_func,bounds,num_particles=24,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=24, descr=descr)
 
 def ar_or_maswarmlite():
     descr = ["RDSE Resolution", "SIBT", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(3,10), (0,50), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, 0, 0, 0, 0, 0, 0, .9], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
+    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5] [1, 0, 0, 0, 0, 0, 0, 0, .9]]
     for i in ["ar", "ma"]:
         for j in polys:
-            PSO(ar_or_ma_funclite,bounds,num_particles=20,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=20, descr=descr)
+            PSO(ar_or_ma_funclite,bounds,num_particles=12,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=12, descr=descr)
 
 def swarmrr():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
