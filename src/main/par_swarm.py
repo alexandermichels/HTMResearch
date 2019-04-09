@@ -78,9 +78,9 @@ def ar_or_ma_func(args):
     x = args["x"]
     ts = None
     if args["model"] == "ar":
-        ts = ARMATimeSeries( len(args["poly"], 0, args["sigma"], ar_poly = args["poly"])
-    elif args["model"] == "ma":
-        ts = ARMATimeSeries( 0,len(args["poly"], args["sigma"], ma_poly = args["poly"])
+        ts = ARMATimeSeries(len(args["poly"]), 0, args["sigma"], ar_poly = args["poly"])
+    elif(args["model"] == "ma"):
+        ts = ARMATimeSeries(0, len(args["poly"]), args["sigma"], ma_poly = args["poly"])
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
     return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
 
@@ -88,9 +88,9 @@ def ar_or_ma_funclite(args):
     x = args["x"]
     ts = None
     if args["model"] == "ar":
-        ts = ARMATimeSeries( 6, 0, args["sigma"], ar_poly = args["poly"])
+        ts = ARMATimeSeries( len(args["poly"]), 0, args["sigma"], ar_poly = args["poly"])
     elif args["model"] == "ma":
-        ts = ARMATimeSeries( 0,6, args["sigma"], ma_poly = args["poly"])
+        ts = ARMATimeSeries( 0, len(args["poly"]), args["sigma"], ma_poly = args["poly"])
     return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=1, weights={ 1: 1.0, 2 :x[2], 3: x[3], 4: x[4], 5: x[5], 6: x[6], 7: x[7], 8: x[8], 9: x[9] }, normalize_error=True, logging=False)
 
 def reproduceable_randomness(args):
@@ -382,7 +382,7 @@ def arswarmv5():
 def ar_or_maswarm():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(3,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5] [1, 0, 0, 0, 0, 0, 0, 0, .9]]
+    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5], [1, 0, 0, 0, 0, 0, 0, 0, .9]]
     for i in ["ar", "ma"]:
         for j in polys:
             PSO(ar_or_ma_func,bounds,num_particles=24,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=24, descr=descr)
@@ -390,7 +390,7 @@ def ar_or_maswarm():
 def ar_or_maswarmlite():
     descr = ["RDSE Resolution", "SIBT", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
     bounds=[(3,10), (0,50), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
-    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5] [1, 0, 0, 0, 0, 0, 0, 0, .9]]
+    polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5], [1, 0, 0, 0, 0, 0, 0, 0, .9]]
     for i in ["ar", "ma"]:
         for j in polys:
             PSO(ar_or_ma_funclite,bounds,num_particles=12,maxiter=24, func_sel={"model":i, "poly": j, "sigma":1}, processes=12, descr=descr)
