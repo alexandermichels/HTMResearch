@@ -258,7 +258,7 @@ def main():
         for j in range(30):
             for i in range(1,10):
                 sigma = i
-                ts = ARMATimeSeries(4,0, sigma=sigma, ar_poly=[1,0,0,0,.8])
+                ts = ARMATimeSeries(4,0, sigma=sigma, ar_poly=[1,0,0,0,.8], normalize=False)
                 sigmao = sqrt(ts.fit("sigma2"))
                 print("The input sigma was {} and the calculated sigma is {}".format(sigma, sigmao))
                 writer.writerow([sigma,sigmao])

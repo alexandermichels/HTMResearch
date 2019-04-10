@@ -85,8 +85,8 @@ def gen_scatterplot(file):
     # print(y)
     # An "interface" to matplotlib.axes.Axes.hist() method
     plt.scatter(x,y, alpha=0.7, edgecolors='r')
-    plt.xlabel('Pre-Scaling Sigma')
-    plt.ylabel('Post-Scalling Sigma')
+    plt.xlabel('Input Sigma')
+    plt.ylabel('Measured Sigma')
     # Set a clean upper y-axis limit.
     fig = plt.gcf()
     fig.set_size_inches(6,5)
@@ -95,7 +95,7 @@ def gen_scatterplot(file):
     fig.show()
 
 def main():
-    gen_scatterplot("SigmaOfSeries.csv")
+    gen_scatterplot("SigmaOfSeries-PreScaling.csv")
     #means, stds = get_summary_stats(6, 2)
     #confidence_intervals(means, stds)
 

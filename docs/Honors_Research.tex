@@ -236,7 +236,7 @@
 	
 	\begin{align}
 		\label{eqn:arop}
-		\phi(B)=1-\phi_{1}B-\phi_{2}B^{2}-...-\phi_{p}^{p}
+		\phi(B)=1-\phi_{1}B-\phi_{2}B^{2}-...-\phi_{p}B^{p}
 	\end{align}
 	
 	\noindent which allows us to write an autoregressive model succinctly as $\phi(B)\tilde{z}_{t}=a_{t}$~\cite{Box}.
@@ -265,14 +265,16 @@
 
 	\section{Classification of Time Series}\label{sec:timeseries:classification}
 
-	A key question in time series analysis is how to select the correct model for a given time series. There are a few approaches, but one is to use information criterion such as the Akaike Information Criterion or the Bayes Information Criterion~\cite{Box}. For both AIC and BIC, optimal models minimize the information criterion and there is a penalty for the number of parameters used resulting in a bias towards a smaller set of parameters. The formula for BIC is
+	A key question in time series analysis is how to select the correct model for a given time series. There are a few approaches, but one is to use information criterion such as the Akaike Information Criterion (AIC) or the Bayes Information Criterion~(BIC)~\cite{Box}. For both information criterion, optimal models minimize the criterion and there is a penalty for the number of parameters used resulting in a bias towards a smaller set of parameters. The formula for BIC is
 
 	\begin{align}
 		\label{eqn:bic}
 		BIC_{p,q}=\ln(\hat{\sigma}_{a}^{2})+r\frac{\ln(n)}{n}
 	\end{align}
 
-	\noindent where $n$ is the sample size, $\hat{\sigma}_{a}^{2}$ is the maximum likelihood estimate of $\sigma_{a}^{2}$, and $r=p+q+1$ is the number of parameters estimated in the model.
+	\noindent where $n$ is the sample size, $\hat{\sigma}_{a}^{2}$ is the maximum likelihood estimate of $\sigma_{a}^{2}$, and $r=p+q+1$ is the number of parameters estimated in the model. Once the sequence is classified, full identification is achieved by fitting coefficients to the lag polynomial of the model to arrive at an exact model for the given time series
+    
+    \textcolor{red}{what is noise?}
 	
 	The ubiquity of time series makes forecasting them an important and many times profitable task such as in the case of financial time series (as seen in Figure~\ref{fig:AMDChart}), making them a common prediction task for machine learning and artificial intelligence systems. It allows us to test an ``intelligent'' systems ability to discover temporal patterns which may sometimes be fuzzy or complex: a hallmark of human intelligence.
 	
@@ -447,6 +449,11 @@
 	
 	
 	
+    
+    
+    
+    
+    
 	
 	
 	\chapter{Experiment Design}
@@ -484,7 +491,9 @@
 	
 	Our proposed exploration of how well a Hierarchical Temporal Memory network is able to predict ARMA models requires that we are able to train an HTM network. These experiments required a flexible training routine that would allow us to train an HTM on a variety of of different sequences which may require different parameters. 
 	
-	To do this, we drew on the training techniques of typical machine learning algorithms: we divided our data (in our case a sample from an ARMA model) into a training set, a validation set, and an evaluation set. Before an HTM enters the classical training however, we added a phase before that in which the spatial pooler could encounter the data without the temporal pooler being turned on. We hoped this would allow the spatial pooler to form some of its synapses before turning on the temporal pooler and thus have the temporal pooler learn on less ``noise.''. The number of iterations was a parameter we tuned\astfootnote{tuned through swarming\label{footnote:swarm}} called \texttt{sibt} (\textbf{S}patial pooler \textbf{I}terations \textbf{B}efore \textbf{T}emporal pooler).
+	To do this, we drew on the training techniques of typical machine learning algorithms: we divided our data (in our case a sample from an ARMA model) into a training set, a validation set, and an evaluation set. The sequence was partitioned such that the training set was 80\% of the instance and the validation and evaluation sets were both 10\% of the sequence. To keep the training set continuous, we chose the validation and evaluation sets from the beginning or end of the initial sequence with equal probability and the order in which we assigned the either validation or evaluation was also chose with equal probability.
+    
+    Before an HTM enters the classical training however, we added a phase before that in which the spatial pooler could encounter the data without the temporal pooler being turned on. We hoped this would allow the spatial pooler to form some of its synapses before turning on the temporal pooler and thus have the temporal pooler learn on less ``noise.''. The number of iterations was a parameter we tuned\astfootnote{tuned through swarming\label{footnote:swarm}} called \texttt{sibt} (\textbf{S}patial pooler \textbf{I}terations \textbf{B}efore \textbf{T}emporal pooler).
 	
 	Then the classical machine learning techniques kicked in with the HTM learning its test set, then being tested on its validation set until performance stagnated or worsened (as measured by either binary or root mean squared error), at which point we tested the HTM on the evaluation set. There are a few small differences in that we added a \texttt{iter\_per\_cycle} parameter\textsuperscript{\ref{footnote:swarm}} which allowed us to run on the test and validation set multiple times, summing the performances, before comparing to the previous, which would be useful for dealing with noise in the performance metric. We also added a \texttt{max\_cycles}\textsuperscript{\ref{footnote:swarm}} parameter that acted as a cut-off switch, stopping training after that many cycles. Most importantly, a weighting scheme as added (\texttt{weights}\textsuperscript{\ref{footnote:swarm}}) which allowed us to weight the predictions in any way from 1 to $n$ steps. In particular, we swarmed on weights for two through nine steps, leaving one at a constant 1.0.
 	
@@ -492,33 +501,111 @@
     
     The experiments required for this work required tools for analyzing and generating ARMA models, and to accomplish this, I utilized the \texttt{statsmodels}\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module. To generate ARMA models with the desired characteristic, we were able to utilize a function from the \texttt{arma\_generate\_sample} function which is capable of producing an $n$-term sample from an ARMA model given AR and MA lag polynomials and a standard deviation for the noise term~\cite{statsmodels}. To produce random stationary (p,q)-ARMA models, we generated a random number between one and a thousand for each coefficient of the lag polynomial and normalized the AR and MA polynomials separately such that the sum of the coefficients for AR and MA were each less than or equal to one.
     
-    In an attempt to avoid instances of the same model requiring different parameters, and namely different Random Distributed Scalar Encoder resolution, the samples of the ARMA processes were normalized such that the values were bounded between [-100,100]. However, this scaling had a large effect on the standard deviation of the resultant series. We measured the standard deviation of the white-noise on post-scaling time series for 30 instances of a (4,0)-ARMA model with input standard deviations between 1 and 9 to quantify this effect. The results can be seen in Figure~\ref{fig:sigmaofseries}. The lack of correlation suggests that a standard deviation between 14 and 22 was to be expected for all series regardless of the input sigma, and for this reason we used an input sigma of 1 for all further experiments.
+    In an attempt to avoid instances of the same model requiring different parameters, and namely different Random Distributed Scalar Encoder resolution, the samples of the ARMA processes were normalized such that the values were bounded between [-100,100]. However, this scaling had a large effect on the standard deviation of the resultant series which still needed to be understood. To measure the standard deviation of the post-scaling series, we utilized the \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter~\cite{statsmodels}. 
     
-    \begin{figure}[!ht]
-        \centering
-        \includegraphics[width=.8\linewidth]{images/SigmaOfSeries.png}
-        \caption{Standard Deviation of Generated Time Series Pre- and Post-Scaling}
-        \label{fig:sigmaofseries}
-    \end{figure}
-
-	A key component of this work was the classification of ARMA time series. The \texttt{statmodels} module was helpful in this regard as well, providing the \texttt{arma\_order\_select\_ic} function which finds information criterion for ARMA models. The module also contains \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter~\cite{statsmodels}.
-
-	The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. I wrote a function which intially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjugate gradient, and Powell, in that order~\cite{statsmodels}. We still needed to assess the accuracy of this and the \texttt{arma\_order\_select\_ic} functions before we could draw conclusions from their outputs.
+	A key component of this work was identifying ARMA time series, which fell into two steps: time series classification and then coefficient fitting. The two-step procedure was a necessity because the order of the time series are inputs to coefficient fitting, thus we had to determine the order of the series first (classification) and then fit the coefficients of the lag polynomials given that classification. 
+    
+    To accomplish classification we again utilized the \texttt{statsmodels} module, specifically the \texttt{arma\_order\_select\_ic} function which finds information criterion for ARMA models. We chose to use Bayes Information Criterion for all further experiments. As discussed in Section~\ref{sec:timeseries:classification}, the Bayes Information Criterion (BIC) provides the order ($p$ and $q$) of the time series
+    
+    With the order of the ARMA model now identified, we utilized the \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter, allowing us to get the coefficients of the lag polynomials~\cite{statsmodels}. The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. We wrote a function which initially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjugate gradient, and Powell, in that order~\cite{statsmodels}. The accuracy of this and the \texttt{arma\_order\_select\_ic} functions would therefore need to be assessed before attempting to draw conclusions based on their outputs because of how central they were to this work.
     
     
 	
+    
+    
+    
+    
+    
+    
+    
 	
 	
 	
 	\chapter{Results}
 
-	The central question of this research was: if a Hierarchical Temporal Memory network is given an ARMA time series, how does its predicted time series compare? The first step of this project was learning how to interact with the NuPIC Network API in Python:this included writing a stream object to feed an HTM network in-memory arrays, writing training routines for HTMs, and conducting some sensitivity analysis with the model parameters. 
-	
-	Then we began by training HTMs on very simple deterministic sequences which did not require any temporal context past the last term-that is sequences such that you can know for certain the next term in the sequence by only knowing the last term. Examples include $1,2,1,2,...$, $1,3,1,3,...$, and $78,79,78,79,...$. This allowed us to ensure that we could train and predict using only an HTM's spatial pooler.
-
-	Next, we trained Hierarchical Temporal Memory networks using slightly more complex, but still deterministic sequences, that relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include $1,2,3,2,..$ and $1,2,2,3,5,2,2,4,1,...$. In the first example, 1 and 3 are always followed by 2, but to know what is followed by 2 you also need to know what proceeded 2.
+	The central question of this research was: if a Hierarchical Temporal Memory network is given an ARMA time series, how does its predicted time series compare? To answer this question, there were three major steps required. As discussed in Section~\ref{sec:exp:timeseriesclass}, it was essential to our goal that we be able to classify time series and therefore we needed to assess the accuracy of the tools provided by the \texttt{statsmodels} module. We needed to ensure that we were setting up Hierarchical Temporal Memory networks with the appropriate parameters for the task. Then, we needed to train Hierarchical Temporal Memory networks on ARMA time series, classify and identify the appropriate ARMA models for their outputs, and determine with some measure of statistical certainty if the ARMA model which best describes the HTM predictions is the same ARMA model that produced the input. The results of these investigations are given in Sections \ref{sec:res:stats}, \ref{sec:res:swarm}, and \ref{sec:res:eval} respectively.
     
-    \section{Swarming for Parameter Optimization}
+    \section{Accuracy of \texttt{statsmodels} Tools}\label{sec:res:stats}
+    
+     For any of the following experiments to mean anything, it was crucial that we were certain we could analyze ARMA models with a high degree of accuracy as so much of the proposed work depended on it. Not only was the \texttt{statsmodels} module used to generate the instances of the ARMA models used, we also needed to depend on it to classify time series and fit the coefficients of the lag polynomials. Relating to the generation of time series, our first task was to attempt to understand the relationship between input sigma and the standard deviation of the white noise post-scaling.
+    
+   \subsection{Measuring White Noise of ARMA Models}
+   
+   Before determining how the scaling affected the standard deviation of the white noise, it was of course important to ensure we were using an accurate tool. The \texttt{ARMA.fit} method returns an \texttt{ARMAResults} instance which along with the lag coefficients also contains other information about the fitted ARMA model such as \texttt{sigma2} which is the variance of the residuals~\cite{statsmodels}. Taking the square root of this value should then produce the standard deviation of the resulting ARMA model.
+   
+   To test the accuracy of the standard deviation produced by this tool, we measured the standard deviations of 270 instances of a (4,0)-ARMA model described by $\tilde{z}_{t}=0.8\tilde{z}_{t-4}+a_{t}$ with input standard deviations ranging from one to nine with equal frequency (i.e. 30 with $\sigma=1$, 30 with $\sigma=2$, etc.). The results can be seen below in Figure~\ref{fig:sigmaofseries-pre}. The data shows a strong correlation between input sigma and measured sigma, which allows us to conclude that the tool is reasonably accurate for input sigmas between 1 and 9.
+    
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=.8\linewidth]{images/SigmaOfSeries-PreScaling.png}
+        \caption{Standard Deviation of Generated Time Series Without Scaling}
+        \label{fig:sigmaofseries-pre}
+    \end{figure}
+    
+    Using this tool, we then repeated the experiment, this time scaling the time series using the method described in Section~\ref{sec:exp:timeseriesclass} to better understand the affect scaling has on the standard deviation of the white noise. The results can be seen in Figure~\ref{fig:sigmaofseries-post}. In stark contrast to the previous plot, this data shows a lack of correlation and a much wider standard deviation for the distribution of measured (post-scaling) sigma. This suggests that a standard deviation between 14 and 22 was to be expected for all series regardless of the input sigma and for this reason we used an input sigma of 1 for all further experiments.
+    
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=.8\linewidth]{images/SigmaOfSeries-PostScaling.png}
+        \caption{Standard Deviation of Generated Time Series Pre- and Post-Scaling}
+        \label{fig:sigmaofseries-post}
+    \end{figure}
+
+    \subsection{Time Series Classification}
+    
+      The next step was to assess the accuracy of the Bayes Information Criterion produced by the \texttt{arma\_order\_select\_ic}. It was crucial that this information be accurate because the BIC produced by this function would be used as the order of the ARMA model used when fitting the coefficients of the lag polynomials. 
+      
+      To measure the accuracy of \texttt{arma\_order\_select\_ic} we designed an experiment in which we would give the function 1500 instances of a known ARMA model so that we could compare the $p$ and $q$ produced by the function to the order of the model used to generate the instance. For the data in Table~\ref{tab:bic6}, both a (6,0)-ARMA model and (0,6)-ARMA model with coefficients for the respective lag polynomials of $[0.0,0.0,0.4,0.0,0.3,0.3]$ were used. The left and right halves of the tables describe the results for the AR (or (6,0)-ARMA) and MA (or (0,6)-ARMA) model respectively, giving the number of occurrences and the frequency with which \texttt{arma\_order\_select\_ic} gave each $p$ and $q$
+    
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+            AR Lag 5 & 6 & 0.40\% & 4 & 0.27\% & MA Lag 5 \\ \hline
+            AR Lag 6 & 1482 & 98.80\% & 1483 & 98.87\% & MA Lag 6 \\ \hline
+            AR Lag 7 & 11 & 0.73\% & 11 & 0.73\% & MA Lag 7 \\ \hline
+            AR Lag 8 & 1 & 0.07\% & 2 & 0.13\% & MA Lag 8 \\ \hline
+            MA Lag 1 & 12 & 0.80\% & 5 & 0.33\% & AR Lag 1 \\ \hline
+            MA Lag 2 & 4 & 0.27\% & 4 & 0.27\% & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{BIC produced by \texttt{arma\_order\_select\_ic} for two models}
+        \label{tab:bic6}
+    \end{table}
+    
+    
+    The results in Table~\ref{tab:bic6} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two models. It should be noted that Table~\ref{tab:bic6} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this experiment. A quick summary of the information on BIC found in Table~\ref{tab:bic6}, the number of models that were correctly identified as a (6,0)-ARMA model or (0,6)-ARMA model were 1476 (98.40\%) and 1480 (98.67\%) respectively.
+    
+    \subsection{Fitting Coefficients of Time Series}
+    
+    Having quantified the accuracy of the information criterion tool, it was necessary to assess the accuracy of the \texttt{fit} tool so that we could analyze the differences between the input model and the output sequence coefficient-by-coefficient. This would give us a statistical confidence associated with our result using the standard deviation of the differences between the model coefficient and the tool's output. We again used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
+    
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}     \\ \hline
+            \cellcolor{black} & $\mu_{diff}$ & $\sigma_{diff}$ & $\mu_{diff}$ & $\sigma_{diff}$ & \cellcolor{black}         \\ \hline
+            AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
+            AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
+            AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
+            AR Lag 4 & -0.00039                 & 0.03909                    & 0.00192                  & 0.03478                    & MA Lag 4 \\ \hline
+            AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
+            AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
+            AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
+            AR Lag 8 & 0.00008                   & 0.00314                    & -0.00010                  & 0.00788                    & MA Lag 8 \\ \hline
+            MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients to instances of Lag-6 AR and MA models}
+        \label{tab:errortsfitting}
+    \end{table}
+    
+    A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
+
+
+    \section{Swarming for Parameter Optimization}\label{sec:res:swarm}
 	
 	\begin{figure}[!ht]
 		\centering
@@ -541,60 +628,17 @@
 	\end{figure}
 
 	\textcolor{red}{talk about swarming on params for ARMA models}
-    
-    \section{Time Series Classification}
-	
-	As discussed in Section~\ref{sec:exp:timeseriesclass}, it was essential to our goal that we be able to classify time series and therefore we needed to assess the accuracy of the tools provided by the \texttt{statsmodels} module. Before assessing the power of the \texttt{fit} function we needed to assure our information criterion were accurate enough to pass as parameters. We used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
-	
-	\begin{table}[!ht]
-		\centering
-		\begin{tabular}{|l|c|c|c|c|l|}
-			\hline
-			\multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-			\cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
-			AR Lag 5 & 6 & 0.40\% & 4 & 0.27\% & MA Lag 5 \\ \hline
-			AR Lag 6 & 1482 & 98.80\% & 1483 & 98.87\% & MA Lag 6 \\ \hline
-			AR Lag 7 & 11 & 0.73\% & 11 & 0.73\% & MA Lag 7 \\ \hline
-			AR Lag 8 & 1 & 0.07\% & 2 & 0.13\% & MA Lag 8 \\ \hline
-			MA Lag 1 & 12 & 0.80\% & 5 & 0.33\% & AR Lag 1 \\ \hline
-			MA Lag 2 & 4 & 0.27\% & 4 & 0.27\% & AR Lag 2 \\ \hline
-		\end{tabular}
-		\caption{BIC produced by \texttt{arma\_order\_select\_ic} for two models}
-		\label{tab:bic}
-	\end{table}
-	
-	
 
-	The results in Tables~\ref{tab:bic} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two given AR and MA models. It should be noted that Table~\ref{tab:bic} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this study. In addition to the information on BIC found in Table~\ref{tab:bic}, the number of models that were correctly identified as a (6,0)-ARMA model or (0,6)-ARMA model were 1476 (98.40\%) and 1480 (98.67\%) respectively.  
     
-    \section{Fitting Coefficients of Time Series}
-	
-	Having quantified the accuracy of the information criterion tool, it was necessary to assess the accuracy of the \texttt{fit} tool so that we could analyze the differences between the input model and the output sequence coefficient-by-coefficient. This would give us a statistical confidence associated with our result using the standard deviation of the differences between the model coefficient and the tool's output. We again used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
-	
-	\begin{table}[!ht]
-		\centering
-		\begin{tabular}{|l|c|c|c|c|l|}
-			\hline
-			\multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}     \\ \hline
-			\cellcolor{black} & $\mu_{diff}$ & $\sigma_{diff}$ & $\mu_{diff}$ & $\sigma_{diff}$ & \cellcolor{black}         \\ \hline
-			AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
-			AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
-			AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
-			AR Lag 4 & -0.00039                 & 0.03909                    & 0.00192                  & 0.03478                    & MA Lag 4 \\ \hline
-			AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
-			AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
-			AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
-			AR Lag 8 & 0.00008                   & 0.00314                    & -0.00010                  & 0.00788                    & MA Lag 8 \\ \hline
-			MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
-			MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
-		\end{tabular}
-		\caption{Errors on fitting coefficients to instances of Lag-6 AR and MA models}
-		\label{tab:errortsfitting}
-	\end{table}
-
-	A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
+    \section{Evaulating HTM Predictions}\label{sec:res:eval}
     
-    \section{Evaulating HTM Predictions}
+    The first step of this project was learning how to interact with the NuPIC Network API in Python: this included writing a stream object to feed an HTM network in-memory arrays, writing training routines for HTMs, and conducting some sensitivity analysis with the model parameters. 
+    
+    Then we began by training HTMs on very simple deterministic sequences which did not require any temporal context past the last term-that is sequences such that you can know for certain the next term in the sequence by only knowing the last term. Examples include $1,2,1,2,...$, $1,3,1,3,...$, and $78,79,78,79,...$. This allowed us to ensure that we could train and predict using only an HTM's spatial pooler.
+    
+    Next, we trained Hierarchical Temporal Memory networks using slightly more complex, but still deterministic sequences, that relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include $1,2,3,2,..$ and $1,2,2,3,5,2,2,4,1,...$. In the first example, 1 and 3 are always followed by 2, but to know what is followed by 2 you also need to know what proceeded 2.
+    
+    \textcolor{red}{old intro to the Results section }
 	
 	Our next test was therefore to train a Hierarchical Temporal Memory network on one of these two models, fit its output, and assess with some statistical confidence it is the same model that we input. This is exactly what we did. We fed Hierarchical Temporal Memory networks the two aforementioned AR and MA models, gave their outputs to the \texttt{arma\_order\_select\_ic} function, then the \texttt{fit} function, and finally subtracted the observed means, divided by the standard deviation, and took the absolute value to get the observations distance from the mean in terms of standard deviations. 
 		
