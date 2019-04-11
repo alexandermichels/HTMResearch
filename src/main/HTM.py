@@ -514,9 +514,6 @@ def plot_models_of_interest():
     training_settings = { "sibt" : 7, "iter_per_cycle": 1, "weights": {1:1.0, 2: 6.3563795715, 3: 2.4177994435, 4: 1.9896236157, 5: 4.1927836473, 6: 1.4838633387, 7: 8.1727171415, 8: 10, 9: 0.263161871 }, "normalize_error": True }
     train_and_plot(model, network, training_settings)
 
-def fit_HTM_outputs_for_moi():
-    pass
-
 def test_the_boi():
     # param_dict = { "spParams" : { "potentialPct": 0.00001, "numActiveColumnsPerInhArea": 73, "synPermConnected": 0.100820733774665, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 25}, "newSynapseCount" : 17 }
     ts = ARMATimeSeries(6,0, sigma=1, ar_poly=[1, 0, 0, .4, 0, .3, .3], seed=12345)

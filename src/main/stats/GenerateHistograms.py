@@ -11,18 +11,18 @@ import numpy as np
 from math import sqrt
 import csv
 
-def gen_histogram(model, coef, term):
-    data = np.genfromtxt('data/{}diffs{}lag{}.csv'.format(model, term, coef), delimiter='\n') # "{type}diffslag{coef}.csv"
+def gen_histogram(model, order, coef, term):
+    data = np.genfromtxt('data/{}{}diffs{}{}.csv'.format(model, order, coef, term), delimiter='\n') # "{type}diffslag{coef}.csv"
     mean = round(np.mean(data), 2)
     stddev = round(np.std(data), 2)
 
     # An "interface" to matplotlib.axes.Axes.hist() method
-    n, bins, patches = plt.hist(x=data, bins="auto", density=True, color='#aa0405', alpha=0.7)
+    n, bins, patches = plt.hist(x=data, bins="auto", density=True, color='#0504aa', alpha=0.7)
     plt.grid(axis='y', alpha=0.75)
     plt.xlabel('Error')
     plt.ylabel('Density')
-    plt.title('Error Fitting Lag-{} {} Term of 6 Order {} Model'.format(coef, term, model))
-    plt.text(-.2, 6.5, r'$\mu$={}, $\sigma$={}'.format(mean, stddev))
+    plt.title('Error Fitting Lag-{} {} Term of {} Order {} Model'.format(coef, term, order, model))
+    plt.text(.2, 6.5, r'$\mu$={}, $\sigma$={}'.format(mean, stddev))
     # Set a clean upper y-axis limit.
     plt.show()
     #plt.savefig("img/{}Model{}Lag{}CoefDist.png".format(model, term, coef))
@@ -31,29 +31,29 @@ def get_summary_stats(terms, extra_terms):
     means, stds = [], []
     for model in ["AR", "MA"]:
         for coef in range(1,terms+extra_terms+1):
-            data = np.genfromtxt('data/{}diffs{}lag{}.csv'.format(model, model, coef), delimiter='\n')
+            data = np.genfromtxt('data/{}{}diffs{}{}.csv'.format(model, terms, model, coef), delimiter='\n')
             mean = round(np.mean(data), 5)
             stddev = round(np.std(data), 5)
             print(model, model, coef)
             means.append(mean)
-            print(mean)
+            print("Mean: {}".format(mean))
             stds.append(stddev)
-            print(stddev)
+            print("STDDEV: {}\n".format(stddev))
 
-        term = ""
+        other = ""
         if model == "AR":
-            term = "MA"
+            other = "MA"
         else:
-            term = "AR"
+            other = "AR"
         for coef in range(1,extra_terms+1):
-            data = np.genfromtxt('data/{}diffs{}lag{}.csv'.format(model, term, coef), delimiter='\n')
+            data = np.genfromtxt('data/{}{}diffs{}{}.csv'.format(model, terms, other, coef), delimiter='\n')
             mean = round(np.mean(data), 5)
             stddev = round(np.std(data), 5)
-            print(model, term, coef)
+            print(model, other, coef)
             means.append(mean)
-            print(mean)
+            print("Mean: {}".format(mean))
             stds.append(stddev)
-            print(stddev)
+            print("STDDEV: {}\n".format(stddev))
     return means, stds
 
 def gen_histogram_coef(file):
@@ -100,4 +100,4 @@ def main():
     #confidence_intervals(means, stds)
 
 if __name__ == "__main__":
-    main()
+    get_summary_stats(5,2)

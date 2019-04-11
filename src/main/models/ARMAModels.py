@@ -43,6 +43,7 @@ class ARMATimeSeries(Sequence):
                         self.ar_poly[i]=self.ar_poly[i]*norm
         else:
             self.ar_poly = ar_poly
+            self.p = len(self.ar_poly)-1
         if ma_poly == None:
             self.ma_poly = [1]
             sum = 0
@@ -57,6 +58,7 @@ class ARMATimeSeries(Sequence):
                         self.ma_poly[i]=self.ma_poly[i]*norm
         else:
             self.ma_poly = ma_poly
+            self.q = len(ma_poly)-1
 
         self.sequence = arma_generate_sample(self.ar_poly, self.ma_poly, self.n, self.sigma)
         self.theta = 0

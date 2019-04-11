@@ -224,7 +224,7 @@ def singleModelGetDiffs(model, n, EXTRA_TERMS=2):
 
 def train_HTM_on_model(model, params, htmparams=None):
     network = HTM(model, params["rdse"], params=params, verbosity=0)
-    network.train("rmse", sibt=params["sibt"], iter_per_cycle=params["iter_per_cycle"], normalize_error=True)
+    network.train("rmse", sibt=params["sibt"], iter_per_cycle=params["iter_per_cycle"], weights=params["weights"], normalize_error=True)
     ones, res = network.runNetwork()
     return ones
 
@@ -232,6 +232,7 @@ def test_HTM_output(arr, ar_max, ma_max):
     tso = get_order(arr, max_ar=ar_max, max_ma=ma_max)
     print(tso)
     tarps, tmaps = fit(arr, tso)
+    tarps = [-1*x for x in tarps]
     print(tarps)
     print(tmaps)
 
@@ -243,10 +244,35 @@ def fit_models_of_interest():
         model = ARMATimeSeries( 0, len(poly)-1, 1, ma_poly = poly)  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
         singleModelGetDiffs(model, 1500)
 
+def test_HTM_model_of_interest(selector):
+    if selector == "AR3-Lite":
+        model = ARMATimeSeries(3, 0, 1, ar_poly = [1, 0, 0.2, 0.8])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        test_HTM_output(train_HTM_on_model(model, params= { "rdse": 4.05939793188752, "sibt": 36, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 3.950446994867, 3: 0, 4: 7.58486758256058, 5: 8.14097282846868, 6: 4.66048066863582, 7: 6.15695358785945, 8: 6.68821590225303, 9: 10 }}), 2, 5)
+    elif selector == "AR4-Lite":
+        model = ARMATimeSeries(4, 0, 1, ar_poly = [1, 0, 0, 0, 0.8])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        test_HTM_output(train_HTM_on_model(model, params= { "rdse": 10, "sibt": 0, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 8.64405184526634, 3: 10, 4: 10, 5: 0, 6: 10, 7: 6.02510913831131, 8: 0, 9: 0 }}), 2, 6)
+    elif selector == "AR4-Full":
+        param_dict = { "spParams" : { "potentialPct": 0.00005, "numActiveColumnsPerInhArea": 48, "synPermConnected": 0.147007617546864, "synPermInactiveDec": 0.048096924657991}, "tmParams" : { "activationThreshold": 30, "newSynapseCount" : 31 }}
+        model = ARMATimeSeries(4, 0, 1, ar_poly = [1, 0, 0, 0, 0.8])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        test_HTM_output(train_HTM_on_model(model, params= { "rdse": 9.31569877677968, "sibt": 9, "iter_per_cycle": 2, "weights": {1: 1.0, 2: 3.39009564264216, 3: 2.48358343152521, 4: 2.7612182073368, 5: 3.71140062541657, 6: 8.55307831696238, 7: 0.439759989458677, 8: 8.91798126584945, 9: 1.81781701185768 }}, htmparams=param_dict), 2, 6)
+    elif selector == "AR6-Lite":
+        model = ARMATimeSeries(6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        test_HTM_output(train_HTM_on_model(model, params= { "rdse": 3.850623926016, "sibt": 4, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 0.806763834261459, 3: 10, 4: 1.30456218335413, 5: 0, 6: 10, 7: 10, 8: 0, 9: 0 }}), 2, 8)
+    elif selector == "AR6-Full":
+        param_dict = { "spParams" : { "potentialPct": 1, "numActiveColumnsPerInhArea": 69, "synPermConnected": .00001, "synPermInactiveDec": 0.058562829419676}, "tmParams" : { "activationThreshold": 28, "newSynapseCount" : 32 }}
+        model = ARMATimeSeries(6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        test_HTM_output(train_HTM_on_model(model, params= { "rdse": 4.79636958375643, "sibt": 7, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 6.35637957153978, 3: 2.41779944347232, 4: 1.98962361570088, 5: 4.19278364734038, 6: 1.48386333867527, 7: 8.17271714154883, 8: 10, 9: 0.263161870966194 }}, htmparams=param_dict), 2, 8)
+    elif selector=="MA6-Full":
+        param_dict = { "spParams" : { "potentialPct": 0.21997701642794, "numActiveColumnsPerInhArea": 68, "synPermConnected": .00005, "synPermInactiveDec": 0.1 }, "tmParams" : { "activationThreshold": 8, "newSynapseCount" : 15 }}
+        model = ARMATimeSeries(0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
+        test_HTM_output(train_HTM_on_model(model, params= { "rdse": 10, "sibt": 50, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 3.24045225732635, 3: 10, 4: 0, 5: 0, 6: 10, 7: 0, 8: 10, 9: 0}}, htmparams=param_dict), 2, 8)
+
 def test_HTM_models_of_interest():
-    param_dict = { "spParams" : { "potentialPct": 1, "numActiveColumnsPerInhArea": 69, "synPermConnected": .00001, "synPermInactiveDec": 0.0585628294 }, "tmParams" : { "activationThreshold": 28, "newSynapseCount" : 32 }}
-    model = ARMATimeSeries( 0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])  # p, q, sigma=1, n=1000, normalize=True, seed=int(time.time()), ar_poly = None, ma_poly = None)
-    test_HTM_output(train_HTM_on_model(model, params= { "rdse": 4.7963695838, "sibt": 7, "iter_per_cycle": 1 }, htmparams=param_dict), 2,len(poly)+2)
+    selectors = [ "AR3-Lite", "AR4-Lite", "AR4-Full", "AR6-Lite", "AR6-Full", "MA6-Full" ]
+    for selector in selectors:
+        print("Testing {}....".format(selector))
+        test_HTM_model_of_interest(selector)
+        print("\n\n\n")
 
 def compare_fitted_rmse(seeded, n):
     DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
@@ -277,7 +303,7 @@ def compare_fitted_rmse(seeded, n):
 
 
 def main():
-    fit_models_of_interest()
+    test_HTM_models_of_interest()
 
 if __name__ == "__main__":
     main()

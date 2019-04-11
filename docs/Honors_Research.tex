@@ -556,6 +556,57 @@
       The next step was to assess the accuracy of the Bayes Information Criterion produced by the \texttt{arma\_order\_select\_ic}. It was crucial that this information be accurate because the BIC produced by this function would be used as the order of the ARMA model used when fitting the coefficients of the lag polynomials. 
       
       To measure the accuracy of \texttt{arma\_order\_select\_ic} we designed an experiment in which we would give the function 1500 instances of a known ARMA model so that we could compare the $p$ and $q$ produced by the function to the order of the model used to generate the instance. For the data in Table~\ref{tab:bic6}, both a (6,0)-ARMA model and (0,6)-ARMA model with coefficients for the respective lag polynomials of $[0.0,0.0,0.4,0.0,0.3,0.3]$ were used. The left and right halves of the tables describe the results for the AR (or (6,0)-ARMA) and MA (or (0,6)-ARMA) model respectively, giving the number of occurrences and the frequency with which \texttt{arma\_order\_select\_ic} gave each $p$ and $q$
+      
+      \begin{table}[]
+          \centering
+          \begin{tabular}{|l|c|c|c|c|l|}
+              \hline
+              \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+              \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+              AR Lag 2 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 2 \\ \hline
+              AR Lag 3 & 1492 & 99.47\% & 1490 & 99.33\% & MA Lag 3 \\ \hline
+              AR Lag 4 & 6 & 0.40\% & 9 & 0.60\% & MA Lag 4 \\ \hline
+              AR Lag 5 & 2 & 0.13\% & 1 & 0.07\% & MA Lag 5 \\ \hline
+              MA Lag 1 & 11 & 0.73\% & 7 & 0.47\% & AR Lag 1 \\ \hline
+              MA Lag 2 & 1 & 0.07\% & 2 & 0.13\% & AR Lag 2 \\ \hline
+          \end{tabular}
+           \caption{BIC produced for (3,0)- and (0,3)-ARMA Models}
+          \label{tab:bic3}
+      \end{table}
+      
+      \begin{table}[!ht]
+          \centering
+          \begin{tabular}{|l|c|c|c|c|l|}
+              \hline
+              \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+              \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+              AR Lag 3 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 3 \\ \hline
+              AR Lag 4 & 1493 & 99.53\% & 1494 & 99.60\% & MA Lag 4 \\ \hline
+              AR Lag 5 & 4 & 0.27\% & 5 & 0.33\% & MA Lag 5 \\ \hline
+              AR Lag 6 & 3 & 0.20\% & 1 & 0.07\% & MA Lag 6 \\ \hline
+              MA Lag 1 & 10 & 0.67\% & 8 & 0.05\% & AR Lag 1 \\ \hline
+              MA Lag 2 & 2 & 0.13\% & 0 & 0.00\% & AR Lag 2 \\ \hline
+          \end{tabular}
+         \caption{BIC produced for (4,0)- and (0,4)-ARMA Models}
+        \label{tab:bic4}
+      \end{table}
+  
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+            AR Lag 4 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 4 \\ \hline
+            AR Lag 5 & 1492 & 99.47\% & 1484 & 98.93\% & MA Lag 5 \\ \hline
+            AR Lag 6 & 8 & 0.53\% & 15 & 1.00\% & MA Lag 6 \\ \hline
+            AR Lag 7 & 0 & 0.00\% & 1 & 0.07\% & MA Lag 7 \\ \hline
+            MA Lag 1 & 5 & 0.33\% & 11 & 0.73\% & AR Lag 1 \\ \hline
+            MA Lag 2 & 0 & 0.00\% & 1 & 0.07\% & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{BIC produced for (5,0)- and (0,5)-ARMA Models}
+        \label{tab:bic5}
+    \end{table}
     
     \begin{table}[!ht]
         \centering
@@ -570,7 +621,7 @@
             MA Lag 1 & 12 & 0.80\% & 5 & 0.33\% & AR Lag 1 \\ \hline
             MA Lag 2 & 4 & 0.27\% & 4 & 0.27\% & AR Lag 2 \\ \hline
         \end{tabular}
-        \caption{BIC produced by \texttt{arma\_order\_select\_ic} for two models}
+        \caption{BIC produced for (6,0)- and (0,6)-ARMA Models}
         \label{tab:bic6}
     \end{table}
     
@@ -585,8 +636,67 @@
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+             \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
+            AR Lag 1 & 0.0020 & 0.03149 & 0.00162 & 0.05368 & MA Lag 1 \\ \hline
+            AR Lag 2 & -0.00088 & 0.03129 & -0.00127 & 0.03097 & MA Lag 2 \\ \hline
+            AR Lag 3 & 0.00596 & 0.02015 & -0.00151 & -0.02120 & MA Lag 3 \\ \hline
+            AR Lag 4 & 0.00031 & 0.01852 & 0.00002 & 0.03803 & MA Lag 4 \\ \hline
+            AR Lag 5 & -0.00047 & 0.02124 & -0.00056 & -.0215 & MA Lag 5 \\ \hline
+            MA Lag 1 & 0.00074 & 0.02678 & 0.00052 & 0.04943 & AR Lag 1 \\ \hline
+            MA Lag 2 & -0.00066 & 0.02551 & -0.00058 & 0.02553 & AR Lag 2 \\ \hline
+        \end{tabular}
+    \caption{Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA models}
+    \label{tab:errortsfitting3}
+    \end{table}
+
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
+            AR Lag 1 & -0.00118 & 0.04119 & 0.00010 & 0.03064 & MA Lag 1 \\ \hline
+            AR Lag 2 & -0.00209 & 0.03995 & 0.00047 & 0.01930 & MA Lag 2 \\ \hline
+            AR Lag 3 & -0.00075 & 0.01945 & 0.00051 & 0.02011 & MA Lag 3 \\ \hline
+            AR Lag 4 & 0.00458 & 0.01916 & -0.00411 & 0.01960 & MA Lag 4 \\ \hline
+            AR Lag 5 & -0.00013 & 0.02919 & 0.00025 & 0.01785 & MA Lag 5 \\ \hline
+            AR Lag 6 & -0.00097 & 0.02862 & 0.00008 & 0.00295 & MA Lag 6 \\ \hline
+            MA Lag 1 & -0.00057 & 0.03464 & 0.00053 & 0.02469 & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.00047 & 0.01930 & 0.00000 & 0.00000 & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA models}
+        \label{tab:errortsfitting4}
+    \end{table}
+
+     \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
+            AR Lag 1 & 0.00062 & 0.0293 & -0.00053 & 0.04604 & MA Lag 1 \\ \hline
+            AR Lag 2 & 0.00120 & 0.02771 & -0.00157 & 0.02918 & MA Lag 2 \\ \hline
+            AR Lag 3 & -0.00015 & 0.03318 & 0.00116 & 0.03725 & MA Lag 3 \\ \hline
+            AR Lag 4 & -0.00184 & 0.02794 & 0.00036 & 0.02942 & MA Lag 4 \\ \hline
+            AR Lag 5 & 0.00335 & 0.02785 & -0.00171 & 0.02857 & MA Lag 5 \\ \hline
+            AR Lag 6 & 0.00011 & 0.00696 & -0.00004 & 0.02024 & MA Lag 6 \\ \hline
+            AR Lag 7 & 0.00000 & 0.00000 & 0.00000* & 0.00000* & MA Lag 7 \\ \hline
+            MA Lag 1 & 0.00037 & 0.01111 & 0.00000 & 0.03680 & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.00000 & 0.00000 & 0.00016 & 0.00608 & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA models}
+        \label{tab:errortsfitting5}
+    \end{table}
+
+    \textcolor{red}{NOTE: 5 BOI HAD ONE ROW OF N/A (0,7) MEANING IT WAS NON-STATIONARY}
+    
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
             \multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}     \\ \hline
-            \cellcolor{black} & $\mu_{diff}$ & $\sigma_{diff}$ & $\mu_{diff}$ & $\sigma_{diff}$ & \cellcolor{black}         \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & \cellcolor{black}         \\ \hline
             AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
             AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
             AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
@@ -598,12 +708,14 @@
             MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
             MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
         \end{tabular}
-        \caption{Errors on fitting coefficients to instances of Lag-6 AR and MA models}
-        \label{tab:errortsfitting}
+        \caption{Errors on fitting coefficients to instances of (6,0)- and (0,6)-ARMA models}
+        \label{tab:errortsfitting6}
     \end{table}
     
-    A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
-
+    A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting6}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
+    
+    \vfill
+    \pagebreak
 
     \section{Swarming for Parameter Optimization}\label{sec:res:swarm}
 	
@@ -629,6 +741,8 @@
 
 	\textcolor{red}{talk about swarming on params for ARMA models}
 
+    \vfill
+    \pagebreak
     
     \section{Evaulating HTM Predictions}\label{sec:res:eval}
     
@@ -641,6 +755,28 @@
     \textcolor{red}{old intro to the Results section }
 	
 	Our next test was therefore to train a Hierarchical Temporal Memory network on one of these two models, fit its output, and assess with some statistical confidence it is the same model that we input. This is exactly what we did. We fed Hierarchical Temporal Memory networks the two aforementioned AR and MA models, gave their outputs to the \texttt{arma\_order\_select\_ic} function, then the \texttt{fit} function, and finally subtracted the observed means, divided by the standard deviation, and took the absolute value to get the observations distance from the mean in terms of standard deviations. 
+    
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & HTM & & HTM &  & \cellcolor{black} \\
+            \cellcolor{black} & Output & Z-Score & Output & Z-Score & \cellcolor{black} \\ \hline
+            AR Lag 1 & -0.855 & 27.21499 &  &  & MA Lag 1 \\ \hline
+            AR Lag 2 & 0.936 & 29.94183 &  &  & MA Lag 2 \\ \hline
+            AR Lag 3 & 0.000 & 0.29578 &  &  & MA Lag 3 \\ \hline
+            AR Lag 4 & 0.000 & 0.01674 &  &  & MA Lag 4 \\ \hline
+            AR Lag 5 & 0.000 & 0.02213 &  &  & MA Lag 5 \\ \hline
+            MA Lag 1 & -0.897 & 33.52278 &  &  & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.745 & 29.23011 &  &  & AR Lag 2 \\ \hline
+            MA Lag 3 & -0.592 & $\infty$ &  &  & AR Lag 3 \\ \hline
+            MA Lag 4 & 0.395 & $\infty$ &  &  & AR Lag 4 \\ \hline
+            MA Lag 5 & -0.213 & $\infty$ &  &  & AR Lag 5 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
+        \label{tab:HTMARMAError3Lite}
+    \end{table}
 		
 	\begin{table}[!ht]
 		\centering
@@ -661,7 +797,7 @@
 			MA Lag 2 & 0.000 & 0.05105 & 0.000 & 0.04727 & AR Lag 2 \\ \hline
 		\end{tabular}
 		\caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
-		\label{tab:HTMARMAError}
+		\label{tab:HTMARMAError6}
 	\end{table}
 	
 	The results of this experiment can be seen in Table~\ref{tab:HTMARMAError}. Both outputs had differences from the mean above 13 sigma which allows us to conclude with 99.9999+\% statistical significance that the observed output is not drawn from the sample of outputs of the \texttt{arma\_order\_select\_ic} and \texttt{fit} function on instances of the true model, rejecting the null hypothesis. This piece of evidence also leads us to believe that one-layer HTM networks may not model ARMA models as ARMA models internally and thus may not be the best method for predicting time series that are fit well by ARMA models.
@@ -705,7 +841,7 @@
 			\begin{tabular}{|l|c|c|c|c|l|}
 				\hline
 				\multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}  \\ \hline
-				\cellcolor{black} & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & \cellcolor{black}         \\ \hline
+                \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & \cellcolor{black}         \\ \hline
 				AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
 				AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
 				AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
@@ -721,97 +857,97 @@
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag1CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR1CoefDist.png}
 	\end{figure}
 
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag2CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR2CoefDist.png}
 	\end{figure}
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag3CoefDist.png}
-	\end{figure}
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag4CoefDist.png}
-	\end{figure}
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag5CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR3CoefDist.png}
 	\end{figure}
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag6CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR4CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR5CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR6CoefDist.png}
 	\end{figure}
 
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag7CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR7CoefDist.png}
 	\end{figure}
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelARLag8CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelAR8CoefDist.png}
 	\end{figure}
 
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelMALag1CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelMA1CoefDist.png}
 	\end{figure}
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/ARModelMALag2CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/AR6ModelMA2CoefDist.png}
 	\end{figure}
 
 
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag1CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA1CoefDist.png}
 	\end{figure}
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag2CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA2CoefDist.png}
 	\end{figure}
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag3CoefDist.png}
-	\end{figure}
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag4CoefDist.png}
-	\end{figure}
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag5CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA3CoefDist.png}
 	\end{figure}
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag6CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA4CoefDist.png}
 	\end{figure}
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag7CoefDist.png}
-	\end{figure}
-	
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.85\linewidth]{images/MAModelMALag8CoefDist.png}
-	\end{figure}
-	\begin{figure}[!ht]
-		\centering
-		\includegraphics[width=.84\linewidth]{images/MAModelARLag1CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA5CoefDist.png}
 	\end{figure}
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=.84\linewidth]{images/MAModelARLag2CoefDist.png}
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA6CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA7CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.85\linewidth]{images/MA6ModelMA8CoefDist.png}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.84\linewidth]{images/MA6ModelAR1CoefDist.png}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=.84\linewidth]{images/MA6ModelAR2CoefDist.png}
 	\end{figure}
 	
 \end{document}
