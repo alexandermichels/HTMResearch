@@ -151,7 +151,7 @@
 	
 	John Searle's 1980 paper ``Minds, Brains, and Programs'' introduced the world to The Chinese room argument \cite{Searle}. It supposes that artificial intelligence research is successful and produces an artificial intelligence that is capable of behaving as if it understands Chinese, then asks does the machine literally understand Chinese or it simulating the ability to understand Chinese? \cite{Searle} 
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.4\linewidth]{images/ChineseRoom.jpg}
 		\caption[Searle's Chinese Room]{Searle's Chinese Room\footnotemark}
@@ -190,7 +190,7 @@
 	
 	Emulating natural processes--and even the human brain--is not a new idea to computer scientists. In fact, artificial neural networks that we still use today were originally proposed in a 1943 paper that introduced the first mathematical model of a neuron~\cite{FundNatComp}. The 1950's and 60's saw the rise of evolutionary computing which attempts to simulate evolution usually for finding optimal solutions to problems. Computational neuroscience is the newest field to emerge from this interdisciplinary intersection of biologists and computer scientists.
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.8\linewidth]{images/ArtificialNeuron.jpg}
 		\caption{A Model for an Artificial Neuron}
@@ -205,7 +205,7 @@
 	
 	A \textbf{time series} is a ``sequence of observations taken sequentially in time'' and are everywhere in today's world~\cite{Box}. Figure~\ref{fig:TimeSeriesExamples} shows two such examples, stock prices (Figure~\ref{fig:AMDChart}) and levels of precipitation in Seatle, WA from 1948-1979 (Figure~\ref{fig:SeattlePrecip}). Their ubiquity drives a desire to understand, characterize, and predict time series, but it can be an extremely complex task because there is generally a dependence on prior terms due to the sequential nature and some uncertainty to their movements.
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\begin{subfigure}[b]{.45\textwidth}
 			\includegraphics[width=\textwidth]{images/AMDChart.png}
@@ -292,7 +292,7 @@
 	
 	Usually abbreviated to PSO or \textit{swarming}, it draws inspiration from bird flocks and schools of fish~\cite{Eberhart}. The concept is quite simple: it simulates particles on parameter space and at each time-step every particle evaluates fitness as a function of its location in parameter space, then moves towards some linear combination of its personal best and the overall best score among the particles using weights representing a cognitive constant or individuality (denoted $c$) and a social constant (denoted $s$).
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.7\linewidth]{images/PSOVisual.png}
 		\caption{Visualization of the PSO Algorithm}
@@ -315,7 +315,7 @@
 	
 	Hierarchical Temporal Memory is a framework attempting to produce cortical learning algorithms---algorithms that mimic the processes of the human neocortex. In the human brain, the neocortex is approximately seventy-percent of the brain's volume~\cite{DiscoveriesBrainWorks}. It can be described as a ``wrinkly sheet of sheet of cells, about two millimeters thick'' and is responsible for the characteristics of intelligence that set humanity apart from other species~\cite{DiscoveriesBrainWorks}. 
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.5\linewidth]{images/Brain.png}
 		\caption{Overview of the Human Brain}
@@ -324,7 +324,7 @@
 	
 	For all of its complexity, the neocortex has an incredibly consistent microarchitecture of cortical columns which are in turn made up of neurons~\cite{DiscoveriesBrainWorks}. Neuroscientist Vernon Mountcastle revolutionized the way we think about our own brains when he proposed that the consistent architecture must imply consistent processes across the cortex. This would mean that all of our high-level thinking must essentially be the same on the level of the cortical column. Therefore if we can understand how a cortical column functions, we can understand the entire cortex~\cite{DiscoveriesBrainWorks}.	
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.6\linewidth]{images/CorticalColumns.jpg}
 		\caption[3D reconstruction of five neighboring columns in rat vibrissal cortex]{3D reconstruction of five neighboring columns in rat vibrissal cortex\footnotemark}
@@ -361,7 +361,7 @@
 	
 	Hierarchical Temporal Memory aims to implement the functions of the neocortex as faithfully as possible, and unsurprisingly uses the same atomic unit of the cell. Modeled after the pyramidal neurons of the neocortex, these cells each take their own inputs and make their own predictions which the layer combines into a cohesive prediction \cite{Whitepaper}. They have three states: active from feed-forward input, active from lateral input (predictive state), and inactive. These first two states correspond to a short burst of action potentials in a neuron, and a slower steady burst of action potentials on a neuron respectively in our own brain.
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.7\linewidth]{images/HTMCell.jpg}
 		\caption[Pyramidal Neuron vs. Hierarchical Temporal Memory Cell]{Pyramidal Neuron vs. Hierarchical Temporal Memory Cell~\cite{TheHTMSpatialPooler}}
@@ -376,7 +376,7 @@
 	
 	As discussed in Section~\ref{sec:sdr}, in the real world we need to encode sensory data to a format which the cortex can understand. The entire data pipeline of Hierarchical Temporal Memory can be seen in Figure~\ref{fig:HTMpipeline}. For numeric data, we generally use a Random Distributed Scalar Encoder. Just as with any scalar encoder, it is a function from a number to a binary vector with \texttt{width} 1 bits and the rest of the bits being zero. All scalar encoders also have either implicitly or explicitly a \texttt{resolution} parameter which determines the size of the ``buckets'' in which all numbers in that ``bucket'' are encoded to the same binary vector, this is essentially the lower-limit topology on $\mathbb{R}$. This is necessary because for a binary vector of length $n$ there are only $2^{n}$ possibly options and infinite real numbers between any two numbers.
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=\linewidth]{images/DataPipeline.jpg}
 		\caption[Data Pipeline of an HTM]{Data Pipeline of an HTM~\cite{TheHTMSpatialPooler}}
@@ -389,7 +389,7 @@
 
 	The Spatial Pooler's job is to receive the encoded representation of the input space and convert the input to a sparse pattern---a requirement for learning and prediction in Hierarchical Temporal Memory theory~\cite{Whitepaper}. Upon initialization, all of the potential synapses on the dendrite segments of all of the mini-columns are randomly assigned permanence values and based on these permanence values a potential synapse may be valid or not~\cite{Whitepaper}. 
 
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.6\linewidth]{images/SpatialPooler.jpg}
 		\caption[Spatial Pooler]{Spatial Pooler \cite{TheHTMSpatialPooler}}
@@ -406,7 +406,7 @@
 	
 	
 
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.8\linewidth]{images/TemporalPooler.png}
 		\caption{Temporal Pooler}
@@ -417,7 +417,7 @@
 	
 	Once the system completes its processing of a time step's input, the system outputs a sparse distributed representation which may have gone through multiple layers and it is important to be able to decode the system's prediction in order for the system to be useful. Hierarchical Temporal Memory currently uses something called an SDR Classifier to decode the predictions of an HTM \cite{Dillon}. At its essence, an SDR Classifier is a single layer, feed forward, neural network \cite{Dillon}.
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.6\linewidth]{images/SDRClassifier.jpg}
 		\caption{SDR Classifier}
@@ -464,7 +464,7 @@
 	
 	Due to the computationally intensive nature of my research, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
 	
-	\begin{table}[!ht]
+	\begin{table}[hbt!]
 		\centering
 		\begin{tabular}{|l|l|}
 			\hline
@@ -535,7 +535,7 @@
    
    To test the accuracy of the standard deviation produced by this tool, we measured the standard deviations of 270 instances of a (4,0)-ARMA model described by $\tilde{z}_{t}=0.8\tilde{z}_{t-4}+a_{t}$ with input standard deviations ranging from one to nine with equal frequency (i.e. 30 with $\sigma=1$, 30 with $\sigma=2$, etc.). The results can be seen below in Figure~\ref{fig:sigmaofseries-pre}. The data shows a strong correlation between input sigma and measured sigma, which allows us to conclude that the tool is reasonably accurate for input sigmas between 1 and 9.
     
-    \begin{figure}[!ht]
+    \begin{figure}[hbt!]
         \centering
         \includegraphics[width=.8\linewidth]{images/SigmaOfSeries-PreScaling.png}
         \caption{Standard Deviation of Generated Time Series Without Scaling}
@@ -544,7 +544,7 @@
     
     Using this tool, we then repeated the experiment, this time scaling the time series using the method described in Section~\ref{sec:exp:timeseriesclass} to better understand the affect scaling has on the standard deviation of the white noise. The results can be seen in Figure~\ref{fig:sigmaofseries-post}. In stark contrast to the previous plot, this data shows a lack of correlation and a much wider standard deviation for the distribution of measured (post-scaling) sigma. This suggests that a standard deviation between 14 and 22 was to be expected for all series regardless of the input sigma and for this reason we used an input sigma of 1 for all further experiments.
     
-    \begin{figure}[!ht]
+    \begin{figure}[hbt!]
         \centering
         \includegraphics[width=.8\linewidth]{images/SigmaOfSeries-PostScaling.png}
         \caption{Standard Deviation of Generated Time Series Pre- and Post-Scaling}
@@ -574,7 +574,7 @@
           \label{tab:bic3}
       \end{table}
       
-      \begin{table}[!ht]
+      \begin{table}[hbt!]
           \centering
           \begin{tabular}{|l|c|c|c|c|l|}
               \hline
@@ -591,7 +591,7 @@
         \label{tab:bic4}
       \end{table}
   
-    \begin{table}[!ht]
+    \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -608,7 +608,7 @@
         \label{tab:bic5}
     \end{table}
     
-    \begin{table}[!ht]
+    \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -624,6 +624,23 @@
         \caption{BIC produced for (6,0)- and (0,6)-ARMA Models}
         \label{tab:bic6}
     \end{table}
+
+     \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+            AR Lag 7 & & \% &  & \% & MA Lag 7 \\ \hline
+            AR Lag 8 &  & \% & & \% & MA Lag 8 \\ \hline
+            AR Lag 9 &  & \% &  & \% & MA Lag 9 \\ \hline
+            AR Lag 10 &  & \% &  & \% & MA Lag 10 \\ \hline
+            MA Lag 1 &  & \% &  & \% & AR Lag 1 \\ \hline
+            MA Lag 2 &  & \% &  & \% & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{PLACEHOLDER: BIC produced for (8,0)- and (0,8)-ARMA Models}
+        \label{tab:bic8}
+    \end{table}
     
     
     The results in Table~\ref{tab:bic6} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two models. It should be noted that Table~\ref{tab:bic6} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this experiment. A quick summary of the information on BIC found in Table~\ref{tab:bic6}, the number of models that were correctly identified as a (6,0)-ARMA model or (0,6)-ARMA model were 1476 (98.40\%) and 1480 (98.67\%) respectively.
@@ -632,7 +649,7 @@
     
     Having quantified the accuracy of the information criterion tool, it was necessary to assess the accuracy of the \texttt{fit} tool so that we could analyze the differences between the input model and the output sequence coefficient-by-coefficient. This would give us a statistical confidence associated with our result using the standard deviation of the differences between the model coefficient and the tool's output. We again used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
     
-    \begin{table}[!ht]
+    \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -646,11 +663,11 @@
             MA Lag 1 & 0.00074 & 0.02678 & 0.00052 & 0.04943 & AR Lag 1 \\ \hline
             MA Lag 2 & -0.00066 & 0.02551 & -0.00058 & 0.02553 & AR Lag 2 \\ \hline
         \end{tabular}
-    \caption{Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA models}
+    \caption{Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA model}
     \label{tab:errortsfitting3}
     \end{table}
 
-    \begin{table}[!ht]
+    \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -665,11 +682,11 @@
             MA Lag 1 & -0.00057 & 0.03464 & 0.00053 & 0.02469 & AR Lag 1 \\ \hline
             MA Lag 2 & 0.00047 & 0.01930 & 0.00000 & 0.00000 & AR Lag 2 \\ \hline
         \end{tabular}
-        \caption{Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA models}
+        \caption{Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA model}
         \label{tab:errortsfitting4}
     \end{table}
 
-     \begin{table}[!ht]
+     \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -685,13 +702,13 @@
             MA Lag 1 & 0.00037 & 0.01111 & 0.00000 & 0.03680 & AR Lag 1 \\ \hline
             MA Lag 2 & 0.00000 & 0.00000 & 0.00016 & 0.00608 & AR Lag 2 \\ \hline
         \end{tabular}
-        \caption{Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA models}
+        \caption{Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA model}
         \label{tab:errortsfitting5}
     \end{table}
 
     \textcolor{red}{NOTE: 5 BOI HAD ONE ROW OF N/A (0,7) MEANING IT WAS NON-STATIONARY}
     
-    \begin{table}[!ht]
+    \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -708,31 +725,58 @@
             MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
             MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
         \end{tabular}
-        \caption{Errors on fitting coefficients to instances of (6,0)- and (0,6)-ARMA models}
+        \caption{Errors on fitting coefficients to instances of (6,0)- and (0,6)-ARMA model}
         \label{tab:errortsfitting6}
+    \end{table}
+
+    \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}     \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & \cellcolor{black}         \\ \hline
+            AR Lag 1 &  &  &  &  & MA Lag 1 \\ \hline
+            AR Lag 2 &  &  &  &  & MA Lag 2 \\ \hline
+            AR Lag 3 &  &  &  &  & MA Lag 3 \\ \hline
+            AR Lag 4 &  &  &  &  & MA Lag 4 \\ \hline
+            AR Lag 5 &  &  &  &  & MA Lag 5 \\ \hline
+            AR Lag 6 &  &  &  &  & MA Lag 6 \\ \hline
+            AR Lag 7 &  &  &  &  & MA Lag 7 \\ \hline
+            AR Lag 8 &  &  &  &  & MA Lag 8 \\ \hline
+            AR Lag 9 &  &  &  &  & MA Lag 9 \\ \hline
+            AR Lag 10 &  &  &  &  & MA Lag 10 \\ \hline
+            MA Lag 1 &  &  &  &  & AR Lag 1 \\ \hline
+            MA Lag 2 &  &  &  &  & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{PLACEHOLDER: Errors on fitting coefficients to instances of (8,0)- and (0,8)-ARMA model}
+        \label{tab:errortsfitting8}
     \end{table}
     
     A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting6}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
     
     \vfill
     \pagebreak
+    \vfill
+    \pagebreak
+    \vfill
+    \pagebreak
 
     \section{Swarming for Parameter Optimization}\label{sec:res:swarm}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.8\linewidth]{images/HTMSwarming(6,0)-ARMAModel.png}
 		\caption{Swarming on HTM Parameters for a (6,0)-ARMA Model}
 		\label{fig:swarming(6,0)}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=\linewidth]{images/HTMTraining(6,0)-ARMA.png}
 		\caption{HTM One-Step Predictions of a (6,0)-ARMA Model}
 		\label{fig:train(6,0)ARMA}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=\linewidth]{images/HTMTraining(0,6)-ARMA.png}
 		\caption{HTM One-Step Predictions of a (0,6)-ARMA Model}
@@ -741,6 +785,10 @@
 
 	\textcolor{red}{talk about swarming on params for ARMA models}
 
+    \vfill
+    \pagebreak
+    \vfill
+    \pagebreak
     \vfill
     \pagebreak
     
@@ -756,7 +804,7 @@
 	
 	Our next test was therefore to train a Hierarchical Temporal Memory network on one of these two models, fit its output, and assess with some statistical confidence it is the same model that we input. This is exactly what we did. We fed Hierarchical Temporal Memory networks the two aforementioned AR and MA models, gave their outputs to the \texttt{arma\_order\_select\_ic} function, then the \texttt{fit} function, and finally subtracted the observed means, divided by the standard deviation, and took the absolute value to get the observations distance from the mean in terms of standard deviations. 
     
-    \begin{table}[!ht]
+    \begin{table}[hbt!]
         \centering
         \begin{tabular}{|l|c|c|c|c|l|}
             \hline
@@ -774,11 +822,11 @@
             MA Lag 4 & 0.395 & $\infty$ &  &  & AR Lag 4 \\ \hline
             MA Lag 5 & -0.213 & $\infty$ &  &  & AR Lag 5 \\ \hline
         \end{tabular}
-        \caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
+        \caption{ARMA Models fit to HTM Predictions of (3,0)- and (0,3)-ARMA Models using ``lite'' parameter swarming}
         \label{tab:HTMARMAError3Lite}
     \end{table}
 		
-	\begin{table}[!ht]
+	\begin{table}[hbt!]
 		\centering
 		\begin{tabular}{|l|c|c|c|c|l|}
 			\hline
@@ -796,11 +844,11 @@
 			MA Lag 1 & 0.000 & 0.06782 & -0.817 & 17.05749 & AR Lag 1 \\ \hline
 			MA Lag 2 & 0.000 & 0.05105 & 0.000 & 0.04727 & AR Lag 2 \\ \hline
 		\end{tabular}
-		\caption{Errors on fitting coefficients of AR and MA models to HTM outputs}
-		\label{tab:HTMARMAError6}
+		\caption{ARMA Models fit to HTM Predictions of (6,0)- and (0,6)-ARMA Models using ``full'' parameter swarming}
+		\label{tab:HTMARMAError6Full}
 	\end{table}
 	
-	The results of this experiment can be seen in Table~\ref{tab:HTMARMAError}. Both outputs had differences from the mean above 13 sigma which allows us to conclude with 99.9999+\% statistical significance that the observed output is not drawn from the sample of outputs of the \texttt{arma\_order\_select\_ic} and \texttt{fit} function on instances of the true model, rejecting the null hypothesis. This piece of evidence also leads us to believe that one-layer HTM networks may not model ARMA models as ARMA models internally and thus may not be the best method for predicting time series that are fit well by ARMA models.
+	The results of this experiment can be seen in Table~\ref{tab:HTMARMAError6Full}. Both outputs had differences from the mean above 13 sigma which allows us to conclude with 99.9999+\% statistical significance that the observed output is not drawn from the sample of outputs of the \texttt{arma\_order\_select\_ic} and \texttt{fit} function on instances of the true model, rejecting the null hypothesis. This piece of evidence also leads us to believe that one-layer HTM networks may not model ARMA models as ARMA models internally and thus may not be the best method for predicting time series that are fit well by ARMA models.
 	
 	
 	\chapter{Discussion and Further Work}
@@ -820,7 +868,7 @@
 	\appendices
 		\chapter{Errors on Fitting AR and MA Models}\label{app:errors}
 		
-			\begin{table}[!ht]
+			\begin{table}[hbt!]
 			\centering
 			\begin{tabular}{|l|c|c|c|c|l|}
 				\hline
@@ -836,7 +884,7 @@
 			\caption{BIC for each instance}
 		\end{table}
 		
-		\begin{table}[!ht]
+		\begin{table}[hbt!]
 			\centering
 			\begin{tabular}{|l|c|c|c|c|l|}
 				\hline
@@ -855,97 +903,97 @@
 			\end{tabular}
 		\end{table}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR1CoefDist.png}
 	\end{figure}
 
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR2CoefDist.png}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR3CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR4CoefDist.png}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR5CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR6CoefDist.png}
 	\end{figure}
 
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR7CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelAR8CoefDist.png}
 	\end{figure}
 
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelMA1CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/AR6ModelMA2CoefDist.png}
 	\end{figure}
 
 
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA1CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA2CoefDist.png}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA3CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA4CoefDist.png}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA5CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA6CoefDist.png}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA7CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.85\linewidth]{images/MA6ModelMA8CoefDist.png}
 	\end{figure}
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.84\linewidth]{images/MA6ModelAR1CoefDist.png}
 	\end{figure}
 	
-	\begin{figure}[!ht]
+	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.84\linewidth]{images/MA6ModelAR2CoefDist.png}
 	\end{figure}

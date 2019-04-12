@@ -9,12 +9,14 @@
 \contentsline {table}{\numberline {6.2}{\ignorespaces BIC produced for (4,0)- and (0,4)-ARMA Models\relax }}{39}{table.caption.23}% 
 \contentsline {table}{\numberline {6.3}{\ignorespaces BIC produced for (5,0)- and (0,5)-ARMA Models\relax }}{39}{table.caption.24}% 
 \contentsline {table}{\numberline {6.4}{\ignorespaces BIC produced for (6,0)- and (0,6)-ARMA Models\relax }}{40}{table.caption.25}% 
-\contentsline {table}{\numberline {6.5}{\ignorespaces Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA models\relax }}{41}{table.caption.26}% 
-\contentsline {table}{\numberline {6.6}{\ignorespaces Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA models\relax }}{41}{table.caption.27}% 
-\contentsline {table}{\numberline {6.7}{\ignorespaces Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA models\relax }}{42}{table.caption.28}% 
-\contentsline {table}{\numberline {6.8}{\ignorespaces Errors on fitting coefficients to instances of (6,0)- and (0,6)-ARMA models\relax }}{43}{table.caption.29}% 
-\contentsline {table}{\numberline {6.9}{\ignorespaces Errors on fitting coefficients of AR and MA models to HTM outputs\relax }}{46}{table.caption.33}% 
-\contentsline {table}{\numberline {6.10}{\ignorespaces Errors on fitting coefficients of AR and MA models to HTM outputs\relax }}{47}{table.caption.34}% 
+\contentsline {table}{\numberline {6.5}{\ignorespaces PLACEHOLDER: BIC produced for (8,0)- and (0,8)-ARMA Models\relax }}{40}{table.caption.26}% 
+\contentsline {table}{\numberline {6.6}{\ignorespaces Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA model\relax }}{41}{table.caption.27}% 
+\contentsline {table}{\numberline {6.7}{\ignorespaces Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA model\relax }}{41}{table.caption.28}% 
+\contentsline {table}{\numberline {6.8}{\ignorespaces Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA model\relax }}{42}{table.caption.29}% 
+\contentsline {table}{\numberline {6.9}{\ignorespaces Errors on fitting coefficients to instances of (6,0)- and (0,6)-ARMA model\relax }}{43}{table.caption.30}% 
+\contentsline {table}{\numberline {6.10}{\ignorespaces PLACEHOLDER: Errors on fitting coefficients to instances of (8,0)- and (0,8)-ARMA model\relax }}{44}{table.caption.31}% 
+\contentsline {table}{\numberline {6.11}{\ignorespaces ARMA Models fit to HTM Predictions of (3,0)- and (0,3)-ARMA Models using ``lite'' parameter swarming\relax }}{47}{table.caption.35}% 
+\contentsline {table}{\numberline {6.12}{\ignorespaces ARMA Models fit to HTM Predictions of (6,0)- and (0,6)-ARMA Models using ``full'' parameter swarming\relax }}{48}{table.caption.36}% 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces BIC for each instance\relax }}{54}{table.caption.37}% 
+\contentsline {table}{\numberline {A.1}{\ignorespaces BIC for each instance\relax }}{55}{table.caption.39}% 
