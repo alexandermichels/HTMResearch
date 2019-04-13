@@ -204,6 +204,12 @@ class ARMATimeSeries(Sequence):
         furthest = max([abs(_min), abs(_max)])
         self.sequence = [x*val/furthest for x in self.sequence]
 
+    def plot(self):
+        pyplot.plot(self.sequence, color='blue', label="series")
+        pyplot.legend(loc="lower right")
+        pyplot.autoscale(enable=True, axis='x', tight=True)
+        pyplot.show()
+
 def get_order(arr, max_ar=4, max_ma=2):
     return arma_order_select_ic(arr, max_ar=max_ar, max_ma=max_ma, trend="nc").bic_min_order
 
@@ -245,25 +251,8 @@ def fit(arr, order):
     return list(res.arparams), list(res.maparams)
 
 def main():
-    '''for k in range(1,3):
-        for j in range(3):
-            ts = ARMATimeSeries(k,k, sigma=1)
-            for i in range(10):
-                    print("The time series at {} is {}".format(i, ts.get()))
-            print(ts)
-            print(ts.ar_poly, ts.ma_poly)
-            print(fit(ts.sequence, get_order(ts.sequence, ts.p, ts.q)))
-            ts.plot()'''
-    _OUTPUT_PATH = "../../outputs/SigmaOfStuff.csv"
-    with open(_OUTPUT_PATH, "w") as outputFile:
-        writer = csv.writer(outputFile)
-        for j in range(30):
-            for i in range(1,10):
-                sigma = i
-                ts = ARMATimeSeries(4,0, sigma=sigma, ar_poly=[1,0,0,0,.8], normalize=False)
-                sigmao = sqrt(ts.fit("sigma2"))
-                print("The input sigma was {} and the calculated sigma is {}".format(sigma, sigmao))
-                writer.writerow([sigma,sigmao])
+    ts = ARMATimeSeries(6,0, sigma=1, ar_poly=[1,0,0,.4, 0, .3, .3], normalize=False)
+    ts.plot()
 
 if __name__ == "__main__":
         main()

@@ -98,14 +98,11 @@ class HTM():
         :param rdse_resolution: float, resolution of Random Distributed Scalar Encoder
         :param cellsPerMiniColumn: int, number of cells per mini-column. Default=32
         """
-        if verbosity > 0:
-            DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
-            self.log_file = join('../logs/', 'HTM-{}-({}RDSEres)-datasource-{}.log'.format(DATE,rdse_resolution,str(dataSource)))
-            log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
-            log.getLogger().addHandler(log.StreamHandler())
-            self.setVerbosity(verbosity)
-        else:
-            self.log_file = None
+        DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
+        self.log_file = join('../logs/', 'HTM-{}-({}RDSEres)-datasource-{}.log'.format(DATE,rdse_resolution,str(dataSource)))
+        log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
+        self.streaming = False
+        self.setVerbosity(verbosity)
 
         self.modelParams = {}
         log.debug("...loading params from {}...".format(_PARAMS_PATH))
@@ -196,8 +193,9 @@ class HTM():
             mostLikelyCategoryIdx = stepProbabilities.argmax()
             predictedValue = actualValues[mostLikelyCategoryIdx]
             predictionConfidence = stepProbabilities[mostLikelyCategoryIdx]
-            results[steps[i]]["predictedValue"] = predictedValue
-            results[steps[i]]["predictionConfidence"] = predictionConfidence
+            results[steps[i]]["predictedValue"] = float(predictedValue)
+            results[steps[i]]["predictionConfidence"] = float(predictionConfidence)
+        log.debug("Classifier Reults:\n{}".format(json.dumps(results, sort_keys=True, indent=4)))
         return results
 
     def getCurrSeries(self):
@@ -243,7 +241,9 @@ class HTM():
             DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
             self.log_file = join('../logs/', 'HTM-{}-({}CPMC-{}RDSEres)-datasource-{}.log'.format(DATE,self.modelParams["tmParams"]["cellsPerColumn"],self.encoder.get_resolution(),str(self.sensorRegion.dataSource)))
             log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
+        if level >= 4 and not self.streaming:
             log.getLogger().addHandler(log.StreamHandler())
+            self.streaming = True
 
         if level >= 3:
             log.getLogger().setLevel(log.DEBUG)
@@ -266,6 +266,7 @@ class HTM():
         else:
             # Enable learning for all regions.
             self.turnLearningOff()
+            self.turnLearningOn("c")
         self.turnInferenceOn()
 
         _model = self.network.regions["sensor"].getSelf().dataSource
@@ -314,13 +315,13 @@ class HTM():
         _model = self.getTimeSeriesStream()
 
         if mode == "strain":
-            self.turnLearningOff("t")
-            self.turnLearningOn("cs")
+            self.turnLearningOff("ct")
+            self.turnLearningOn("s")
         elif mode == "train":
             self.turnLearningOn()
-        else:
-            self.turnLearningOff("s")
-            self.turnLearningOn("ct")
+        elif mode == "test":
+            self.turnLearningOn("st")
+            self.turnLearningOff("c")
         self.turnInferenceOn()
 
         results = {}
@@ -402,15 +403,13 @@ class HTM():
 
         return (results, predictions)
 
-    def train(self, error_method="rmse", sibt=0, iter_per_cycle=1, max_cycles=20, weights={ 1: 1.0, 5: 1.0 }, normalize_error=False, logging=False):
+    def train(self, error_method="rmse", sibt=0, iter_per_cycle=1, max_cycles=20, weights={ 1: 1.0, 5: 1.0 }, normalize_error=False):
         """
         Trains the HTM on `dataSource`
 
         :param  error_method - the metric for calculating error ("rmse" root mean squared error or "binary")
         :param  sibt - spatial (pooler) iterations before temporal (pooler)
         """
-        if not logging:
-            self.setVerbosity(1)
         for i in range(sibt):
             log.debug("\nxxxxx Iteration {}/{} of the Spatial Pooler Training xxxxx".format(i+1, sibt))
             # train on spatial pooler
@@ -516,15 +515,15 @@ def plot_models_of_interest():
 
 def test_the_boi():
     # param_dict = { "spParams" : { "potentialPct": 0.00001, "numActiveColumnsPerInhArea": 73, "synPermConnected": 0.100820733774665, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 25}, "newSynapseCount" : 17 }
-    ts = ARMATimeSeries(6,0, sigma=1, ar_poly=[1, 0, 0, .4, 0, .3, .3], seed=12345)
+    ts = ARMATimeSeries(4,0, sigma=0.00000000001, ar_poly=[1,0,0,0,.8], seed=12345)
     done = False
     counter = 0
     network = HTM(ts, 2.2603913842)
     # network.train("rmse", sibt=13, iter_per_cycle=3, weights={1: 1.0, 2: 9.2297703503, 3: 10, 4: 1.1735560551, 5: 6.825066147, 6: 6.6112659849, 7: 10, 8: 0.857512104, 9: 10 }, normalize_error=True, logging=False)
-    network.train("rmse", sibt=0, iter_per_cycle=1, weights= {1: 1.0}, normalize_error=True, logging=True)
+    network.train("rmse", sibt=36, iter_per_cycle=2, weights={1: 1.0, 2: 6.4223237729, 3: 4.9617546938, 4: 8.3240290886, 5: 5.7037006935, 6: 4.7373287008, 7: 3.5210605231, 8: 6.1847886368, 9: 5.5869731198}, normalize_error=True, logging=True)
     ones, res = network.runNetwork(learning=False)
-    # print(ones)
-    bic = get_order(ones,  8, 2)
+    print(ones)
+    bic = get_order(ones, 6, 2)
     print("The bic for the HTM predictions are {}".format(bic))
     ar_poly, ma_poly = fit(ones, bic)
     print(ar_poly, ma_poly)
@@ -532,7 +531,7 @@ def test_the_boi():
     ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
     print(ar_poly)
     print(ma_poly)
-    htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=1, ar_poly=ar_poly, ma_poly=ma_poly)
+    htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly)
     ts.new(False)
     rmse = 0
     for i in range(len(htmpredts)):

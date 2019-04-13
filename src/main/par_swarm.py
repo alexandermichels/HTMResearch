@@ -4,7 +4,6 @@ from __future__ import division
 import argparse, csv, copy, itertools, json, math, random, signal, sys
 import logging as log
 from os.path import join
-import logging as log
 import multiprocessing as mp
 
 """My Stuff"""
@@ -26,7 +25,7 @@ def testfunc(args):
 
 def vbsfuncv1(args):
     x = args["x"]
-    return HTM(VeryBasicSequence(pattern=args["pattern"]), x[0], verbosity=0).train(error_method="binary", logging=True)
+    return HTM(VeryBasicSequence(pattern=args["pattern"]), x[0], verbosity=0).train(error_method="binary")
 
 def vbsfuncv2(args):
     x = args["x"]
@@ -72,7 +71,7 @@ def arfuncv5(args):
     elif args["model"] == "ma":
         ts = ARMATimeSeries( 0,6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
+    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True)
 
 def ar_or_ma_func(args):
     x = args["x"]
@@ -82,7 +81,7 @@ def ar_or_ma_func(args):
     elif(args["model"] == "ma"):
         ts = ARMATimeSeries(0, len(args["poly"]), args["sigma"], ma_poly = args["poly"])
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
-    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
+    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True)
 
 def ar_or_ma_funclite(args):
     x = args["x"]
@@ -91,18 +90,18 @@ def ar_or_ma_funclite(args):
         ts = ARMATimeSeries( len(args["poly"]), 0, args["sigma"], ar_poly = args["poly"])
     elif args["model"] == "ma":
         ts = ARMATimeSeries( 0, len(args["poly"]), args["sigma"], ma_poly = args["poly"])
-    return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=1, weights={ 1: 1.0, 2 :x[2], 3: x[3], 4: x[4], 5: x[5], 6: x[6], 7: x[7], 8: x[8], 9: x[9] }, normalize_error=True, logging=False)
+    return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=1, weights={ 1: 1.0, 2 :x[2], 3: x[3], 4: x[4], 5: x[5], 6: x[6], 7: x[7], 8: x[8], 9: x[9] }, normalize_error=True)
 
 def reproduceable_randomness(args):
     x = args["x"]
     param_dict = { "spParams" : { "potentialPct": x[3], "numActiveColumnsPerInhArea": int(x[4]), "synPermConnected": x[5], "synPermInactiveDec": x[6] }, "tmParams" : { "activationThreshold": int(x[7])}, "newSynapseCount" : int(x[8]) }
     ts = ARMATimeSeries(4,0, sigma=0.00000000001, n=args["n"], ar_poly=[1,0,0,0,.8], seed=12345)
-    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True, logging=False)
+    return HTM(ts, x[0], params=param_dict, verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[9], 3: x[10], 4: x[11], 5: x[12], 6: x[13], 7: x[14], 8: x[15], 9: x[16] }, normalize_error=True)
 
 def reproduceable_randomnesslite(args):
     x = args["x"]
     ts = ARMATimeSeries(4,0, sigma=0.00000000001, n=args["n"], ar_poly=[1,0,0,0,.8], seed=12345)
-    return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[3], 3: x[4], 4: x[5], 5: x[6], 6: x[7], 7: x[8], 8: x[9], 9: x[10] }, normalize_error=True, logging=False)
+    return HTM(ts, x[0], verbosity=0).train(error_method="rmse", sibt=int(x[1]), iter_per_cycle=int(x[2]), weights={ 1: 1.0, 2 :x[3], 3: x[4], 4: x[5], 5: x[6], 6: x[7], 7: x[8], 8: x[9], 9: x[10] }, normalize_error=True)
 
 def sanfunc(x):
     return HTM(VeryBasicSequence(pattern=1, n=1000), x[0], verbosity=0).train(error_method="binary")

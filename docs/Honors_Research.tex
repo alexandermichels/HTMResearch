@@ -624,23 +624,6 @@
         \caption{BIC produced for (6,0)- and (0,6)-ARMA Models}
         \label{tab:bic6}
     \end{table}
-
-     \begin{table}[hbt!]
-        \centering
-        \begin{tabular}{|l|c|c|c|c|l|}
-            \hline
-            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
-            AR Lag 7 & & \% &  & \% & MA Lag 7 \\ \hline
-            AR Lag 8 &  & \% & & \% & MA Lag 8 \\ \hline
-            AR Lag 9 &  & \% &  & \% & MA Lag 9 \\ \hline
-            AR Lag 10 &  & \% &  & \% & MA Lag 10 \\ \hline
-            MA Lag 1 &  & \% &  & \% & AR Lag 1 \\ \hline
-            MA Lag 2 &  & \% &  & \% & AR Lag 2 \\ \hline
-        \end{tabular}
-        \caption{PLACEHOLDER: BIC produced for (8,0)- and (0,8)-ARMA Models}
-        \label{tab:bic8}
-    \end{table}
     
     
     The results in Table~\ref{tab:bic6} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two models. It should be noted that Table~\ref{tab:bic6} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this experiment. A quick summary of the information on BIC found in Table~\ref{tab:bic6}, the number of models that were correctly identified as a (6,0)-ARMA model or (0,6)-ARMA model were 1476 (98.40\%) and 1480 (98.67\%) respectively.
@@ -727,29 +710,6 @@
         \end{tabular}
         \caption{Errors on fitting coefficients to instances of (6,0)- and (0,6)-ARMA model}
         \label{tab:errortsfitting6}
-    \end{table}
-
-    \begin{table}[hbt!]
-        \centering
-        \begin{tabular}{|l|c|c|c|c|l|}
-            \hline
-            \multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}     \\ \hline
-            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & \cellcolor{black}         \\ \hline
-            AR Lag 1 &  &  &  &  & MA Lag 1 \\ \hline
-            AR Lag 2 &  &  &  &  & MA Lag 2 \\ \hline
-            AR Lag 3 &  &  &  &  & MA Lag 3 \\ \hline
-            AR Lag 4 &  &  &  &  & MA Lag 4 \\ \hline
-            AR Lag 5 &  &  &  &  & MA Lag 5 \\ \hline
-            AR Lag 6 &  &  &  &  & MA Lag 6 \\ \hline
-            AR Lag 7 &  &  &  &  & MA Lag 7 \\ \hline
-            AR Lag 8 &  &  &  &  & MA Lag 8 \\ \hline
-            AR Lag 9 &  &  &  &  & MA Lag 9 \\ \hline
-            AR Lag 10 &  &  &  &  & MA Lag 10 \\ \hline
-            MA Lag 1 &  &  &  &  & AR Lag 1 \\ \hline
-            MA Lag 2 &  &  &  &  & AR Lag 2 \\ \hline
-        \end{tabular}
-        \caption{PLACEHOLDER: Errors on fitting coefficients to instances of (8,0)- and (0,8)-ARMA model}
-        \label{tab:errortsfitting8}
     \end{table}
     
     A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting6}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
