@@ -297,51 +297,51 @@ def test_HTM_model_of_interest(selector):
     if selector == "AR3-Lite":
         model = ARMATimeSeries(3, 0, 1, ar_poly = [1, 0, 0.2, 0.8])
         network = HTM(model, 4.05939793188752, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 36, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 3.950446994867, 3: 0, 4: 7.58486758256058, 5: 8.14097282846868, 6: 4.66048066863582, 7: 6.15695358785945, 8: 6.68821590225303, 9: 10 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 36, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 3.950446994867, 3: 0, 4: 7.58486758256058, 5: 8.14097282846868, 6: 4.66048066863582, 7: 6.15695358785945, 8: 6.68821590225303, 9: 10 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "AR3-Full":
         param_dict = { "spParams" : { "potentialPct": 0.00005, "numActiveColumnsPerInhArea": 44, "synPermConnected": 0.00005, "synPermInactiveDec": 0.00005 }, "tmParams" : { "activationThreshold": 11, "newSynapseCount" : 15 }}
         model = ARMATimeSeries(3, 0, 1, ar_poly = [1, 0, 0.2, 0.8])
         network = HTM(model, 3, params = param_dict, verbosity=3)
-        network = train_HTM_on_model(model, params= {"sibt": 22, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 1.99406959896973, 3: 10, 4: 0, 5: 10, 6: 9.54327597693671, 7: 0, 8: 0, 9: 0 }})
+        network = train_HTM_on_model(network, model, params= {"sibt": 22, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 1.99406959896973, 3: 10, 4: 0, 5: 10, 6: 9.54327597693671, 7: 0, 8: 0, 9: 0 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "AR4-Lite":
         model = ARMATimeSeries(4, 0, 1, ar_poly = [1, 0, 0, 0, 0.8])
         network = HTM(model, 10, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 0, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 8.64405184526634, 3: 10, 4: 10, 5: 0, 6: 10, 7: 6.02510913831131, 8: 0, 9: 0 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 0, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 8.64405184526634, 3: 10, 4: 10, 5: 0, 6: 10, 7: 6.02510913831131, 8: 0, 9: 0 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "AR4-Full":
         param_dict = { "spParams" : { "potentialPct": 0.00005, "numActiveColumnsPerInhArea": 48, "synPermConnected": 0.147007617546864, "synPermInactiveDec": 0.048096924657991}, "tmParams" : { "activationThreshold": 30, "newSynapseCount" : 31 }}
         model = ARMATimeSeries(4, 0, 1, ar_poly = [1, 0, 0, 0, 0.8])
         network = HTM(model, 9.31569877677968, params = param_dict, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 9, "iter_per_cycle": 2, "weights": {1: 1.0, 2: 3.39009564264216, 3: 2.48358343152521, 4: 2.7612182073368, 5: 3.71140062541657, 6: 8.55307831696238, 7: 0.439759989458677, 8: 8.91798126584945, 9: 1.81781701185768 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 9, "iter_per_cycle": 2, "weights": {1: 1.0, 2: 3.39009564264216, 3: 2.48358343152521, 4: 2.7612182073368, 5: 3.71140062541657, 6: 8.55307831696238, 7: 0.439759989458677, 8: 8.91798126584945, 9: 1.81781701185768 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "AR5-Lite":
         model = ARMATimeSeries(5, 0, 1, ar_poly = [1, 0, .5, 0, 0, .5])
         network = HTM(model, 5.78082666538634, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 31, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 2.09203073084044, 3: 9.47628646177412, 4: 5.97732661225504, 5: 3.16532406316063, 6: 2.33171457558926, 7: 1.8498652765416, 8: 9.21281900242032, 9: 4.74165300420722}})
+        network = train_HTM_on_model(network, model, params= { "sibt": 31, "iter_per_cycle": 1, "weights" : {1: 1.0, 2: 2.09203073084044, 3: 9.47628646177412, 4: 5.97732661225504, 5: 3.16532406316063, 6: 2.33171457558926, 7: 1.8498652765416, 8: 9.21281900242032, 9: 4.74165300420722}})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "AR6-Lite":
         model = ARMATimeSeries(6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
         network = HTM(model, 3.850623926016, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 4, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 0.806763834261459, 3: 10, 4: 1.30456218335413, 5: 0, 6: 10, 7: 10, 8: 0, 9: 0 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 4, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 0.806763834261459, 3: 10, 4: 1.30456218335413, 5: 0, 6: 10, 7: 10, 8: 0, 9: 0 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "AR6-Full":
         param_dict = { "spParams" : { "potentialPct": 0.21997701642794, "numActiveColumnsPerInhArea": 68, "synPermConnected": .00001, "synPermInactiveDec": 0.1}, "tmParams" : { "activationThreshold": 8, "newSynapseCount" : 15 }}
         model = ARMATimeSeries(6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
         network = HTM(model, 6.00957603768008, params = param_dict, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 6, "iter_per_cycle": 2, "weights": {1: 1.0, 2: 6.35637957153978, 3: 2.41779944347232, 4: 1.98962361570088, 5: 4.19278364734038, 6: 1.48386333867527, 7: 8.17271714154883, 8: 10, 9: 0.263161870966194 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 6, "iter_per_cycle": 2, "weights": {1: 1.0, 2: 6.35637957153978, 3: 2.41779944347232, 4: 1.98962361570088, 5: 4.19278364734038, 6: 1.48386333867527, 7: 8.17271714154883, 8: 10, 9: 0.263161870966194 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "MA6-Lite":
         model = ARMATimeSeries(6, 0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
         network = HTM(model, 3.850623926016, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 4, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 0.806763834261459, 3: 10, 4: 1.30456218335413, 5: 0, 6: 10, 7: 10, 8: 0, 9: 0 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 4, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 0.806763834261459, 3: 10, 4: 1.30456218335413, 5: 0, 6: 10, 7: 10, 8: 0, 9: 0 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector=="MA6-Full":
         param_dict = { "spParams" : { "potentialPct": 0.224399090136483, "numActiveColumnsPerInhArea": 60, "synPermConnected": 0.045605278604524, "synPermInactiveDec": 0.014672358859823 }, "tmParams" : { "activationThreshold": 16, "newSynapseCount" : 28 }}
         model = ARMATimeSeries(0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])
         network = HTM(model, 5.97856774436814, params = param_dict, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 1, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 2.36621053997442, 3: 8.0172322196265, 4: 6.70085860669484, 5: 2.42937070852368, 6: 4.84420923840193, 7: 9.8342633519816, 8: 0.135699000175894, 9: 7.18148432589403 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 1, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 2.36621053997442, 3: 8.0172322196265, 4: 6.70085860669484, 5: 2.42937070852368, 6: 4.84420923840193, 7: 9.8342633519816, 8: 0.135699000175894, 9: 7.18148432589403 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "RepRandLite":
         model = ARMATimeSeries(0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])
@@ -352,7 +352,7 @@ def test_HTM_model_of_interest(selector):
         param_dict = { "spParams" : { "potentialPct": 0.21997701642794, "numActiveColumnsPerInhArea": 68, "synPermConnected": .00005, "synPermInactiveDec": 0.1 }, "tmParams" : { "activationThreshold": 8, "newSynapseCount" : 15 }}
         model = ARMATimeSeries(0, 6, 1, ma_poly = [1, 0, 0, .4, 0, .3, .3])
         network = HTM(model, 10, params = param_dict, verbosity=3)
-        network = train_HTM_on_model(model, params= { "sibt": 50, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 3.24045225732635, 3: 10, 4: 0, 5: 0, 6: 10, 7: 0, 8: 10, 9: 0 }})
+        network = train_HTM_on_model(network, model, params= { "sibt": 50, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 3.24045225732635, 3: 10, 4: 0, 5: 0, 6: 10, 7: 0, 8: 10, 9: 0 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
     elif selector == "Shaffer":
         originalRDSE = .3
@@ -366,7 +366,7 @@ def test_HTM_model_of_interest(selector):
         print(run_HTM_on_model(network, model, True, output= "rmse"))
 
 def test_HTM_models_of_interest():
-    selectors = [ "AR6-Lite", "AR6-Full", "MA6-Full" ]
+    selectors = [ "AR6-Lite", "AR6-Full", "MA6-Lite", "MA6-Full" ]
     for selector in selectors:
         print("Testing {}....".format(selector))
         test_HTM_model_of_interest(selector)
@@ -444,7 +444,7 @@ def testScalingEffects(n = 100):
 
 
 def main():
-    test_HTM_model_of_interest("Shaffer")
+    test_HTM_models_of_interest()
     # testScalingEffects()
 
 if __name__ == "__main__":
