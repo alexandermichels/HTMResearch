@@ -203,6 +203,7 @@ class ARMATimeSeries(Sequence):
         _max = max(self.sequence)
         furthest = max([abs(_min), abs(_max)])
         self.sequence = [x*val/furthest for x in self.sequence]
+        return val/furthest
 
     def plot(self):
         pyplot.plot(self.sequence, color='blue', label="series")
@@ -219,32 +220,32 @@ def fit(arr, order):
     except Exception as e1:
         print(e1)
         try:
-            print("LBFGS failed for {}, trying BFGS".format(arr))
+            print("LBFGS failed, trying BFGS")
             res = ARMA(arr, order).fit(trend="nc", solver="bfgs", maxiter=len(arr), disp=-1)
         except Exception as e2:
             print(e2)
             try:
-                print("BFGS failed for {}, trying netwon".format(arr))
+                print("BFGS failed, trying netwon")
                 res = ARMA(arr, order).fit(trend="nc", solver="newton", maxiter=len(arr), disp=-1)
             except Exception as e3:
                 print(e3)
                 try:
-                    print("Newton failed for {}, trying Nelder-Mead".format(arr))
+                    print("Newton failed, trying Nelder-Mead")
                     res = ARMA(arr, order).fit(trend="nc", solver="nm", maxiter=len(arr), disp=-1)
                 except Exception as e4:
                     print(e4)
                     try:
-                        print("Nelder-Mead failed for {}, trying Conjugate Gradient".format(arr))
+                        print("Nelder-Mead failed, trying Conjugate Gradient")
                         res = ARMA(arr, order).fit(trend="nc", solver="cg", maxiter=len(arr), disp=-1)
                     except Exception as e5:
                         print(e5)
                         try:
-                            print("Conjugate Gradient failed for {}, trying Non-Conjugate Gradient".format(arr))
+                            print("Conjugate Gradient failed, trying Non-Conjugate Gradient")
                             res = ARMA(arr, order).fit(trend="nc", solver="ncg", maxiter=len(arr), disp=-1)
                         except Exception as e6:
                             print(e6)
                             try:
-                                print("Non-Conjugate Gradient failed for {}, trying Powell".format(arr))
+                                print("Non-Conjugate Gradient failed, trying Powell")
                                 res = ARMA(arr, order).fit(trend="nc", solver="powell", maxiter=len(arr), disp=-1)
                             except:
                                 return None, None

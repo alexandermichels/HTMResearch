@@ -207,6 +207,9 @@ class HTM():
     def getTimeSeriesStream(self):
         return self.network.regions["sensor"].getSelf().dataSource
 
+    def setDatasource(self, new_source):
+        self.network.regions["sensor"].getSelf().dataSource = TimeSeriesStream(new_source)
+
     def linkResets(self):
         """createResetLink(network, "sensor", "spatialPoolerRegion")
         createResetLink(network, "sensor", "temporalPoolerRegion")"""
@@ -241,10 +244,10 @@ class HTM():
             DATE = '{}'.format(strftime('%Y-%m-%d_%H:%M:%S', localtime()))
             self.log_file = join('../logs/', 'HTM-{}-({}CPMC-{}RDSEres)-datasource-{}.log'.format(DATE,self.modelParams["tmParams"]["cellsPerColumn"],self.encoder.get_resolution(),str(self.sensorRegion.dataSource)))
             log.basicConfig(format = '[%(asctime)s] %(message)s', datefmt = '%m/%d/%Y %H:%M:%S %p', filename = self.log_file, level=log.DEBUG)
+
         if level >= 4 and not self.streaming:
             log.getLogger().addHandler(log.StreamHandler())
             self.streaming = True
-
         if level >= 3:
             log.getLogger().setLevel(log.DEBUG)
         elif level >= 2:
@@ -260,13 +263,15 @@ class HTM():
         # Set predicted field
         self.network.regions["sensor"].setParameter("predictedField", "series")
 
-        if learning:
+        if learning == True:
             # Enable learning for all regions.
             self.turnLearningOn()
-        else:
+        elif learning == False:
             # Enable learning for all regions.
             self.turnLearningOff()
-            self.turnLearningOn("c")
+        else:
+            self.turnLearningOff()
+            self.turnLearningOn(learning)
         self.turnInferenceOn()
 
         _model = self.network.regions["sensor"].getSelf().dataSource
@@ -317,11 +322,8 @@ class HTM():
         if mode == "strain":
             self.turnLearningOff("ct")
             self.turnLearningOn("s")
-        elif mode == "train":
+        else:
             self.turnLearningOn()
-        elif mode == "test":
-            self.turnLearningOn("st")
-            self.turnLearningOff("c")
         self.turnInferenceOn()
 
         results = {}
@@ -402,6 +404,9 @@ class HTM():
             value[key-1] = classRes[key]["predictedValue"]
 
         return (results, predictions)
+
+    def setRDSEResolution(self, new_res):
+        self.encoder = RDSEEncoder(new_res)
 
     def train(self, error_method="rmse", sibt=0, iter_per_cycle=1, max_cycles=20, weights={ 1: 1.0, 5: 1.0 }, normalize_error=False):
         """
@@ -488,58 +493,6 @@ class HTM():
                 log.debug("Learning disabled for temporal pooler region")
                 self.network.regions["temporalPoolerRegion"].setParameter("learningMode", 0)
 
-def train_and_plot(model, network, training_settings):
-    print(network)
-    #print(network.train(error_method="binary"))
-    #network.train("rmse", sibt=18, iter_per_cycle=1, weights= {1: 1.0, 5: 7.0}, normalize_error=True, logging=True)
-    network.train("rmse", sibt=training_settings["sibt"], iter_per_cycle=training_settings["iter_per_cycle"], weights= training_settings["weights"], normalize_error=training_settings["weights"], logging=True)
-    ones, res = network.runNetwork(learning=False)
-
-    pyplot.plot(model.sequence, color='red', label="series")
-    pyplot.plot(ones, color='blue', label="predictions")
-    pyplot.legend(loc="lower right", fontsize=24)
-    pyplot.autoscale(enable=True, axis='x', tight=True)
-    pyplot.tick_params(labelsize=20)
-    fig = pyplot.gcf()
-    fig.set_size_inches(18.5, 5.5)
-    fig.tight_layout()
-    fig.savefig('HTMTraining{}.png'.format(model), dpi=100)
-    fig.show()
-
-def plot_models_of_interest():
-    param_dict = { "spParams" : { "potentialPct": 0.00005, "numActiveColumnsPerInhArea": 73, "synPermConnected": 0.4383430065, "synPermInactiveDec": 0.00001 }, "tmParams" : { "activationThreshold": 16, "newSynapseCount" : 19 }}
-    model = ARMATimeSeries(6,0, 1, ar_poly = [1, 0, 0, .4, 0, .3, .3])
-    network = HTM(model, 4.7963695838, params=param_dict)
-    training_settings = { "sibt" : 7, "iter_per_cycle": 1, "weights": {1:1.0, 2: 6.3563795715, 3: 2.4177994435, 4: 1.9896236157, 5: 4.1927836473, 6: 1.4838633387, 7: 8.1727171415, 8: 10, 9: 0.263161871 }, "normalize_error": True }
-    train_and_plot(model, network, training_settings)
-
-def test_the_boi():
-    # param_dict = { "spParams" : { "potentialPct": 0.00001, "numActiveColumnsPerInhArea": 73, "synPermConnected": 0.100820733774665, "synPermInactiveDec": .00001 }, "tmParams" : { "activationThreshold": 25}, "newSynapseCount" : 17 }
-    ts = ARMATimeSeries(4,0, sigma=0.00000000001, ar_poly=[1,0,0,0,.8], seed=12345)
-    done = False
-    counter = 0
-    network = HTM(ts, 2.2603913842)
-    # network.train("rmse", sibt=13, iter_per_cycle=3, weights={1: 1.0, 2: 9.2297703503, 3: 10, 4: 1.1735560551, 5: 6.825066147, 6: 6.6112659849, 7: 10, 8: 0.857512104, 9: 10 }, normalize_error=True, logging=False)
-    network.train("rmse", sibt=36, iter_per_cycle=2, weights={1: 1.0, 2: 6.4223237729, 3: 4.9617546938, 4: 8.3240290886, 5: 5.7037006935, 6: 4.7373287008, 7: 3.5210605231, 8: 6.1847886368, 9: 5.5869731198}, normalize_error=True, logging=True)
-    ones, res = network.runNetwork(learning=False)
-    print(ones)
-    bic = get_order(ones, 6, 2)
-    print("The bic for the HTM predictions are {}".format(bic))
-    ar_poly, ma_poly = fit(ones, bic)
-    print(ar_poly, ma_poly)
-    ar_poly = [-1*x for x in ar_poly] # ar coeff come out negative
-    ar_poly, ma_poly = [1]+ar_poly, [1]+ma_poly
-    print(ar_poly)
-    print(ma_poly)
-    htmpredts = ARMATimeSeries(bic[0], bic[1], sigma=0.00000000001, ar_poly=ar_poly, ma_poly=ma_poly)
-    ts.new(False)
-    rmse = 0
-    for i in range(len(htmpredts)):
-        rmse+=sqrt((ts.get()-htmpredts.get())**2)
-    _range = max(ts.get_range(), htmpredts.get_range())
-    rmse = rmse/_range/len(htmpredts)
-    done = True
-    print(rmse)
 
 if __name__ == "__main__":
     test_the_boi()
