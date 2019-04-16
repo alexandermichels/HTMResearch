@@ -252,7 +252,7 @@ def fit(arr, order):
     return list(res.arparams), list(res.maparams)
 
 def main():
-    ts = ARMATimeSeries(6,0, sigma=1, ar_poly=[1,0,0,.4, 0, .3, .3], normalize=False)
+    ts = ARMATimeSeries(6,0, sigma=1, n=10000, ar_poly=[1,0,0,-.4, 0, -.3, -.3], normalize=False)
     ts.plot()
 
 if __name__ == "__main__":

@@ -136,7 +136,7 @@ def main():
     #gen_scatterplot("SigmaOfSeries-PreScaling.csv")
     #means, stds = get_summary_stats(6, 2)
     #confidence_intervals(means, stds)
-    gen_scatterplot_from_csv("ScalingGeneralityTestNonScaledRMSE.csv", "Scaling Factor", "Post-Scaling Learning RMSE")
+    gen_scatterplot_from_csv("ScalingGeneralityTestScaledRMSE.csv", "Scaling Factor", "Post-Scaling No Learning RMSE")
     # Pre-Scaling RMSE	Scaling Factor	Post-Scaling No Learning RMSE	Post-Scaling Learning RMSE
 
 

@@ -380,7 +380,7 @@ def arswarmv5():
 
 def ar_or_maswarm():
     descr = ["RDSE Resolution", "SIBT", "IterPerCycle", "potentialPct", "numActiveColumnsPerInhArea", "synPermConnected", "synPermInactiveDec", "activationThreshold", "newSynapseCount", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
-    bounds=[(3,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    bounds=[(0.5,10), (0,50), (1,3), (.00001, 1), (20, 80), (.00001, 0.5), (.00001, .1), (8, 40), (15, 35), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
     polys = [[1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
     for j in polys:
         for i in ["ma"]:
@@ -388,7 +388,7 @@ def ar_or_maswarm():
 
 def ar_or_maswarmlite():
     descr = ["RDSE Resolution", "SIBT", "twoWeight", "threeWeight", "fourWeight", "fiveWeight", "sixWeight", "sevenWeight", "eightWeight", "nineWeight"]
-    bounds=[(3,10), (0,50), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
+    bounds=[(0.5,10), (0,50), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10), (0,10)]
     polys = [[1, 0, 0, .4, 0, .3, .3], [1, 0, 0, 0, .8], [1, 0, .2, .8], [1, 0, .5, 0, 0, .5]]
     for j in polys:
         for i in ["ma"]:

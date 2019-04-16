@@ -121,7 +121,10 @@
 	\begin{itemize}[noitemsep]
         \item Elaborated on noise in Chapter 2
 		\item Clarified in Section~\ref{sec:exp:train} that I used binary or root mean squared error to measure performance.
-		\item Added Figure~\ref{fig:train(6,0)ARMA} and Figure~\ref{fig:train(0,6)ARMA}
+        \item Expanded on classification and identification of time series in Section~\ref{sec:exp:timeseriesclass}, trying to make it sound more like two different steps.
+		\item Broke results into multiple sections and added a lot more figures
+        \item New section in results about the ability to adjust to scaling
+        \item tables for other models I played around with were thrown to Appendices, wasn't sure what to do with them and didn't want to delete them yet.
 	\end{itemize}
 	\vfill
 	\pagebreak
@@ -628,36 +631,43 @@
     \FloatBarrier
     
     A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting6}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
+    
+    
+    
 
     \section{Swarming for Parameter Optimization}\label{sec:res:swarm}
+    
+    As noted in Section~\ref{sec:exp:train}, to find optimal or near optimal parameters for predicting ARMA models. We decided to swarm on two different sets of parameters, one set (``lite'') constituting just RDSE resolution and training parameters and another which constituted a wider array of HTM parameters (``full''). 
+    
+    The lite parameters were: RDSE resolution, SIBT, and weights for prediction steps two through nine (one step was a constant 1.0). The full set included the lite parameters, but included another training parameter iterations per cycle and HTM parameters potentialPct, numActiveColumnsPerInhArea, synPermConnected, synPermInactiveDec, activationThreshold, and newSynapseCount. We chose bounds on the parameters by looking at a variety of settings used in similar papers and the bounds for all parameters can be seen in Table~\ref{tab:swarming}.
 	
-    \FloatBarrier
-	\begin{figure}[hbt!]
-		\centering
-		\includegraphics[width=.8\linewidth]{images/HTMSwarming(6,0)-ARMAModel.png}
-		\caption{Swarming on HTM Parameters for a (6,0)-ARMA Model}
-		\label{fig:swarming(6,0)}
-	\end{figure}
-	
-	\begin{figure}[hbt!]
-		\centering
-		\includegraphics[width=\linewidth]{images/HTMTraining(6,0)-ARMA.png}
-		\caption{HTM One-Step Predictions of a (6,0)-ARMA Model}
-		\label{fig:train(6,0)ARMA}
-	\end{figure}
-	\begin{figure}[hbt!]
-		\centering
-		\includegraphics[width=\linewidth]{images/HTMTraining(0,6)-ARMA.png}
-		\caption{HTM One-Step Predictions of a (0,6)-ARMA Model}
-		\label{fig:train(0,6)ARMA}
-	\end{figure}
-    \FloatBarrier
+    \begin{table}[hbt!]
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+             & \textbf{Param Type} & \textbf{Lite or Full} & \textbf{min} & \textbf{max} \\ \hline
+            \textbf{RDSE Resolution} & HTM & Lite & 0.5 & 10 \\ \hline
+            \textbf{SIBT} & Training & Lite & 0 & 50 \\ \hline
+            \textbf{$n$Weight} & Training & Lite & 0 & 10 \\ \hline
+            \textbf{IterPerCycle} & Training & Full & 1 & 3 \\ \hline
+            \textbf{potentialPct} & HTM & Full & .00001 & 1 \\ \hline
+            \textbf{numActiveColumnsPerInhArea} & HTM & Full & 20 & 80 \\ \hline
+            \textbf{synPermConnected} & HTM & Full & .00001 & 0.5 \\ \hline
+            \textbf{synPermInactiveDec} & HTM & Full & .00001 & .1 \\ \hline
+            \textbf{activationThreshold} & HTM & Full & 8 & 40 \\ \hline
+            \textbf{newSynapseCount} & HTM & Full & 15 & 35 \\ \hline
+        \end{tabular}\caption{Parameters Swarmed On}
+    \label{tab:swarming}
+    \end{table}
 
-	\textcolor{red}{talk about swarming on params for ARMA models}
+    \FloatBarrier
+    
+    
 
     \section{Evaluating HTM Ability to Generalize}
     
-    A question that we wanted to explore was the one posed by Vivimond (see Section~\ref{sec:lit}) where he postulated about Hierarchical Temporal Memory's ability to generalize, stating ``was to learn a pattern consisting of several numbers and then be given a series of new numbers arranged in a similar pattern to the previous one, but with either higher, lower, or stretched values (i.e. multiplied by common a factor), it would be unable to correctly predict any of them.'' We tested this theory by training an HTM network on an AR time series with coefficients [0, 0, -0.4, 0, -0.3, -0.3], assessing its ability to predict, then scaling the series, and asked the HTM to predict the series twice, once with learning turned off and then again with learning on.
+    A question that we wanted to explore was the one posed by Vivimond (see Section~\ref{sec:lit}) where he postulated about Hierarchical Temporal Memory's ability to generalize, stating ``was to learn a pattern consisting of several numbers and then be given a series of new numbers arranged in a similar pattern to the previous one, but with either higher, lower, or stretched values (i.e. multiplied by common a factor), it would be unable to correctly predict any of them.'' We tested this theory by training an HTM network on an AR time series with coefficients [0, 0, -0.4, 0, -0.3, -0.3], assessing its ability to predict, then scaling the series, and asked the HTM to predict the series twice, once with learning turned off and then again with learning on. This was repeated one-hundred times.
+    
+    For the first experiment, nothing was changed about the HTM network between pre- and post-scaling. The results are summarized in Table~\ref{tab:genscatter:unchanged} which show that without learning enabled, a Hierarchical Temporal Memory network is very inaccurate at predicting a series after the series it trained on has been scaled. This is illustrated in Figure~\ref{fig:genscalenolearningunchanged} which shows a trial of the experiment where Figure~\ref{fig:gennoscaleunchanged} is the original sequence with HTM predictions. However, Table~\ref{tab:genscatter:unchanged} also shows that the RMSE of predictions decreased back to within a standard deviation of pre-scaling RMSE, indicating that the learning mechanism is resilient to scaling. This is illustrated in Figure~\ref{fig:genscalelearningunchanged}. The plots in Figure~\ref{fig:genscatter:unchanged} there is a positive correlation between Post-Scaling, Learning RMSE and Scaling Factor, meaning that as the scaling factor rises, the root mean squared error of the post-scaling predictions with learning on also tend to rise.
     
     \begin{table}[hbt!]
         \centering
@@ -666,22 +676,23 @@
             \textbf{} & \textbf{Pre-Scaling} & \textbf{Scaling Factor} & \textbf{Scaled, No Learning} & \textbf{Scaled, Learning} \\ \hline
             \textbf{$\mu$} & 9.676\% & 10.560 & 24.873\% & 10.591\% \\ \hline
             \textbf{$\sigma$} & 1.761\% & 3.225 & 9.659\% & 2.043\% \\ \hline
-        \end{tabular}
-    \end{table}
-    
-    
-    \begin{table}[hbt!]
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-            \textbf{Settings} & \textbf{RMSE of Trial 1} & \textbf{RMSE of Trial 2} & \textbf{RMSE of Trial 3} \\ \hline
-            No Scaling, Trained & 9.179\% & 11.234\% &  \\ \hline
-            Scaling, No Learning & 10.464\% & 12.802\% &  \\ \hline
-            Scaling, Learning & 9.771\% & 13.637\% &  \\ \hline
-        \end{tabular}\caption{HTM Ability to Predict a Scaled Series}
+        \end{tabular}\caption{RMSE of HTM Predictions Before and After Scaling the Sequence}
+    \label{tab:genscatter:unchanged}
     \end{table}
 
-    \FloatBarrier
+
+    \begin{figure}[hbt!]
+        \centering
+        \begin{subfigure}[b]{.48\textwidth}
+           \includegraphics[width=\linewidth]{images/ScalingFactorbyPost-ScalingNoLearningRMSE-Unchanged.png}
+        \end{subfigure}
+        \begin{subfigure}[b]{.48\textwidth}
+             \includegraphics[width=\linewidth]{images/ScalingFactorbyPost-ScalingLearningRMSE-Unchanged.png}
+        \end{subfigure}
+        \caption{Scatterplots of Scaling Factor vs. Post-Scaling RMSE with and without Learning}
+        \label{fig:genscatter:unchanged}
+    \end{figure}
+
         \begin{figure}[hbt!]
             \centering
             \includegraphics[width=\linewidth]{images/NoScaling-Unchanged.png}
@@ -703,7 +714,31 @@
     \FloatBarrier
     
     
-    The only change to the HTM between the pre-scaling training and post-scaling assessment was to change the RDSE resolution by the same factor that we scaled the series by.
+    For our second experiment, we wanted to see if scaling the Random Distributed Scalar Encoder by the same factor as the sequence would lead to better post-scaling, no learning RMSE. Thus the only change to the HTM between the pre-scaling training and post-scaling assessment was to change the RDSE resolution by the same factor that we scaled the series by. One instance of the pre-scaling sequence with predictions can be seen in Figure~\ref{fig:gennoscalechange} and the associated post-scaling sequence with predictions can be seen in Figure~\ref{fig:genscalenolearningchange}. Upon turning on learning again, we found that the RMSE again improved, which can be seen in Figure~\ref{fig:genscalelearningchange}. A positive correlation between Post-Scaling, Learning RMSE and Scaling Factor, is again evident in the data, as illustrated in Figure~\ref{fig:genscatter:changed}.
+    
+     \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            \textbf{} & \textbf{Pre-Scaling} & \textbf{Scaling Factor} & \textbf{Scaled, No Learning} & \textbf{Scaled, Learning} \\ \hline
+            \textbf{$\mu$} & 9.604\% & 10.198 & 27.232\% & 10.512\% \\ \hline
+            \textbf{$\sigma$} & 2.094\% & 3.431 & 10.227\% & 2.430\% \\ \hline
+        \end{tabular}\caption{RMSE of HTM Predictions Before and After Scaling the RMSE and Sequence}
+        \label{tab:genscatter:changed}
+    \end{table}
+
+    \begin{figure}[hbt!]
+        \centering
+        \begin{subfigure}[b]{.48\textwidth}
+            \includegraphics[width=\linewidth]{images/ScalingFactorbyPost-ScalingNoLearningRMSE-Changed.png}
+        \end{subfigure}
+        \begin{subfigure}[b]{.48\textwidth}
+            \includegraphics[width=\linewidth]{images/ScalingFactorbyPost-ScalingLearningRMSE-Changed.png}
+        \end{subfigure}
+        \caption{Scatterplots of Scaling Factor vs. Post-Scaling RMSE with and without Learning with Scaled RDSE Resolution}
+        \label{fig:genscatter:changed}
+    \end{figure}
+    
     
      \begin{figure}[hbt!]
         \centering
@@ -737,10 +772,25 @@
     
     Next, we trained Hierarchical Temporal Memory networks using slightly more complex, but still deterministic sequences, that relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include $1,2,3,2,..$ and $1,2,2,3,5,2,2,4,1,...$. In the first example, 1 and 3 are always followed by 2, but to know what is followed by 2 you also need to know what proceeded 2.
 	
-	Our next test was therefore to train a Hierarchical Temporal Memory network on sequences produced by ARMA models, fit its output, and assess with some statistical confidence it is the same model that we input. For our first trial, we decided to swarm for parameters and then train an HTM on the same instance of an AR model (done through seeding the random number generator). 
+	Our next test was therefore to train a Hierarchical Temporal Memory network on sequences produced by ARMA models, fit its output, and assess with some statistical confidence it is the same model that we input. For our first trial, we decided to swarm for parameters and then train an HTM on the same instance of an AR model (done through seeding the random number generator). Examples of the sequences and predictions used in this section can be see in Figures~\ref{fig:train(6,0)ARMA} and ~\ref{fig:train(0,6)ARMA}.
+    
+    \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=\linewidth]{images/HTMTraining(6,0)-ARMA.png}
+        \caption{HTM One-Step Predictions of a (6,0)-ARMA Model}
+        \label{fig:train(6,0)ARMA}
+    \end{figure}
+    \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=\linewidth]{images/HTMTraining(0,6)-ARMA.png}
+        \caption{HTM One-Step Predictions of a (0,6)-ARMA Model}
+        \label{fig:train(0,6)ARMA}
+    \end{figure}
+    \FloatBarrier
     
     
-    We fed Hierarchical Temporal Memory networks the two aforementioned AR and MA models, gave their outputs to the \texttt{arma\_order\_select\_ic} function, then the \texttt{fit} function, and finally subtracted the observed means, divided by the standard deviation, and took the absolute value to get the observations distance from the mean in terms of standard deviations. 
+    We fed Hierarchical Temporal Memory networks the two aforementioned AR and MA models, gave their outputs to the \texttt{arma\_order\_select\_ic} function, then the \texttt{fit} function, and finally subtracted the observed means, divided by the standard deviation, and took the absolute value to get the observations distance from the mean in terms of standard deviations.  This was repeated using the lite and full parameters we found through swarming.
+   
     
     \begin{table}[hbt!]
         \centering
@@ -749,19 +799,19 @@
             \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
             \cellcolor{black} & HTM & & HTM &  & \cellcolor{black} \\
             \cellcolor{black} & Output & Z-Score & Output & Z-Score & \cellcolor{black} \\ \hline
-            AR Lag 1 & -0.855 & 27.21499 &  &  & MA Lag 1 \\ \hline
-            AR Lag 2 & 0.936 & 29.94183 &  &  & MA Lag 2 \\ \hline
-            AR Lag 3 & 0.000 & 0.29578 &  &  & MA Lag 3 \\ \hline
-            AR Lag 4 & 0.000 & 0.01674 &  &  & MA Lag 4 \\ \hline
-            AR Lag 5 & 0.000 & 0.02213 &  &  & MA Lag 5 \\ \hline
-            MA Lag 1 & -0.897 & 33.52278 &  &  & AR Lag 1 \\ \hline
-            MA Lag 2 & 0.745 & 29.23011 &  &  & AR Lag 2 \\ \hline
-            MA Lag 3 & -0.592 & $\infty$ &  &  & AR Lag 3 \\ \hline
-            MA Lag 4 & 0.395 & $\infty$ &  &  & AR Lag 4 \\ \hline
-            MA Lag 5 & -0.213 & $\infty$ &  &  & AR Lag 5 \\ \hline
+            AR Lag 1 & -0.99999 & 13.44787 & -0.99972 & 17.33195 & MA Lag 1 \\ \hline
+            AR Lag 2 & 0.00000 & 0.05435 & 0.00000 & 0.03460 & MA Lag 2 \\ \hline
+            AR Lag 3 & 0.00000 & 13.86321 & 0.00000 & 13.85744 & MA Lag 3 \\ \hline
+            AR Lag 4 & 0.00000 & 0.00998 & 0.00000 & 0.05520 & MA Lag 4 \\ \hline
+            AR Lag 5 & 0.00000 & 10.28821 & 0.00000 & 9.64858 & MA Lag 5 \\ \hline
+            AR Lag 6 & 0.00000 & 7.80154 & 0.00000 & 8.44422 & MA Lag 6 \\ \hline
+            AR Lag 7 & 0.00000 & 0.02622 & 0.00000 & 0.01202 & MA Lag 7 \\ \hline
+            AR Lag 8 & 0.00000 & 0.02548 & 0.00000 & 0.01269 & MA Lag 8 \\ \hline
+            MA Lag 1 & -0.99958 & 14.63837 & -0.99455 & 20.67528 & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.00000 & 0.05105 & 0.00000 & 0.04727 & AR Lag 2 \\ \hline
         \end{tabular}
-        \caption{ARMA Models fit to HTM Predictions of (3,0)- and (0,3)-ARMA Models using ``lite'' parameter swarming}
-        \label{tab:HTMARMAError3Lite}
+        \caption{ARMA Models fit to HTM Predictions of (6,0)- and (0,6)-ARMA Models using ``lite'' parameter swarming}
+        \label{tab:HTMARMAError6Lite}
     \end{table}
 		
 	\begin{table}[hbt!]
@@ -786,16 +836,14 @@
 		\label{tab:HTMARMAError6Full}
 	\end{table}
 	
-	The results of this experiment can be seen in Table~\ref{tab:HTMARMAError6Full}. Both outputs had differences from the mean above 13 sigma which allows us to conclude with 99.9999+\% statistical significance that the observed output is not drawn from the sample of outputs of the \texttt{arma\_order\_select\_ic} and \texttt{fit} function on instances of the true model, rejecting the null hypothesis. This piece of evidence also leads us to believe that one-layer HTM networks may not model ARMA models as ARMA models internally and thus may not be the best method for predicting time series that are fit well by ARMA models.
+	The results of these experiments can be seen in Tables~\ref{tab:HTMARMAError6Lite} and~\ref{tab:HTMARMAError6Full}. For this experiment we used the null hypothesis that the coefficients fitted to the HTM prediction series would be statistically indistinguishable from the coefficients fit to the ARMA models the HTM was asked to predict. All outputs had differences from the mean above 13 sigma which allows us to conclude with very high statistical significance (p approximately zero) that the observed output is not drawn from the sample of outputs of the \texttt{arma\_order\_select\_ic} and \texttt{fit} function on instances of the true model, rejecting the null hypothesis. This evidence suggests that one-layer HTM networks may not model noisey sequences derived from ARMA models as the same ARMA models internally.
 	
 	
-	\chapter{Discussion and Further Work}
+	\chapter{Further Work}
+
+	Directly related to this work, there are still questions of whether the prediction outputs of Hierarchical Temporal Memory networks are more similar to the input models for certain classes of ARMA models than others. For example, for certain orders or coefficients an HTM's output may resemble the model much more closely. It would also be interesting to find better ways of standardizing ARMA models to find optimal parameters which avoid the problems introduced by scaling by a constant factor. This work can also be extended to include ARIMA models in the hopes of better understanding how Numenta's Cortical Learning Algorithm interacts with stochastic time series. Additionally, all of the work done in this thesis was on a single-layer network and it would be informative to explore these questions with large configurations to see how that affects results.
     
-    \textcolor{red}{talk about theory behind all this}
-	
-	Directly related to my work, there are still questions of whether the prediction outputs of Hierarchical Temporal Memory networks are more similar to the input models for certain classes of ARMA models than others. For example, for certain orders or coefficients an HTM's output may resemble the model much more closely. This work can also be extended to include ARIMA models in the hopes of better understanding how Numenta's Cortical Learning Algorithm interacts with stochastic time series. Additionally, all of the work done in this thesis was on a single-layer network and it would be informative to explore these questions with large configurations to see how that affects results.
-	
-	There is also dire need for work that furthers our understanding of the mathematical underpinnings of Hierarchical Temporal Memory. It is necessary to understand how and why these algorithms work if we hope to fully unlock the power of the brain. Namely, it would be extremely valuable to understand the kernel of Hierarchical Temporal Memory so that we can better compare it to existing methods.
+    It would be interesting to investigate if other encoders or classifiers would have better results for time series analysis as well. Hierarchical Temporal Memory has so far gone through a couple of iterations of encoders and classifiers, and scalar values are a noted problem for HTM networks. In communications with Scott Purdy of Numenta, he commented on the difficulting in choosing the correct parameters for encoding and decoding, saying ``the decoding value is ambiguous within this resolution. In our prediction problems, we find that the right resolution is an important choice in minimizing the prediction error. If the encoding is too course, the predictions can't be reconstructed precisely enough. If they are too fine, the model struggles to learn the temporal patterns and overfits.'' It could also be possible that sparse distributed codes are not suited for this task, meaning cortical learning algorithms for time series prediction are better off using a different encoding scheme that encodes more information.
 	
 	\addcontentsline{toc}{chapter}{References}
 	\bibliographystyle{siam}     % Siam and Ieeetr bibliographic styles treat titles of articles in journals or collections correctly

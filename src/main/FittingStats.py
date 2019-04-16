@@ -361,12 +361,14 @@ def test_HTM_model_of_interest(selector):
         model.plot()
         network = train_HTM_on_model(network, model, params= { "sibt": 4, "iter_per_cycle": 1, "weights": {1: 1.0, 2: 0.806763834261459, 3: 10, 4: 1.30456218335413, 5: 0, 6: 10, 7: 10, 8: 0, 9: 0 }})
         test_HTM_output(run_HTM_on_model(network, model, False), len(model.ar_poly)+1, len(model.ma_poly)+1)
-        model.normalize()
-        print(run_HTM_on_model(network, model, False, output = "rmse"))
-        print(run_HTM_on_model(network, model, True, output= "rmse"))
+        factor = model.normalize()
+        newRDSE = originalRDSE * factor
+        network.setRDSEResolution(newRDSE)
+        run_HTM_on_model(network, model, False, output = "rmse")
+        run_HTM_on_model(network, model, True, output= "rmse")
 
 def test_HTM_models_of_interest():
-    selectors = [ "AR6-Lite", "AR6-Full", "MA6-Lite", "MA6-Full" ]
+    selectors = [ "AR6-Lite","MA6-Full" ]
     for selector in selectors:
         print("Testing {}....".format(selector))
         test_HTM_model_of_interest(selector)
@@ -444,7 +446,7 @@ def testScalingEffects(n = 100):
 
 
 def main():
-    test_HTM_models_of_interest()
+    test_HTM_model_of_interest("Shaffer")
     # testScalingEffects()
 
 if __name__ == "__main__":
