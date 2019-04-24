@@ -23,6 +23,24 @@ def testfunc(args):
     x = args["x"]
     return (x[0]**2/2 +x[1]**2/4)
 
+def test_shubert(args):
+    ''' http://www.sfu.ca/~ssurjano/shubert.html '''
+    x = args["x"]
+    sum_0 = 0
+    sum_1 = 0
+    for i in range(1,6):
+        sum_0+=i*math.cos((i+1)*x[0]+i)
+        sum_1+=i*math.cos((i+1)*x[1]+i)
+    return sum_0*sum_1
+
+def test_michal(args):
+    ''' http://www.sfu.ca/~ssurjano/michal.html '''
+    x = args["x"]
+    sum = 0
+    for i in range(len(x)):
+        sum-=math.sin(x[i])*math.sin(((i+1)*x[i]**2)/math.pi)**20
+    return sum
+
 def vbsfuncv1(args):
     x = args["x"]
     return HTM(VeryBasicSequence(pattern=args["pattern"]), x[0], verbosity=0).train(error_method="binary")
@@ -302,7 +320,15 @@ class PSO():
 #--- RUN ----------------------------------------------------------------------+
 def swarm_test():
     bounds=[(-100,100),(-100,100)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
-    PSO(testfunc,bounds,num_particles=6, maxiter=24, processes=6, descr=["x-coordinate", "y-coordinate"])
+    PSO(testfunc,bounds,num_particles=6, maxiter=36, processes=6, descr=["x-coordinate", "y-coordinate"])
+
+def swarm_shubert():
+    bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...] #CPMC, RDSE resolution,
+    PSO(test_shubert,bounds,num_particles=24, maxiter=36, descr=["x-coordinate", "y-coordinate"])
+
+def swarm_michal():
+    bounds = [(0,math.pi), (0,math.pi)]
+    PSO(test_michal,bounds,num_particles=24, maxiter=36)
 
 def swarmvbsv1():
     bounds=[(0.00000001,1)]
@@ -430,6 +456,12 @@ def main():
     if args.mode == "test":
         print("Testing....")
         swarm_test()
+    elif args.mode == "michal2":
+        print("Testing....")
+        swarm_michal()
+    elif args.mode == "shubert":
+        print("Testing....")
+        swarm_shubert()
     elif args.mode == "vbsv1":
         print("Very basic sequence Version 1 selected")
         swarmvbsv1()

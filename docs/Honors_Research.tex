@@ -1,6 +1,6 @@
 \documentclass[oneside,12pt,openany]{book}
 \usepackage[toc,page]{appendix}
-\usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,textcomp,commath,mathtools,hyperref,pgfplots,epigraph,enumitem,pdfpages,placeins}
+\usepackage{amsmath,amsthm,amsfonts,indentfirst,graphicx,subcaption,textcomp,commath,mathtools,hyperref,pgfplots,epigraph,enumitem,pdfpages,placeins,longtable}
 \usepackage[table]{colortbl}
 
 \hypersetup{
@@ -82,7 +82,7 @@
 		{\large \today\par}
 	\end{titlepage}
 	\renewcommand{\baselinestretch}{.7}
-	\setcounter{tocdepth}{0}
+	\setcounter{tocdepth}{1}
 	\tableofcontents
 	\vfill
 	\pagebreak
@@ -114,18 +114,7 @@
 
 		
 	\end{center}
-	\vfill
-	\pagebreak
-	
-	\textbf{CHANGE LOG}
-	\begin{itemize}[noitemsep]
-        \item Elaborated on noise in Chapter 2
-		\item Clarified in Section~\ref{sec:exp:train} that I used binary or root mean squared error to measure performance.
-        \item Expanded on classification and identification of time series in Section~\ref{sec:exp:timeseriesclass}, trying to make it sound more like two different steps.
-		\item Broke results into multiple sections and added a lot more figures
-        \item New section in results about the ability to adjust to scaling
-        \item tables for other models I played around with were thrown to Appendices, wasn't sure what to do with them and didn't want to delete them yet.
-	\end{itemize}
+
 	\vfill
 	\pagebreak
 	\vfill
@@ -160,8 +149,7 @@
 		\includegraphics[width=.4\linewidth]{images/ChineseRoom.jpg}
 		\caption[Searle's Chinese Room]{Searle's Chinese Room\footnotemark}
 		\label{fig:ChineseRoom}
-	\end{figure}\footnotetext{Image credits: \href{https://theness.com/neurologicablog/index.php/ai-and-the-chinese-room-argument/}{\texttt{https://theness.com/neurologicablog/index.php			/ai-and-the-chinese-
-			room-argument/}}}
+	\end{figure}\footnotetext{Image: \href{https://theness.com/neurologicablog/index.php/ai-and-the-chinese-room-argument/}{\texttt{https://theness.com/neurologicablog/index.php/ai-and-the-chinese-room-argument/}}}
 	
 	Although this may seem like a pedantic distinction at first glance, the difference is truly important. The hypothesis that we can only ever simulate the ability to think is known as the weak AI hypothesis whereas the hypothesis that we can produce a machine capable of thought is the strong AI hypothesis \cite{Jones}. These both stand in contrast to Artificial General Intelligence, which is an intelligence capable of performing any intellectual task that a human can \cite{Buchanan}.
 	
@@ -197,9 +185,10 @@
 	\begin{figure}[hbt!]
 		\centering
 		\includegraphics[width=.8\linewidth]{images/ArtificialNeuron.jpg}
-		\caption{A Model for an Artificial Neuron}
+		\caption[A Model for an Artificial Neuron]{A Model for an Artificial Neuron\footnotemark}
 		\label{fig:ArtNeuron}
 	\end{figure}
+\footnotetext{Image: \href{https://en.wikipedia.org/wiki/Artificial_neural_network}{https://en.wikipedia.org/wiki/Artificial\_neural\_network}}
 	
 	Computational neuroscience can be described as ``simulating human cognition using biologically based networks of neuronlike units''~\cite{Eberhart}. In other words, the field has tasked itself with the incredibly difficult task of trying to understand cognition by breaking the brain down into algorithms and data structures which we can then implement in a computational model. So rather than trying to create a computational model that is as intelligent as the brain, they are taking the more direct approach in attempting to model the brain itself.
 	
@@ -343,11 +332,11 @@
 	
 	Consider the binary representation of the integer 32 versus that of the integer 31. The two numbers are quite similar: they are only 1 apart, so they are as close as two integers can be. Yet their binary representations are [100000] and [011111] respectively. They have no shared ``on'' bits so despite their similarity, their binary representations reflect none at all. In fact, despite being as close as two integers can be (a Euclidean distance of 1), their binary representations have a Hamming distance, the number places in which two codewords differ, of 5, the maximum Hamming distance of two codewords of length 5 \cite{Adams}. 
 	
-	This means that our encoding does not preserve semantic similarity or a concept of distance between elements which is highly undesirable for an code because if there is some kind of error in the code we could end up decoding something meaning the opposite of what we were trying to convey. As an example, consider $\mathbb{Z}$ from 0 to 31 which is mapped to $GF(2)^{6}$ by their binary representation. The mapping of 31 is [111111] but a single error in transmission can easily lead to [011111] which would be decoded as 15. So a code Hamming distance ($d_{H}$) of one away ($\frac{1}{5}$ of the total metric) lead to an element 16 integers away ($\frac{1}{2}$ of the total metric). We would obviously like to avoid this so that errors in the transmission of our codes are either (1) correctable or (2) lead to a decoding that is as close as possible to our original element.
+	This means that our encoding does not preserve semantic similarity or a concept of distance between elements which is highly undesirable for an code because if there is some kind of error in the code we could end up decoding something meaning the opposite of what we were trying to convey. As an example, consider $\mathbb{Z}$ from 0 to 31 which is mapped to $GF(2)^{6}$ by their binary representation. The mapping of 31 is [11111] but a single error in transmission can easily lead to [01111] which would be decoded as 15. So a code Hamming distance ($d_{H}$) of one away ($\frac{1}{5}$ of the total metric) lead to an element 16 integers away ($\frac{1}{2}$ of the total metric). We would obviously like to avoid this so that errors in the transmission of our codes are either (1) correctable or (2) lead to a decoding that is as close as possible to our original element.
 	
 	This is achievable by simply conveying more information in our code. In our binary representation any single error led to another valid codeword (a codeword which decoded to an element of the input/output set) which meant that no errors could be detected or corrected. By expanding our code length, we increase the number of codewords (multiplying by the cardinality of the code alphabet for each character added) meaning that fewer errors will result in other valid codewords and can possibly be detected or corrected. 
 	
-	A key strategy with Sparse Distributed Representations (SDRs) is to encode semantic similarity, such as with our idea of distance in our motivating example. This helps us achieve our second goal because even if we increase the error-tolerance of our code, there is still some probability of an uncorrectable error and we would like that error to result in a codeword as close to the original codeword as possible. To give you a real world example imagine I am sending instructions to a aircraft and I need to tell it to turn down 7\textdegree~to start its descent. Obviously, an error resulting in 8\textdegree~or 6\textdegree~being interpretted by the pilot are both preferable to 90\textdegree.
+	A key strategy with Sparse Distributed Representations (SDRs) is to encode semantic similarity, such as with our idea of distance in our motivating example. This helps us achieve our second goal because even if we increase the error-tolerance of our code, there is still some probability of an uncorrectable error and we would like that error to result in a codeword as close to the original codeword as possible. To give you a real world example imagine I am sending instructions to a aircraft and I need to tell it to turn down 7\textdegree~to start its descent. Obviously, an error resulting in 8\textdegree~or 6\textdegree~being interpreted by the pilot are both preferable to 90\textdegree.
 	
 	To achieve our goal, we employ sparse distributed representations. Just as with traditional dense binary representations, we will represent sparse distributed representations as vectors over their code alphabet, in this case GF(2). We call them \textbf{sparse} distributed representations because these vectors typically only have a small proportion of the components as 1. We will use Numenta's notation of letting $w_{\overrightarrow{x}}$ denote the number of components in an SDR $\overrightarrow{x}$ that are 1, so $w_{\overrightarrow{x}} = \norm{x}_{1}$ \cite{Properties}.
 	
@@ -449,7 +438,7 @@
 	
 	Two contrasting views are found in papers that more directly looked at the time series capabilities of Hierarchical Temporal Memory. The first, a Master's Thesis by Michael Galetzka, asked an HTM to predict the navigation behavior of visitors to a website using publicly available data from \texttt{msnbc.com}~\cite{Galetzka}. The paper found that the HTM had a ``surprisingly high'' prediction accuracy for the kind of noisy data it was given and claims that the results are comparable or better than state-of-the-art approaches, but acknowledges that comparisons are difficult due to a lack of a uniform performance metric across papers.
 	
-	Most relevant to this exploration of ARMA models is Vivmond's \textit{Utilizing the HTM algorithms for weather forecasting and anomaly detection}. This paper applied HTMs to weather time series such as wind direction, wind speed, wind pressure, precipitation, humidity, and temperature some of which are quite literally textbook examples of ARMA models~\cite{Box,WeatherForecast}. Vivmond found that `` its prediction results were for the most part outperformed by a much simpler analogue method that used the average of the last few days as its forecast basis''~\cite{WeatherForecast}. 
+	Most relevant to this exploration of ARMA models is Vivmond's \textit{Utilizing the HTM algorithms for weather forecasting and anomaly detection}. This paper applied HTMs to weather time series such as wind direction, wind speed, wind pressure, precipitation, humidity, and temperature some of which are quite literally textbook examples of ARMA models~\cite{Box,WeatherForecast}. Vivmond found that ``its prediction results were for the most part outperformed by a much simpler analogue method that used the average of the last few days as its forecast basis''~\cite{WeatherForecast}. 
 	
 	In particular, he points to Hierarchical Temporal Memory's inability to generalize trends, saying ``it is largely useless when seeing new values or when seeing previously seen patterns with different values''~\cite{WeatherForecast}. Vivmond also points to why he believes this is the case stating, that if Hierarchical Temporal Memory ``was to learn a pattern consisting of several numbers and then be given a series of new numbers arranged in a similar pattern to the previous one, but with either higher, lower, or stretched values (i.e. multiplied by common a factor), it would be unable to correctly predict any of them''~\cite{WeatherForecast}. 
 	
@@ -529,7 +518,7 @@
     
     To accomplish classification we again utilized the \texttt{statsmodels} module, specifically the \texttt{arma\_order\_select\_ic} function which finds information criterion for ARMA models. We chose to use Bayes Information Criterion for all further experiments. As discussed in Section~\ref{sec:timeseries:classification}, the Bayes Information Criterion (BIC) provides the order ($p$ and $q$) of the time series
     
-    With the order of the ARMA model now identified, we utilized the \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter, allowing us to get the coefficients of the lag polynomials~\cite{statsmodels}. The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. We wrote a function which initially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjugate gradient, and Powell, in that order~\cite{statsmodels}. The accuracy of this and the \texttt{arma\_order\_select\_ic} functions would therefore need to be assessed before attempting to draw conclusions based on their outputs because of how central they were to this work.
+    With the order of the ARMA model now identified, we utilized the \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter, allowing us to get the coefficients of the lag polynomials~\cite{statsmodels}. The likelihood model used by \texttt{ARMA.fit} has the option to use a variety of methods~\cite{statsmodels}. We wrote a function which initially attempted to use the default solving method of limited memory Broyden-Fletcher-Goldfarb-Shanno and upon throwing an exception would then sequentially fallback upon the other methods available: Broyden-Fletcher-Goldfarb-Shanno, Newton-Rhapson, Nelder-Mead, conjugate gradient, non-conjugate gradient, and Powell, in that order~\cite{statsmodels}. The accuracy of this function and the \texttt{arma\_order\_select\_ic} function would therefore need to be assessed before attempting to draw conclusions based on their outputs because of how central they were to this work.
     
     
 	
@@ -537,25 +526,17 @@
     
     
     
+    \chapter{Software Validation}
     
+     \section{Accuracy of \texttt{statsmodels} Tools}\label{sec:res:stats}
     
+    For any of the following experiments to mean anything, it was crucial that we were certain we could analyze ARMA models with a high degree of accuracy as so much of the proposed work depended on it. Not only was the \texttt{statsmodels} module used to generate the instances of the ARMA models used, we also needed to depend on it to classify time series and fit the coefficients of the lag polynomials. Relating to the generation of time series, our first task was to attempt to understand the relationship between input sigma and the standard deviation of the white noise post-scaling.
     
-	
-	
-	
-	\chapter{Results}
-
-	The central question of this research was: if a Hierarchical Temporal Memory network is given an ARMA time series, how does its predicted time series compare? To answer this question, there were three major steps required. As discussed in Section~\ref{sec:exp:timeseriesclass}, it was essential to our goal that we be able to classify time series and therefore we needed to assess the accuracy of the tools provided by the \texttt{statsmodels} module. We needed to ensure that we were setting up Hierarchical Temporal Memory networks with the appropriate parameters for the task. Then, we needed to train Hierarchical Temporal Memory networks on ARMA time series, classify and identify the appropriate ARMA models for their outputs, and determine with some measure of statistical certainty if the ARMA model which best describes the HTM predictions is the same ARMA model that produced the input. The results of these investigations are given in Sections \ref{sec:res:stats}, \ref{sec:res:swarm}, and \ref{sec:res:eval} respectively.
+    \subsection{Measuring White Noise of ARMA Models}
     
-    \section{Accuracy of \texttt{statsmodels} Tools}\label{sec:res:stats}
+    Before determining how the scaling affected the standard deviation of the white noise, it was of course important to ensure we were using an accurate tool. The \texttt{ARMA.fit} method returns an \texttt{ARMAResults} instance which along with the lag coefficients also contains other information about the fitted ARMA model such as \texttt{sigma2} which is the variance of the residuals~\cite{statsmodels}. Taking the square root of this value should then produce the standard deviation of the resulting ARMA model.
     
-     For any of the following experiments to mean anything, it was crucial that we were certain we could analyze ARMA models with a high degree of accuracy as so much of the proposed work depended on it. Not only was the \texttt{statsmodels} module used to generate the instances of the ARMA models used, we also needed to depend on it to classify time series and fit the coefficients of the lag polynomials. Relating to the generation of time series, our first task was to attempt to understand the relationship between input sigma and the standard deviation of the white noise post-scaling.
-    
-   \subsection{Measuring White Noise of ARMA Models}
-   
-   Before determining how the scaling affected the standard deviation of the white noise, it was of course important to ensure we were using an accurate tool. The \texttt{ARMA.fit} method returns an \texttt{ARMAResults} instance which along with the lag coefficients also contains other information about the fitted ARMA model such as \texttt{sigma2} which is the variance of the residuals~\cite{statsmodels}. Taking the square root of this value should then produce the standard deviation of the resulting ARMA model.
-   
-   To test the accuracy of the standard deviation produced by this tool, we measured the standard deviations of 270 instances of a (4,0)-ARMA model described by $\tilde{z}_{t}=0.8\tilde{z}_{t-4}+a_{t}$ with input standard deviations ranging from one to nine with equal frequency (i.e. 30 with $\sigma=1$, 30 with $\sigma=2$, etc.). The results can be seen below in Figure~\ref{fig:sigmaofseries-pre}. The data shows a strong correlation between input sigma and measured sigma, which allows us to conclude that the tool is reasonably accurate for input sigmas between 1 and 9.
+    To test the accuracy of the standard deviation produced by this tool, we measured the standard deviations of 270 instances of a (4,0)-ARMA model described by $\tilde{z}_{t}=0.8\tilde{z}_{t-4}+a_{t}$ with input standard deviations ranging from one to nine with equal frequency (i.e. 30 with $\sigma=1$, 30 with $\sigma=2$, etc.). The results can be seen below in Figure~\ref{fig:sigmaofseries-pre}. The data shows a strong correlation between input sigma and measured sigma, which allows us to conclude that the tool is reasonably accurate for input sigmas between 1 and 9.
     
     \begin{figure}[hbt!]
         \centering
@@ -572,14 +553,80 @@
         \caption{Standard Deviation of Generated Time Series Pre- and Post-Scaling}
         \label{fig:sigmaofseries-post}
     \end{figure}
-
+    
     \subsection{Time Series Classification}
     
-      The next step was to assess the accuracy of the Bayes Information Criterion produced by the \texttt{arma\_order\_select\_ic}. It was crucial that this information be accurate because the BIC produced by this function would be used as the order of the ARMA model used when fitting the coefficients of the lag polynomials. 
-      
-      To measure the accuracy of \texttt{arma\_order\_select\_ic} we designed an experiment in which we would give the function 1500 instances of a known ARMA model so that we could compare the $p$ and $q$ produced by the function to the order of the model used to generate the instance. For the data in Table~\ref{tab:bic6}, both a (6,0)-ARMA model and (0,6)-ARMA model with coefficients for the respective lag polynomials of $[0.0,0.0,0.4,0.0,0.3,0.3]$ were used. The left and right halves of the tables describe the results for the AR (or (6,0)-ARMA) and MA (or (0,6)-ARMA) model respectively, giving the number of occurrences and the frequency with which \texttt{arma\_order\_select\_ic} gave each $p$ and $q$
-      
-      \FloatBarrier
+    The next step was to assess the accuracy of the Bayes Information Criterion produced by the \texttt{arma\_order\_select\_ic}. It was crucial that this information be accurate because the BIC produced by this function would be used as the order of the ARMA model used when fitting the coefficients of the lag polynomials. 
+    
+    To measure the accuracy of \texttt{arma\_order\_select\_ic} we designed an experiment in which we would give the function 1500 instances of a known ARMA model so that we could compare the $p$ and $q$ produced by the function to the order of the model used to generate the instance. We chose to test both Autoregressive and Moving-Average models with orders ranging from three to six. For each experiment, we generated 1,500 instances of the given model and passed the instances to \texttt{arma\_order\_select\_ic}. 
+    
+    Table~\ref{tab:bic3} shows the results of the experiment for third-order Autoregressive and Moving-Average models with lag polynomial coefficients of [0.0, 0.2, 0.8]. The left-hand side shows the results for the Autoregressive model while the Moving-Average results are on the right. The occurrences column shows how many times that classification was returned by the tool, so for example if \texttt{arma\_order\_select\_ic} classified an instance as a (4,2)-ARMA model, that would count towards an occurrence in the ``AR Lag 4'' cell and the ``MA Lag 2'' cell. The results show that the function is accurate, with over 99\% of instances correctly classified for both Autoregressive and Moving-Average models.
+    
+    \FloatBarrier
+     \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+            AR Lag 2 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 2 \\ \hline
+            AR Lag 3 & 1492 & 99.47\% & 1490 & 99.33\% & MA Lag 3 \\ \hline
+            AR Lag 4 & 6 & 0.40\% & 9 & 0.60\% & MA Lag 4 \\ \hline
+            AR Lag 5 & 2 & 0.13\% & 1 & 0.07\% & MA Lag 5 \\ \hline
+            MA Lag 1 & 11 & 0.73\% & 7 & 0.47\% & AR Lag 1 \\ \hline
+            MA Lag 2 & 1 & 0.07\% & 2 & 0.13\% & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{BIC produced for (3,0)- and (0,3)-ARMA Models}
+        \label{tab:bic3}
+    \end{table}
+
+    \FloatBarrier
+
+    The experiment was also conducted for fourth-order series, this time with lag coefficients of [0.0, 0.0, 0.0, 0.8]. The results are in Table~\ref{tab:bic4}, and again show that the tool is extremely accurate, with over 99\% accuracy.
+    
+    \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+            AR Lag 3 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 3 \\ \hline
+            AR Lag 4 & 1493 & 99.53\% & 1494 & 99.60\% & MA Lag 4 \\ \hline
+            AR Lag 5 & 4 & 0.27\% & 5 & 0.33\% & MA Lag 5 \\ \hline
+            AR Lag 6 & 3 & 0.20\% & 1 & 0.07\% & MA Lag 6 \\ \hline
+            MA Lag 1 & 10 & 0.67\% & 8 & 0.05\% & AR Lag 1 \\ \hline
+            MA Lag 2 & 2 & 0.13\% & 0 & 0.00\% & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{BIC produced for (4,0)- and (0,4)-ARMA Models}
+        \label{tab:bic4}
+    \end{table}
+
+    \FloatBarrier
+    
+    For fifth-order series, we assigned a lag polynomial of [0.0, 0.5, 0.0, 0.0, 0.5] for both the Autoregressive and Moving-Average model. The results in Table~\ref{tab:bic5} show that the tool is again highly accurate, but notably the Moving-Average accuracy in this case sunk slightly below 99\% to 98.93\%.
+    
+    \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
+            AR Lag 4 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 4 \\ \hline
+            AR Lag 5 & 1492 & 99.47\% & 1484 & 98.93\% & MA Lag 5 \\ \hline
+            AR Lag 6 & 8 & 0.53\% & 15 & 1.00\% & MA Lag 6 \\ \hline
+            AR Lag 7 & 0 & 0.00\% & 1 & 0.07\% & MA Lag 7 \\ \hline
+            MA Lag 1 & 5 & 0.33\% & 11 & 0.73\% & AR Lag 1 \\ \hline
+            MA Lag 2 & 0 & 0.00\% & 1 & 0.07\% & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{BIC produced for (5,0)- and (0,5)-ARMA Models}
+        \label{tab:bic5}
+    \end{table}
+
+    \FloatBarrier
+    
+    Lastly, the data in Table~\ref{tab:bic6} shows results for both (6,0)-ARMA model and (0,6)-ARMA models with coefficients for the respective lag polynomials of [0.0, 0.0, 0.4, 0.0, 0.3, 0.3]. As shown in the table, 1476 (98.40\%) and 1480 (98.67\%) were classified correctly as sixth-order respectively, representing a slight drop in accuracy, but still very accurate.
+    
+    \FloatBarrier
     
     \begin{table}[hbt!]
         \centering
@@ -599,14 +646,74 @@
     \end{table}
     
     
-    The results in Table~\ref{tab:bic6} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two models. It should be noted that Table~\ref{tab:bic6} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this experiment. A quick summary of the information on BIC found in Table~\ref{tab:bic6}, the number of models that were correctly identified as a (6,0)-ARMA model or (0,6)-ARMA model were 1476 (98.40\%) and 1480 (98.67\%) respectively.
-    \FloatBarrier
-    
-    \subsection{Fitting Coefficients of Time Series}
-    
-    Having quantified the accuracy of the information criterion tool, it was necessary to assess the accuracy of the \texttt{fit} tool so that we could analyze the differences between the input model and the output sequence coefficient-by-coefficient. This would give us a statistical confidence associated with our result using the standard deviation of the differences between the model coefficient and the tool's output. We again used 1,500 instances of of two different models: a 6 lag AR model and 6 lag MA model with lag polynomial of $[0.0,0.0,0.4,0.0,0.3,0.3]$ for both models.
+    The results in Tables~\ref{tab:bic3}, \ref{tab:bic4}, \ref{tab:bic5}, and \ref{tab:bic6} show that that the \texttt{statsmodels} tool for selecting Bayes Information Criterion is extremely accurate for these two models. It should be noted that Table~\ref{tab:bic6} only shows $p\pm2$ and $q\pm2$ for a ($p,q$)-ARMA model because there were no occurrences outside of that range in this experiment.
     
     \FloatBarrier
+    
+    \subsection{Fitting Coefficients of Time Series}\label{sec:test:coeff}
+    
+    Having quantified the accuracy of the information criterion tool, it was necessary to assess the accuracy of the \texttt{fit} tool so that we could analyze the differences between the input model and the output sequence coefficient-by-coefficient. This would give us a statistical confidence associated with our result using the standard deviation of the differences between the model coefficient and the tool's output. We again used 1,500 instances, orders three through six (using the same lag polynomials as the last set of experiments), and both Autoregressive and Moving-Average models. Models past sixth-order were not tested because the time to fit coefficients using \texttt{fit} grew very quickly with respect to the order.
+    
+    \FloatBarrier
+    
+     A summary of the results of this experiment can be seem in Tables~\ref{tab:errortsfitting3}, \ref{tab:errortsfitting4}, \ref{tab:errortsfitting5}, and \ref{tab:errortsfitting6}. For each table, the results for instances of the Autoregressive model are on the left while the results for the Moving-Average model are on the right. $\mu_{\text{diff}}$ represents the mean difference between the model's coefficient and the coefficient produced by \texttt{fit}, and the standard deviation is found under $\sigma_{\text{diff}}$.  For all models and all coefficients, the observed mean difference for all coefficients is within a standard deviation of 0, indicating that the function is producing accurate coefficients. Histograms for the coefficients from the sixth-order experiment (Table~\ref{tab:errortsfitting6}) can be found in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
+    
+    \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
+            AR Lag 1 & 0.0020 & 0.03149 & 0.00162 & 0.05368 & MA Lag 1 \\ \hline
+            AR Lag 2 & -0.00088 & 0.03129 & -0.00127 & 0.03097 & MA Lag 2 \\ \hline
+            AR Lag 3 & 0.00596 & 0.02015 & -0.00151 & -0.02120 & MA Lag 3 \\ \hline
+            AR Lag 4 & 0.00031 & 0.01852 & 0.00002 & 0.03803 & MA Lag 4 \\ \hline
+            AR Lag 5 & -0.00047 & 0.02124 & -0.00056 & -.0215 & MA Lag 5 \\ \hline
+            MA Lag 1 & 0.00074 & 0.02678 & 0.00052 & 0.04943 & AR Lag 1 \\ \hline
+            MA Lag 2 & -0.00066 & 0.02551 & -0.00058 & 0.02553 & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA model}
+        \label{tab:errortsfitting3}
+    \end{table}
+    
+    \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
+            AR Lag 1 & -0.00118 & 0.04119 & 0.00010 & 0.03064 & MA Lag 1 \\ \hline
+            AR Lag 2 & -0.00209 & 0.03995 & 0.00047 & 0.01930 & MA Lag 2 \\ \hline
+            AR Lag 3 & -0.00075 & 0.01945 & 0.00051 & 0.02011 & MA Lag 3 \\ \hline
+            AR Lag 4 & 0.00458 & 0.01916 & -0.00411 & 0.01960 & MA Lag 4 \\ \hline
+            AR Lag 5 & -0.00013 & 0.02919 & 0.00025 & 0.01785 & MA Lag 5 \\ \hline
+            AR Lag 6 & -0.00097 & 0.02862 & 0.00008 & 0.00295 & MA Lag 6 \\ \hline
+            MA Lag 1 & -0.00057 & 0.03464 & 0.00053 & 0.02469 & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.00047 & 0.01930 & 0.00000 & 0.00000 & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA model}
+        \label{tab:errortsfitting4}
+    \end{table}
+    
+    \begin{table}[hbt!]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|l|}
+            \hline
+            \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
+            \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
+            AR Lag 1 & 0.00062 & 0.0293 & -0.00053 & 0.04604 & MA Lag 1 \\ \hline
+            AR Lag 2 & 0.00120 & 0.02771 & -0.00157 & 0.02918 & MA Lag 2 \\ \hline
+            AR Lag 3 & -0.00015 & 0.03318 & 0.00116 & 0.03725 & MA Lag 3 \\ \hline
+            AR Lag 4 & -0.00184 & 0.02794 & 0.00036 & 0.02942 & MA Lag 4 \\ \hline
+            AR Lag 5 & 0.00335 & 0.02785 & -0.00171 & 0.02857 & MA Lag 5 \\ \hline
+            AR Lag 6 & 0.00011 & 0.00696 & -0.00004 & 0.02024 & MA Lag 6 \\ \hline
+            AR Lag 7 & 0.00000 & 0.00000 & 0.00000* & 0.00000* & MA Lag 7 \\ \hline
+            MA Lag 1 & 0.00037 & 0.01111 & 0.00000 & 0.03680 & AR Lag 1 \\ \hline
+            MA Lag 2 & 0.00000 & 0.00000 & 0.00016 & 0.00608 & AR Lag 2 \\ \hline
+        \end{tabular}
+        \caption{Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA model}
+        \label{tab:errortsfitting5}
+    \end{table}
     
     \begin{table}[hbt!]
         \centering
@@ -630,21 +737,17 @@
     \end{table}
     \FloatBarrier
     
-    A summary of the results of this experiment can be seem in Table~\ref{tab:errortsfitting6}, with histograms for all of the coefficients in Appendix~\ref{app:errors}. From the histograms, the differences appear normally distributed and the observed mean difference for all coefficients is within 5/1000ths of 0. Using this data, we can then measure a time series and determine how far from the mean it is in terms of standard deviations. 
     
     
     
-
     \section{Swarming for Parameter Optimization}\label{sec:res:swarm}
     
-    As noted in Section~\ref{sec:exp:train}, to find optimal or near optimal parameters for predicting ARMA models. We decided to swarm on two different sets of parameters, one set (``lite'') constituting just RDSE resolution and training parameters and another which constituted a wider array of HTM parameters (``full''). 
+    As noted in Section~\ref{sec:exp:train}, to find optimal or near optimal parameters for predicting ARMA models. We decided to swarm on two different sets of parameters, one set (``lite'') constituting just RDSE resolution and training parameters and another which constituted a wider array of HTM parameters (``full'').  We chose bounds on the parameters by looking at a variety of settings used in similar papers and the bounds for all parameters can be seen in Table~\ref{tab:swarming}.
     
-    The lite parameters were: RDSE resolution, SIBT, and weights for prediction steps two through nine (one step was a constant 1.0). The full set included the lite parameters, but included another training parameter iterations per cycle and HTM parameters potentialPct, numActiveColumnsPerInhArea, synPermConnected, synPermInactiveDec, activationThreshold, and newSynapseCount. We chose bounds on the parameters by looking at a variety of settings used in similar papers and the bounds for all parameters can be seen in Table~\ref{tab:swarming}.
-	
     \begin{table}[hbt!]
         \begin{tabular}{|c|c|c|c|c|}
             \hline
-             & \textbf{Param Type} & \textbf{Lite or Full} & \textbf{min} & \textbf{max} \\ \hline
+            & \textbf{Param Type} & \textbf{Lite or Full} & \textbf{min} & \textbf{max} \\ \hline
             \textbf{RDSE Resolution} & HTM & Lite & 0.5 & 10 \\ \hline
             \textbf{SIBT} & Training & Lite & 0 & 50 \\ \hline
             \textbf{$n$Weight} & Training & Lite & 0 & 10 \\ \hline
@@ -656,14 +759,220 @@
             \textbf{activationThreshold} & HTM & Full & 8 & 40 \\ \hline
             \textbf{newSynapseCount} & HTM & Full & 15 & 35 \\ \hline
         \end{tabular}\caption{Parameters Swarmed On}
-    \label{tab:swarming}
+        \label{tab:swarming}
     \end{table}
+    
+    \FloatBarrier
+    
+    In order to test the particle swarming algorithm, we first wanted to first give it problems where we knew the global minimum. We chose to use $f(x)=\frac{x_{1}^{2}}{2}+\frac{x_{2}^2}{4}$, an elliptic paraboloid with minimum of 0 at (0,0). Its graph can be seen in Figure~\ref{fig:Paraboloid}. The particle swarm optimization function's best position and value at the position for each iteration can be seen in Table~\ref{tab:swarmParabola} where the minimum is found.
+    
+     \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=.4\linewidth]{images/Parabola.png}
+        \caption{Elliptic Paraboloid}
+        \label{fig:Paraboloid}
+    \end{figure}
 
     \FloatBarrier
     
+    \begin{longtable}[c]{|c|c|c|c|}
+        \hline
+        \textbf{Iteration} & \textbf{Value} & \textbf{$x_{1}$} & \textbf{$x_{2}$} \\ \hline
+        \endhead
+        %
+        1 & 1430.59979 & 47.2942428328025 & 35.3398974845823 \\ \hline
+        2 & 27.53131 & -6.5412659780099 & -4.95468729013965 \\ \hline
+        3 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        4 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        5 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        6 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        7 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        8 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        9 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        10 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        11 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        12 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        13 & 27.38731 & -0.017743951570481 & 10.4665480436202 \\ \hline
+        14 & 11.94353 & 4.31367687248319 & 3.24938756386777 \\ \hline
+        15 & 11.94353 & 4.31367687248319 & 3.24938756386777 \\ \hline
+        16 & 0.77440 & 1.24262366689631 & -0.096838341728018 \\ \hline
+        17 & 0.77440 & 1.24262366689631 & -0.096838341728018 \\ \hline
+        18 & 0.77440 & 1.24262366689631 & -0.096838341728018 \\ \hline
+        19 & 0.77440 & 1.24262366689631 & -0.096838341728018 \\ \hline
+        20 & 0.77440 & 1.24262366689631 & -0.096838341728018 \\ \hline
+        21 & 0.77440 & 1.24262366689631 & -0.096838341728018 \\ \hline
+        22 & 0.32076 & 0.596928275580422 & -0.755249816475236 \\ \hline
+        23 & 0.32076 & 0.596928275580422 & -0.755249816475236 \\ \hline
+        24 & 0.01062 & -0.033690147634675 & -0.200485668701763 \\ \hline
+        25 & 0.01062 & -0.033690147634675 & -0.200485668701763 \\ \hline
+        26 & 0.01062 & -0.033690147634675 & -0.200485668701763 \\ \hline
+        27 & 0.01062 & -0.033690147634675 & -0.200485668701763 \\ \hline
+        28 & 0.01062 & -0.033690147634675 & -0.200485668701763 \\ \hline
+        29 & 0.01062 & -0.033690147634675 & -0.200485668701763 \\ \hline
+        30 & 0.00101 & 0.028590224603503 & -0.049107936470873 \\ \hline
+        31 & 0.00101 & 0.028590224603503 & -0.049107936470873 \\ \hline
+        32 & 0.00007 & 0.008126388767238 & -0.01152860694564 \\ \hline
+        33 & 0.00007 & 0.008126388767238 & -0.01152860694564 \\ \hline
+        34 & 0.00005 & -0.008683959756985 & 0.007775437476341 \\ \hline
+        35 & 0.00005 & -0.005826573477984 & 0.011779521851548 \\ \hline
+        36 & 0.00001 & -0.004689426574613 & 0.00016966603041 \\ \hline
+        \caption{Particle Swarming on an Elliptic Paraboloid with 24 Particles}
+        \label{tab:swarmParabola}\\
+    \end{longtable}
+
+    \FloatBarrier
+    
+    The elliptic paraboloid is a rather trivial surface to optimize because the only minima is the global minimum. Therefore, we needed to test the algorithm on a surface which contained more local minima. Drawing from a collection of test functions for optimization\footnote{Visual Library of Simulation Experiments: \href{http://www.sfu.ca/~ssurjano/optimization.html}{http://www.sfu.ca/~ssurjano/optimization.html}}, I then turned to the Shubert Function. The function can be see in Figure~\ref{fig:Shubert} and is defined as $$f(x)=\Bigg(\sum_{i=1}^{5} i\cos((i+1)x_{1}+i)\Bigg)\Bigg(\sum_{i=1}^{5} i\cos((i+1)x_{2}+i)\Bigg)$$
+    
+     \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=.8\linewidth]{images/Shubert.jpg}
+        \caption{Shubert Function}
+        \label{fig:Shubert}
+    \end{figure}
+
+    Table~\ref{tab:swarmShubert} shows the algorithm's best value and position over 36 iterations, using 24 particles. It shows that the algorithm gets extremely close to one of the eighteen global minima, the value of which are -186.7309.
+    
+    \FloatBarrier
+
+    \begin{longtable}[c]{|c|c|c|c|}
+        \hline
+        \textbf{Iteration} & \textbf{Value} & \textbf{$x_{1}$} & \textbf{$x_{2}$} \\ \hline
+        \endhead
+        %
+        1 & -27.7871597266311 & -1.56156360629459 & -9.40405561123859 \\ \hline
+        2 & -38.9415387245841 & -1.59702841825173 & -6.81484370344231 \\ \hline
+        3 & -38.9415387245841 & -1.59702841825173 & -6.81484370344231 \\ \hline
+        4 & -90.4499474261868 & -0.874002681907612 & -6.35272911905053 \\ \hline
+        5 & -90.4499474261868 & -0.874002681907612 & -6.35272911905053 \\ \hline
+        6 & -90.4499474261868 & -0.874002681907612 & -6.35272911905053 \\ \hline
+        7 & -90.4499474261868 & -0.874002681907612 & -6.35272911905053 \\ \hline
+        8 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        9 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        10 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        11 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        12 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        13 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        14 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        15 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        16 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        17 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        18 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        19 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        20 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        21 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        22 & -158.871990679088 & 5.52843458731665 & -7.81257030731857 \\ \hline
+        23 & -184.93002874917 & 5.49361129961916 & -7.68261917965731 \\ \hline
+        24 & -184.93002874917 & 5.49361129961916 & -7.68261917965731 \\ \hline
+        25 & -185.961916264334 & 5.48292563466807 & -7.69019184033006 \\ \hline
+        26 & -185.961916264334 & 5.48292563466807 & -7.69019184033006 \\ \hline
+        27 & -185.961916264334 & 5.48292563466807 & -7.69019184033006 \\ \hline
+        28 & -186.382912186899 & 5.47062619099101 & -7.71098357453216 \\ \hline
+        29 & -186.712945809853 & 5.48176711558784 & -7.71087715054839 \\ \hline
+        30 & -186.712945809853 & 5.48176711558784 & -7.71087715054839 \\ \hline
+        31 & -186.712945809853 & 5.48176711558784 & -7.71087715054839 \\ \hline
+        32 & -186.716820099857 & 5.48239393478027 & -7.71073025043748 \\ \hline
+        33 & -186.728738465664 & 5.48311224966539 & -7.70924814956375 \\ \hline
+        34 & -186.728860930707 & 5.48367397023694 & -7.70882075560373 \\ \hline
+        35 & -186.730775369541 & 5.48310881675332 & -7.70829063914814 \\ \hline
+        36 & -186.73077537 & 5.48310881675332 & -7.70829063914814 \\ \hline
+        \caption{Particle Swarming on the Shubert Function with 24 Particles}
+        \label{tab:swarmShubert}\\
+    \end{longtable}
+
+    \FloatBarrier
+    
+    Lastly, we wanted to test the swarming algorithm on a function with steep drop-offs to see how it interacted with sudden changes in the value of the function. To do this, we opted to use the Michalewicz Function which can be seen in Figure~\ref{fig:Michalewics}. The global minimum of the Michalewicz Function of two-dimensions is -1.8013. This minimum was found to four decimal places by iteration 33 with 24 particles, as shown in Table~\ref{tab:swarmMichal}.
+    
+    \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=.55\linewidth]{images/Michalewics.jpg}
+        \caption{Michalewicz Function}
+        \label{fig:Michalewics}
+    \end{figure}
+
+   \FloatBarrier
+   \begin{longtable}[c]{|c|c|c|c|}
+        \hline
+        \textbf{Iteration} & \textbf{Value} & \textbf{$x_{1}$} & \textbf{$x_{2}$} \\ \hline
+        \endhead
+        %
+        1 & -0.799480456112465 & 2.21347770457907 & 0.143961547047909 \\ \hline
+        2 & -1.02001519034968 & 2.14360380905455 & 1.38237622407863 \\ \hline
+        3 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        4 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        5 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        6 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        7 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        8 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        9 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        10 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        11 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        12 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        13 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        14 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        15 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        16 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        17 & -1.70300638818231 & 2.20239464178804 & 1.62052034936591 \\ \hline
+        18 & -1.71565574491555 & 2.2744913395185 & 1.58078343903939 \\ \hline
+        19 & -1.79362071947288 & 2.1990117512713 & 1.58431410110791 \\ \hline
+        20 & -1.79362071947288 & 2.1990117512713 & 1.58431410110791 \\ \hline
+        21 & -1.79362071947288 & 2.1990117512713 & 1.58431410110791 \\ \hline
+        22 & -1.79362071947288 & 2.1990117512713 & 1.58431410110791 \\ \hline
+        23 & -1.79826958592552 & 2.18944239110428 & 1.56914498663819 \\ \hline
+        24 & -1.80069249796879 & 2.20426325930944 & 1.57457971159592 \\ \hline
+        25 & -1.80069249796879 & 2.20426325930944 & 1.57457971159592 \\ \hline
+        26 & -1.80112250999064 & 2.20615857272585 & 1.57033327455812 \\ \hline
+        27 & -1.80112250999064 & 2.20615857272585 & 1.57033327455812 \\ \hline
+        28 & -1.80112250999064 & 2.20615857272585 & 1.57033327455812 \\ \hline
+        29 & -1.80116975572391 & 2.20378201146668 & 1.57252508988759 \\ \hline
+        30 & -1.80120553201305 & 2.20287445946326 & 1.57235006778859 \\ \hline
+        31 & -1.80128407656523 & 2.20262592357202 & 1.57012834876345 \\ \hline
+        32 & -1.80128706813547 & 2.20229068042156 & 1.57029440752734 \\ \hline
+        33 & -1.80130139494625 & 2.203221148287 & 1.57089518231883 \\ \hline
+        34 & -1.8013027087429 & 2.20276797349352 & 1.57089494204502 \\ \hline
+        35 & -1.8013027087429 & 2.20276797349352 & 1.57089494204502 \\ \hline
+        36 & -1.80130328878 & 2.20293342486416 & 1.57074452816047 \\ \hline
+        \caption{Particle Swarming on the Michalewicz Function with 24 Particles}
+        \label{tab:swarmMichal} \\
+    \end{longtable}
+
     
 
-    \section{Evaluating HTM Ability to Generalize}
+\FloatBarrier
+    
+    \section{Training HTMs on Time Series}
+    
+    Our first challenge was to feed in-memory time-series to a Hierarchical Temporal Memory network, and at the time of writing, I was not able to find any way to do this in NuPIC so we needed to develop a stream, which we titled \textit{TimeSeriesStream}, to get our data to the HTM. Then we needed to know that we could train an HTM. 
+    
+    Writing test cases would be extremely difficult because of the difficult-to-predict ways in which HTMs are initialized, form synapses, and use inhibition to produce sparse representations. Additionally, NuPIC's code is spread across Python and C++ further complicating the process. Therefore, to monitor the internal workings of the HTM and check additional code written for training and calculating errors were all working correctly, we employed logging and CSV outputs of HTM predictions. This combination would allow us to track an HTM's learning process and see how an HTM's predictions over various time steps compared to the input sequence.
+    
+    Due to the stochastic nature of ARMA models, we elected to begin with simple, deterministic series. Our first series of tests used sequences which did not require any temporal context past the last term-that is sequences such that you can know for certain the next term in the sequence by only knowing the last term. Examples include 1,2,1,2,...; 1,3,1,3,..; and 78,79,78,79,... . This allowed us to ensure that we could train and predict using only an HTM's spatial pooler.
+    
+    Next, we trained Hierarchical Temporal Memory networks using deterministic sequences which relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include 1,2,3,2,.. and 1,2,2,3,5,2,2,4,1,... 
+    
+    Once we were confident in our ability to train HTMs on simple sequence, our next task was to find the correct parameters for the ARMA models we wanted to train on. However, when using swarming to find optimal or near-optimal settings for ARMA models, we found that the variation in the instances caused by different innovation terms added noise to the performance metric, meaning optimal parameters would be extremely difficult to find, but using parameters produced by the swarming would still allow us to use better parameters than simply guessing.
+    
+    We also needed to acquire a baseline for what level of error would be considered ``accurate'' for these scaled ARMA models. To do this, we used a single instance of fourth-order Autoregressive model, and fitted the coefficients using both \texttt{arma\_order\_select\_ic} and \texttt{fit}, then compared the root mean squared error between the two sequences. The results from this experiment can be seen in Figure~\ref{fig:RMSELag4vsInstances}. We see that the mean RMSE seems to be in the high teens and bounded between 13 and 22\%.
+    
+    \begin{figure}[hbt!]
+        \centering
+        \includegraphics[width=.75\linewidth]{images/4LagARvsInstancesFromFittedCoeffs.png}
+        \caption{RMSE between an AR Instance and Instances from a Fitted Model}
+        \label{fig:RMSELag4vsInstances}
+    \end{figure}
+
+
+
+
+	
+	
+	
+	\chapter{Results}
+
+	The central question of this research was: if a Hierarchical Temporal Memory network is given an ARMA time series, how does its predicted time series compare? Do accomplish this, we needed to train Hierarchical Temporal Memory networks on ARMA time series, classify and identify the appropriate ARMA models for their outputs, and determine with some measure of statistical certainty if the ARMA model which best describes the HTM predictions is the same ARMA model that produced the input. We also wanted to test the ability for an HTM to generalize learned patterns, which was called into question by papers discussed in Section~\ref{sec:lit}.
+    
+   \section{Evaluating HTM's Ability to Generalize}
     
     A question that we wanted to explore was the one posed by Vivimond (see Section~\ref{sec:lit}) where he postulated about Hierarchical Temporal Memory's ability to generalize, stating ``was to learn a pattern consisting of several numbers and then be given a series of new numbers arranged in a similar pattern to the previous one, but with either higher, lower, or stretched values (i.e. multiplied by common a factor), it would be unable to correctly predict any of them.'' We tested this theory by training an HTM network on an AR time series with coefficients [0, 0, -0.4, 0, -0.3, -0.3], assessing its ability to predict, then scaling the series, and asked the HTM to predict the series twice, once with learning turned off and then again with learning on. This was repeated one-hundred times.
     
@@ -766,13 +1075,7 @@
     
     \section{Evaulating HTM Predictions}\label{sec:res:eval}
     
-    The first step of this project was learning how to interact with the NuPIC Network API in Python: this included writing a stream object to feed an HTM network in-memory arrays, writing training routines for HTMs, and conducting some sensitivity analysis with the model parameters. 
-    
-    Then we began by training HTMs on very simple deterministic sequences which did not require any temporal context past the last term-that is sequences such that you can know for certain the next term in the sequence by only knowing the last term. Examples include $1,2,1,2,...$, $1,3,1,3,...$, and $78,79,78,79,...$. This allowed us to ensure that we could train and predict using only an HTM's spatial pooler.
-    
-    Next, we trained Hierarchical Temporal Memory networks using slightly more complex, but still deterministic sequences, that relied on some more long-range temporal dependencies. For these patterns, it is not always sufficient to know just the last term, but you may need to also know some term other previous term which would require the HTM's temporal pooler. Examples include $1,2,3,2,..$ and $1,2,2,3,5,2,2,4,1,...$. In the first example, 1 and 3 are always followed by 2, but to know what is followed by 2 you also need to know what proceeded 2.
-	
-	Our next test was therefore to train a Hierarchical Temporal Memory network on sequences produced by ARMA models, fit its output, and assess with some statistical confidence it is the same model that we input. For our first trial, we decided to swarm for parameters and then train an HTM on the same instance of an AR model (done through seeding the random number generator). Examples of the sequences and predictions used in this section can be see in Figures~\ref{fig:train(6,0)ARMA} and ~\ref{fig:train(0,6)ARMA}.
+	Our experiment required that we train a Hierarchical Temporal Memory network on sequences produced by ARMA models, fit its output, and assess with some statistical confidence it is the same model that we input. For our first trial, we decided to swarm for parameters and then train an HTM on the same instance of an AR model (done through seeding the random number generator). Examples of the sequences and predictions used in this section can be see in Figures~\ref{fig:train(6,0)ARMA} and ~\ref{fig:train(0,6)ARMA}.
     
     \begin{figure}[hbt!]
         \centering
@@ -861,42 +1164,9 @@
     
     
 	\appendices
-		\chapter{Errors on Fitting AR and MA Models}\label{app:errors}
-		
-			\begin{table}[hbt!]
-			\centering
-			\begin{tabular}{|l|c|c|c|c|l|}
-				\hline
-				\multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-				\cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
-				AR Lag 5 & 6 & 0.40\% & 4 & 0.27\% & MA Lag 5 \\ \hline
-				AR Lag 6 & 1482 & 98.80\% & 1483 & 98.87\% & MA Lag 6 \\ \hline
-				AR Lag 7 & 11 & 0.73\% & 11 & 0.73\% & MA Lag 7 \\ \hline
-				AR Lag 8 & 1 & 0.07\% & 2 & 0.13\% & MA Lag 8 \\ \hline
-				MA Lag 1 & 12 & 0.80\% & 5 & 0.33\% & AR Lag 1 \\ \hline
-				MA Lag 2 & 4 & 0.27\% & 4 & 0.27\% & AR Lag 2 \\ \hline
-			\end{tabular}
-			\caption{BIC for each instance}
-		\end{table}
-		
-		\begin{table}[hbt!]
-			\centering
-			\begin{tabular}{|l|c|c|c|c|l|}
-				\hline
-				\multicolumn{3}{|c|}{\textbf{Autoregressive Model}}   & \multicolumn{3}{c|}{\textbf{Moving-Average Model}}  \\ \hline
-                \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & \cellcolor{black}         \\ \hline
-				AR Lag 1 & 0.00349                  & 0.07462                    & 0.00276                  & 0.05784                    & MA Lag 1 \\ \hline
-				AR Lag 2 & -0.00185                 & 0.03404                    & -0.00147                 & 0.04248                    & MA Lag 2 \\ \hline
-				AR Lag 3 & 0.00134                  & 0.02895                    & -0.00049                 & 0.02883                    & MA Lag 3 \\ \hline
-				AR Lag 4 & -0.00039                 & 0.03909                    & 0.00192                  & 0.03478                    & MA Lag 4 \\ \hline
-				AR Lag 5 & 0.00093                  & 0.02925                    & -0.00128                 & 0.03096                    & MA Lag 5 \\ \hline
-				AR Lag 6 & 0.00387                  & 0.03895                    & -0.00175                 & 0.03532                    & MA Lag 6 \\ \hline
-				AR Lag 7 & 0.00042                  & 0.01602                    & -0.00016                 & 0.01331                    & MA Lag 7 \\ \hline
-				AR Lag 8 & 0.00008                  & 0.00314                    & -0.00010                 & 0.00788                    & MA Lag 8 \\ \hline
-				MA Lag 1 & -0.00461                 & 0.06797                    & -0.00193                 & 0.04801                    & AR Lag 1 \\ \hline
-				MA Lag 2 & 0.00085                  & 0.01665                    & 0.00142                  & 0.03004                    & AR Lag 2 \\ \hline
-			\end{tabular}
-		\end{table}
+		\chapter{Errors Fitting Coefficients of Models}\label{app:errors}
+        
+        As discussed in Section~\ref{sec:test:coeff}, below are histograms for the difference between model coefficients and coefficients produced by \texttt{fit} for 1,500 instances of AR and MA models with lag polynomials of [0.0, 0.0, 0.4, 0.0, 0.3, 0.3].
 	
 	\begin{figure}[hbt!]
 		\centering
@@ -992,117 +1262,5 @@
 		\centering
 		\includegraphics[width=.84\linewidth]{images/MA6ModelAR2CoefDist.png}
 	\end{figure}
-
-\chapter{BIC Accuracy of Other Models}
-
- \begin{table}[]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|l|}
-        \hline
-        \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-        \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
-        AR Lag 2 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 2 \\ \hline
-        AR Lag 3 & 1492 & 99.47\% & 1490 & 99.33\% & MA Lag 3 \\ \hline
-        AR Lag 4 & 6 & 0.40\% & 9 & 0.60\% & MA Lag 4 \\ \hline
-        AR Lag 5 & 2 & 0.13\% & 1 & 0.07\% & MA Lag 5 \\ \hline
-        MA Lag 1 & 11 & 0.73\% & 7 & 0.47\% & AR Lag 1 \\ \hline
-        MA Lag 2 & 1 & 0.07\% & 2 & 0.13\% & AR Lag 2 \\ \hline
-    \end{tabular}
-    \caption{BIC produced for (3,0)- and (0,3)-ARMA Models}
-    \label{tab:bic3}
-\end{table}
-
-\begin{table}[hbt!]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|l|}
-        \hline
-        \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-        \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
-        AR Lag 3 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 3 \\ \hline
-        AR Lag 4 & 1493 & 99.53\% & 1494 & 99.60\% & MA Lag 4 \\ \hline
-        AR Lag 5 & 4 & 0.27\% & 5 & 0.33\% & MA Lag 5 \\ \hline
-        AR Lag 6 & 3 & 0.20\% & 1 & 0.07\% & MA Lag 6 \\ \hline
-        MA Lag 1 & 10 & 0.67\% & 8 & 0.05\% & AR Lag 1 \\ \hline
-        MA Lag 2 & 2 & 0.13\% & 0 & 0.00\% & AR Lag 2 \\ \hline
-    \end{tabular}
-    \caption{BIC produced for (4,0)- and (0,4)-ARMA Models}
-    \label{tab:bic4}
-\end{table}
-
-\begin{table}[hbt!]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|l|}
-        \hline
-        \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-        \cellcolor{black} & Occurrences & Percent & Occurrences & Percent & \cellcolor{black} \\ \hline
-        AR Lag 4 & 0 & 0.00\% & 0 & 0.00\% & MA Lag 4 \\ \hline
-        AR Lag 5 & 1492 & 99.47\% & 1484 & 98.93\% & MA Lag 5 \\ \hline
-        AR Lag 6 & 8 & 0.53\% & 15 & 1.00\% & MA Lag 6 \\ \hline
-        AR Lag 7 & 0 & 0.00\% & 1 & 0.07\% & MA Lag 7 \\ \hline
-        MA Lag 1 & 5 & 0.33\% & 11 & 0.73\% & AR Lag 1 \\ \hline
-        MA Lag 2 & 0 & 0.00\% & 1 & 0.07\% & AR Lag 2 \\ \hline
-    \end{tabular}
-    \caption{BIC produced for (5,0)- and (0,5)-ARMA Models}
-    \label{tab:bic5}
-\end{table}
-
-\chapter{Coefficient Fitting Accuracy of Other Models}
-
-\begin{table}[hbt!]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|l|}
-        \hline
-        \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-        \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
-        AR Lag 1 & 0.0020 & 0.03149 & 0.00162 & 0.05368 & MA Lag 1 \\ \hline
-        AR Lag 2 & -0.00088 & 0.03129 & -0.00127 & 0.03097 & MA Lag 2 \\ \hline
-        AR Lag 3 & 0.00596 & 0.02015 & -0.00151 & -0.02120 & MA Lag 3 \\ \hline
-        AR Lag 4 & 0.00031 & 0.01852 & 0.00002 & 0.03803 & MA Lag 4 \\ \hline
-        AR Lag 5 & -0.00047 & 0.02124 & -0.00056 & -.0215 & MA Lag 5 \\ \hline
-        MA Lag 1 & 0.00074 & 0.02678 & 0.00052 & 0.04943 & AR Lag 1 \\ \hline
-        MA Lag 2 & -0.00066 & 0.02551 & -0.00058 & 0.02553 & AR Lag 2 \\ \hline
-    \end{tabular}
-    \caption{Errors on fitting coefficients to instances of (3,0)- and (0,3)-ARMA model}
-    \label{tab:errortsfitting3}
-\end{table}
-
-\begin{table}[hbt!]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|l|}
-        \hline
-        \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-        \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
-        AR Lag 1 & -0.00118 & 0.04119 & 0.00010 & 0.03064 & MA Lag 1 \\ \hline
-        AR Lag 2 & -0.00209 & 0.03995 & 0.00047 & 0.01930 & MA Lag 2 \\ \hline
-        AR Lag 3 & -0.00075 & 0.01945 & 0.00051 & 0.02011 & MA Lag 3 \\ \hline
-        AR Lag 4 & 0.00458 & 0.01916 & -0.00411 & 0.01960 & MA Lag 4 \\ \hline
-        AR Lag 5 & -0.00013 & 0.02919 & 0.00025 & 0.01785 & MA Lag 5 \\ \hline
-        AR Lag 6 & -0.00097 & 0.02862 & 0.00008 & 0.00295 & MA Lag 6 \\ \hline
-        MA Lag 1 & -0.00057 & 0.03464 & 0.00053 & 0.02469 & AR Lag 1 \\ \hline
-        MA Lag 2 & 0.00047 & 0.01930 & 0.00000 & 0.00000 & AR Lag 2 \\ \hline
-    \end{tabular}
-    \caption{Errors on fitting coefficients to instances of (4,0)- and (0,4)-ARMA model}
-    \label{tab:errortsfitting4}
-\end{table}
-
-\begin{table}[hbt!]
-    \centering
-    \begin{tabular}{|l|c|c|c|c|l|}
-        \hline
-        \multicolumn{3}{|c|}{Autoregressive Model} & \multicolumn{3}{c|}{Moving-Average Model} \\ \hline
-        \cellcolor{black} & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ & $\mu_{\text{diff}}$ & $\sigma_{\text{diff}}$ &  \cellcolor{black} \\ \hline
-        AR Lag 1 & 0.00062 & 0.0293 & -0.00053 & 0.04604 & MA Lag 1 \\ \hline
-        AR Lag 2 & 0.00120 & 0.02771 & -0.00157 & 0.02918 & MA Lag 2 \\ \hline
-        AR Lag 3 & -0.00015 & 0.03318 & 0.00116 & 0.03725 & MA Lag 3 \\ \hline
-        AR Lag 4 & -0.00184 & 0.02794 & 0.00036 & 0.02942 & MA Lag 4 \\ \hline
-        AR Lag 5 & 0.00335 & 0.02785 & -0.00171 & 0.02857 & MA Lag 5 \\ \hline
-        AR Lag 6 & 0.00011 & 0.00696 & -0.00004 & 0.02024 & MA Lag 6 \\ \hline
-        AR Lag 7 & 0.00000 & 0.00000 & 0.00000* & 0.00000* & MA Lag 7 \\ \hline
-        MA Lag 1 & 0.00037 & 0.01111 & 0.00000 & 0.03680 & AR Lag 1 \\ \hline
-        MA Lag 2 & 0.00000 & 0.00000 & 0.00016 & 0.00608 & AR Lag 2 \\ \hline
-    \end{tabular}
-    \caption{Errors on fitting coefficients to instances of (5,0)- and (0,5)-ARMA model}
-    \label{tab:errortsfitting5}
-\end{table}
 	
 \end{document}
