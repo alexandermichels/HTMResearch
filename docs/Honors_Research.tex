@@ -304,7 +304,7 @@
 	\end{split}
 	\end{align}
 	
-	I utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however I wrote my own swarming utility in Python which I thoroughly tested on a number of complex surfaces.
+	We utilized swarming to find optimal or near-optimal sets of parameters for learning ARMA time series with a Hierarchical Temporal Memory network. Numenta themselves utilizes swarming for this very same purpose, and NuPiC comes with a swarming utility, however we wrote my own swarming utility in Python which we thoroughly tested on a number of complex surfaces.
 	
 	\section{Hierarchical Temporal Memory}
 	
@@ -336,7 +336,7 @@
 	
 	This is achievable by simply conveying more information in our code. In our binary representation any single error led to another valid codeword (a codeword which decoded to an element of the input/output set) which meant that no errors could be detected or corrected. By expanding our code length, we increase the number of codewords (multiplying by the cardinality of the code alphabet for each character added) meaning that fewer errors will result in other valid codewords and can possibly be detected or corrected. 
 	
-	A key strategy with Sparse Distributed Representations (SDRs) is to encode semantic similarity, such as with our idea of distance in our motivating example. This helps us achieve our second goal because even if we increase the error-tolerance of our code, there is still some probability of an uncorrectable error and we would like that error to result in a codeword as close to the original codeword as possible. To give you a real world example imagine I am sending instructions to a aircraft and I need to tell it to turn down 7\textdegree~to start its descent. Obviously, an error resulting in 8\textdegree~or 6\textdegree~being interpreted by the pilot are both preferable to 90\textdegree.
+	A key strategy with Sparse Distributed Representations (SDRs) is to encode semantic similarity, such as with our idea of distance in our motivating example. This helps us achieve our second goal because even if we increase the error-tolerance of our code, there is still some probability of an uncorrectable error and we would like that error to result in a codeword as close to the original codeword as possible. To give you a real world example, imagine an air traffic controller sending instructions to a aircraft and they need to tell it to turn down 7\textdegree~to start its descent. Obviously, an error resulting in 8\textdegree~or 6\textdegree~being interpreted by the pilot are both preferable to 90\textdegree.
 	
 	To achieve our goal, we employ sparse distributed representations. Just as with traditional dense binary representations, we will represent sparse distributed representations as vectors over their code alphabet, in this case GF(2). We call them \textbf{sparse} distributed representations because these vectors typically only have a small proportion of the components as 1. We will use Numenta's notation of letting $w_{\overrightarrow{x}}$ denote the number of components in an SDR $\overrightarrow{x}$ that are 1, so $w_{\overrightarrow{x}} = \norm{x}_{1}$ \cite{Properties}.
 	
@@ -455,9 +455,9 @@
 	
 	\section{Hardware and Software Specifications}
 	
-	I utilized the official Python (Python 2.7) implementation of Numenta's cortical learning algorithms, NuPIC\footnote{NuPIC repository: \href{https://github.com/numenta/nupic}{\ttfamily https://github.com/numenta/nupic} } and its Network API\footnote{Network API docs: \href{http://nupic.docs.numenta.org/stable/api/network/}{\ttfamily http://nupic.docs.numenta.org/stable/api/network/}}. At the time of my work NuPIC was at version 1.05 and I chose to use this version. It should be noted that although much of NuPIC is in Python, many of its computationally intensive algorithms are implemented in C++ using their NuPIC.core repository\footnote{NuPIC.core repository: \href{https://github.com/numenta/nupic.core}{\ttfamily https://github.com/numenta/nupic.core}} and it also relies on a number of external libraries such as \texttt{numpy} and \texttt{pandas}. 
+	We utilized the official Python (Python 2.7) implementation of Numenta's cortical learning algorithms, NuPIC\footnote{NuPIC repository: \href{https://github.com/numenta/nupic}{\ttfamily https://github.com/numenta/nupic} } and its Network API\footnote{Network API docs: \href{http://nupic.docs.numenta.org/stable/api/network/}{\ttfamily http://nupic.docs.numenta.org/stable/api/network/}}. At the time of my work NuPIC was at version 1.05 and we chose to use this version. It should be noted that although much of NuPIC is in Python, many of its computationally intensive algorithms are implemented in C++ using their NuPIC.core repository\footnote{NuPIC.core repository: \href{https://github.com/numenta/nupic.core}{\ttfamily https://github.com/numenta/nupic.core}} and it also relies on a number of external libraries such as \texttt{numpy} and \texttt{pandas}. 
 	
-	Due to the computationally intensive nature of my research, I also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
+	Due to the computationally intensive nature of my research, we also heavily relied on parallel processing to run my code in a reasonable time frame. In particular, the \texttt{multiprocessing} package in Python was indispensable to my research, allowing me to speed my code up a factor of up to 28x when running independent tests or swarming.
 	
 	\begin{table}[hbt!]
 		\centering
@@ -510,7 +510,7 @@
 	
 	\section{Time Series Generation and Identification}\label{sec:exp:timeseriesclass}
     
-    The experiments required for this work required tools for analyzing and generating ARMA models, and to accomplish this, I utilized the \texttt{statsmodels}\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module. To generate ARMA models with the desired characteristic, we were able to utilize a function from the \texttt{arma\_generate\_sample} function which is capable of producing an $n$-term sample from an ARMA model given AR and MA lag polynomials and a standard deviation for the noise term~\cite{statsmodels}. To produce random stationary (p,q)-ARMA models, we generated a random number between one and a thousand for each coefficient of the lag polynomial and normalized the AR and MA polynomials separately such that the sum of the coefficients for AR and MA were each less than or equal to one.
+    The experiments required for this work required tools for analyzing and generating ARMA models, and to accomplish this, we utilized the \texttt{statsmodels}\footnote{statsmodels webpage: \href{https://www.statsmodels.org/dev/index.html}{https://www.statsmodels.org/dev/index.html}} Python module. To generate ARMA models with the desired characteristic, we were able to utilize a function from the \texttt{arma\_generate\_sample} function which is capable of producing an $n$-term sample from an ARMA model given AR and MA lag polynomials and a standard deviation for the noise term~\cite{statsmodels}. To produce random stationary (p,q)-ARMA models, we generated a random number between one and a thousand for each coefficient of the lag polynomial and normalized the AR and MA polynomials separately such that the sum of the coefficients for AR and MA were each less than or equal to one.
     
     In an attempt to avoid instances of the same model requiring different parameters, and namely different Random Distributed Scalar Encoder resolution, the samples of the ARMA processes were normalized such that the values were bounded between [-100,100]. However, this scaling had a large effect on the standard deviation of the resultant series which still needed to be understood. To measure the standard deviation of the post-scaling series, we utilized the \texttt{ARMA.fit} method which takes a $p$ and $q$ alongside the time series and returns the ($p,q$)-ARMA model using exact maximum likehood via Kalman filter~\cite{statsmodels}. 
     
@@ -822,7 +822,7 @@
 
     \FloatBarrier
     
-    The elliptic paraboloid is a rather trivial surface to optimize because the only minima is the global minimum. Therefore, we needed to test the algorithm on a surface which contained more local minima. Drawing from a collection of test functions for optimization\footnote{Visual Library of Simulation Experiments: \href{http://www.sfu.ca/~ssurjano/optimization.html}{http://www.sfu.ca/~ssurjano/optimization.html}}, I then turned to the Shubert Function. The function can be see in Figure~\ref{fig:Shubert} and is defined as $$f(x)=\Bigg(\sum_{i=1}^{5} i\cos((i+1)x_{1}+i)\Bigg)\Bigg(\sum_{i=1}^{5} i\cos((i+1)x_{2}+i)\Bigg)$$
+    The elliptic paraboloid is a rather trivial surface to optimize because the only minima is the global minimum. Therefore, we needed to test the algorithm on a surface which contained more local minima. Drawing from a collection of test functions for optimization\footnote{Visual Library of Simulation Experiments: \href{http://www.sfu.ca/~ssurjano/optimization.html}{http://www.sfu.ca/~ssurjano/optimization.html}}, we then turned to the Shubert Function. The function can be see in Figure~\ref{fig:Shubert} and is defined as $$f(x)=\Bigg(\sum_{i=1}^{5} i\cos((i+1)x_{1}+i)\Bigg)\Bigg(\sum_{i=1}^{5} i\cos((i+1)x_{2}+i)\Bigg)$$
     
      \begin{figure}[hbt!]
         \centering
@@ -943,7 +943,7 @@
     
     \section{Training HTMs on Time Series}
     
-    Our first challenge was to feed in-memory time-series to a Hierarchical Temporal Memory network, and at the time of writing, I was not able to find any way to do this in NuPIC so we needed to develop a stream, which we titled \textit{TimeSeriesStream}, to get our data to the HTM. Then we needed to know that we could train an HTM. 
+    Our first challenge was to feed in-memory time-series to a Hierarchical Temporal Memory network. At the time of writing, We was not able to find any way to do this in NuPIC so we needed to develop a stream, which we titled \textit{TimeSeriesStream}, to get our data to the HTM. Then we needed to know that we could train an HTM. 
     
     Writing test cases would be extremely difficult because of the difficult-to-predict ways in which HTMs are initialized, form synapses, and use inhibition to produce sparse representations. Additionally, NuPIC's code is spread across Python and C++ further complicating the process. Therefore, to monitor the internal workings of the HTM and check additional code written for training and calculating errors were all working correctly, we employed logging and CSV outputs of HTM predictions. This combination would allow us to track an HTM's learning process and see how an HTM's predictions over various time steps compared to the input sequence.
     
